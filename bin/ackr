@@ -1,0 +1,2 @@
+#!/bin/bash
+ack -l $1 | xargs perl -pi -E $2

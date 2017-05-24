@@ -1,0 +1,10 @@
+
+# install reattach-to-user-namespace with macports or brew
+
+// install command-t with rvm
+
+cd ~/.vim/bundle/command-t/ruby/command-t
+rm Makefile
+/System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/bin/ruby extconf.rb
+make
+sudo make install

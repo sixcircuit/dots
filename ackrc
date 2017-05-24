@@ -1,0 +1,9 @@
+--type-add=js=.tjs
+--type-add=html=.html.mu
+--type-add=html=.html.hb
+--ignore-dir=node_modules
+--ignore-file=match:/^[.].*[.]tjs/
+--ignore-file=match:/^[.].*[.]js/
+--ignore-dir=docs
+
+
