@@ -1,0 +1,12 @@
+
+from subprocess import call
+
+def _shell(cmd):
+    return call(cmd.split())
+
+def relative_echo(args):
+    return _shell('./bin_dir/echo_bin ' + " ".join(args))
+        
+def default(args):
+    print("You ran the default function")
+

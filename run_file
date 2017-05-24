@@ -1,0 +1,28 @@
+
+from subprocess import call
+
+def _shell(cmd):
+    return call(cmd.split())
+
+def echo(args):
+    return _shell('echo ' + " ".join(args))
+
+def echo_two(args):
+    return echo(args) == 0 and echo(args) == 0
+
+def _lessc(file_name):
+    # we can use paths relative to this file
+    return _shell('./node_modules/less/bin/lessc ./less/' + file_name + '.less ./static/css/' + file_name + '.css')
+
+def _start_server():
+    return('node ./server.js')
+
+def compile_less(args):
+    return _lessc('site')
+
+def server(args):
+    return compile_less([]) and _start_server()
+        
+def default(args):
+    print("You ran the default function")
+
