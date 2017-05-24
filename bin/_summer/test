@@ -1,0 +1,4 @@
+#!/bin/bash
+./node_modules/dry-test/bin/dry-test 
+
+
