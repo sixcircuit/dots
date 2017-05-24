@@ -1,0 +1,16 @@
+{
+    "name": "summer",
+    "description": "extracts and sums numbers from stdin",
+    "version": "0.0.1",
+    "author": {
+        "name": "Kendrick Taylor",
+        "email": "kendrick@circuitsix.com"
+    },
+    "dependencies": {
+        "dry-underscore" : ""
+    },
+    "devDependencies": {
+        "dry-test": ""
+    }
+}
+
