@@ -15,6 +15,8 @@ au BufNewFile,BufRead SConstruct set filetype=python
 au BufNewFile,BufRead SConscript set filetype=python
 au BufNewFile,BufRead *.cpp set syntax=cpp11
 
+autocmd FileType terraform setlocal commentstring=#%s
+
 " call SolarizedSetNormal()
 
 autocmd BufEnter,FileType * 
