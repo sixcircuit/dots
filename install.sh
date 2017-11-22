@@ -18,8 +18,10 @@ ln -s ./shell/tmux.conf ./.tmux.conf
 cp ./shell/tux.example.js ./shell/.tux.js
 ln -s ./shell/tux.js ./.tux.js
 
-mkdir ./.vim
-ln -s ./shell/vim/* ./.vim/
-
 ln -s ./shell/vimrc ./.vimrc
 ln -s ./shell/zshrc ./.zshrc
+
+mkdir ./.vim
+cd ./.vim
+ln -s ../shell/vim/* ./
+
