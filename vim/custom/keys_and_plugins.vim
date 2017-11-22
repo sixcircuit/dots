@@ -16,10 +16,7 @@ nnoremap ` '
 " navigate windows easily
 noremap <C-n> <C-w>w
 
-" timestamp in insert mode
-" unmap <leader> d 
-nnoremap <leader>d "=strftime("%Y-%m-%d %H:%M")<CR>P
-nnoremap <leader>t "="= " . tolower(strftime("%A")) . " { who: who, answer: answer, mood: mood, bdc: bdc, stress: stress, chest: chest, notes: notes }"<CR>P
+nmap mab ysiW)
 
 vmap <leader>a :!summer<CR>
 
@@ -145,6 +142,8 @@ let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 " End UtiliSnips
+
+call camelcasemotion#CreateMotionMappings(',')
 
 " Easy Motion
 

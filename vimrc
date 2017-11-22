@@ -157,6 +157,11 @@ let mapleader = " "
 nnoremap ; :
 vnoremap ; :
 
+nnoremap ( %
+
+" use increment inside tmux or screen 
+" nnoremap <C-e> <C-a>
+
 " background buffers don't have to be saved
 set hidden
 
@@ -179,8 +184,8 @@ set ruler
 set scrolloff=4
 
 " scroll the viewport faster with ctrl-y and ctrl-e
-nnoremap <C-e> 3<C-e>
-nnoremap <C-y> 3<C-y>
+nnoremap <C-e> 5<C-e>
+nnoremap <C-y> 5<C-y>
 
 "" set auto indent
 set autoindent
