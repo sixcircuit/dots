@@ -1,5 +1,8 @@
 #!/bin/bash
 cd ~
+
+mkdir ~/.ssh
+
 ln -s ./shell/ackrc ./.ackrc
 ln -s ./shell/bash_profile ./.bash_profile
 ln -s ./shell/bashrc ./.bashrc
