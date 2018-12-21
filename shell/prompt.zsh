@@ -42,8 +42,13 @@ SPACESHIP_RPROMPT_ORDER=(
 )
 
 local foreground=245
-local base_prompt=242
-local darker=241
+local darker=236
+local darkest=238
+local git_color=$darkest
+local user_color=$darkest
+local host_color=$darkest
+local exit_code_color=$darkest
+
 local highlight=214
 # local char_color=$highlight
 
@@ -55,33 +60,38 @@ SPACESHIP_TIME_SHOW="true"
 SPACESHIP_PROMPT_FIRST_PREFIX_SHOW=true
 
 SPACESHIP_USER_SHOW="always"
-SPACESHIP_USER_PREFIX="%F{$highlight}∙%f "
+
+# SPACESHIP_USER_PREFIX=""
+SPACESHIP_USER_PREFIX=" "
+# SPACESHIP_USER_PREFIX="  "
+# SPACESHIP_USER_PREFIX="%F{$highlight}∙%f "
 SPACESHIP_USER_SUFFIX=""
-SPACESHIP_USER_COLOR=$darker
+SPACESHIP_USER_COLOR=$user_color
 
 SPACESHIP_HOST_SHOW="always"
-SPACESHIP_HOST_PREFIX="%F{$darker}@%f" # the @ in there is what we print
+SPACESHIP_HOST_PREFIX="%F{$host_color}@%f" # the @ in there is what we print
 SPACESHIP_HOST_SUFFIX=" "
-SPACESHIP_HOST_COLOR=$darker
+SPACESHIP_HOST_COLOR=$host_color
 
-SPACESHIP_DIR_PREFIX="\n%F{$foreground}[%f" # the paren in there is what we print
+SPACESHIP_GIT_PREFIX="%F{$git_color}(%f" # the paren in there is what we print
+SPACESHIP_GIT_SUFFIX="%F{$git_color}) %f" # the paren + space in there is what we print
+SPACESHIP_GIT_SYMBOL=""
+SPACESHIP_GIT_BRANCH_COLOR=$git_color
+SPACESHIP_GIT_STATUS_SHOW=false
+
+SPACESHIP_EXIT_CODE_SHOW=true
+SPACESHIP_EXIT_CODE_SYMBOL=""
+SPACESHIP_EXIT_CODE_PREFIX="%F{$exit_code_color}(%f" # the paren in there is what we print
+SPACESHIP_EXIT_CODE_SUFFIX="%F{$exit_code_color}) %f" # the paren + space in there is what we print
+SPACESHIP_EXIT_CODE_COLOR=$exit_code_color
+
+SPACESHIP_DIR_PREFIX="\n%F{$highlight}∙%f%F{$foreground}[%f" # the paren in there is what we print
+# SPACESHIP_DIR_PREFIX="\n  %F{$foreground}[%f" # the paren in there is what we print
 SPACESHIP_DIR_SUFFIX="%F{$foreground}] %f" # the paren + space in there is what we print
 SPACESHIP_DIR_TRUNC=0
 SPACESHIP_DIR_TRUNC_REPO="false"
 SPACESHIP_DIR_COLOR=$foreground 
 SPACESHIP_DIR_LOCK_SYMBOL=""
-
-SPACESHIP_GIT_PREFIX="%F{$base_prompt}(%f" # the paren in there is what we print
-SPACESHIP_GIT_SUFFIX="%F{$base_prompt}) %f" # the paren + space in there is what we print
-SPACESHIP_GIT_SYMBOL=""
-SPACESHIP_GIT_BRANCH_COLOR=$base_prompt
-SPACESHIP_GIT_STATUS_SHOW=false
-
-SPACESHIP_EXIT_CODE_SHOW=true
-SPACESHIP_EXIT_CODE_SYMBOL=""
-SPACESHIP_EXIT_CODE_PREFIX="%F{$base_prompt}(%f" # the paren in there is what we print
-SPACESHIP_EXIT_CODE_SUFFIX="%F{$base_prompt}) %f" # the paren + space in there is what we print
-SPACESHIP_EXIT_CODE_COLOR=$darker
 
 # SPACESHIP_CHAR_SYMBOL="∙"
 # SPACESHIP_CHAR_SUFFIX=" "
