@@ -75,15 +75,18 @@ SPACESHIP_HOST_COLOR=$host_color
 
 SPACESHIP_GIT_PREFIX="%F{$git_color}(%f" # the paren in there is what we print
 SPACESHIP_GIT_SUFFIX="%F{$git_color}) %f" # the paren + space in there is what we print
+SPACESHIP_GIT_SHOW="always"
+SPACESHIP_GIT_NO_REPO_STRING="%F{$git_color}(---)%f "
 SPACESHIP_GIT_SYMBOL=""
 SPACESHIP_GIT_BRANCH_COLOR=$git_color
 SPACESHIP_GIT_STATUS_SHOW=false
 
-SPACESHIP_EXIT_CODE_SHOW=true
+SPACESHIP_EXIT_CODE_SHOW="always"
 SPACESHIP_EXIT_CODE_SYMBOL=""
 SPACESHIP_EXIT_CODE_PREFIX="%F{$exit_code_color}(%f" # the paren in there is what we print
 SPACESHIP_EXIT_CODE_SUFFIX="%F{$exit_code_color}) %f" # the paren + space in there is what we print
-SPACESHIP_EXIT_CODE_COLOR=$exit_code_color
+SPACESHIP_EXIT_CODE_COLOR_SUCCESS="$exit_code_color"
+SPACESHIP_EXIT_CODE_COLOR_FAILURE="red"
 
 SPACESHIP_DIR_PREFIX="\n%F{$highlight}∙%f%F{$foreground}[%f" # the paren in there is what we print
 # SPACESHIP_DIR_PREFIX="\n  %F{$foreground}[%f" # the paren in there is what we print
