@@ -259,7 +259,9 @@ runtime custom/index.vim
 highlight clear LineNr
 " highlight LineNr ctermfg=grey ctermbg=black
 " highlight LineNr ctermfg=black 
-highlight LineNr ctermfg=236 
+highlight LineNr ctermfg=238
+highlight TabLine ctermbg=NONE
+highlight TabLineFill ctermbg=NONE
 
 "set cursor line
 set cursorline
