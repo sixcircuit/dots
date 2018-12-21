@@ -1,3 +1,4 @@
+--smart-case
 --type-add=js=.tjs
 --type-add=html=.html.mu
 --type-add=html=.html.hb
@@ -5,5 +6,8 @@
 --ignore-file=match:/^[.].*[.]tjs/
 --ignore-file=match:/^[.].*[.]js/
 --ignore-dir=docs
+--ignore-dir=dist
+--ignore-dir=build
+--ignore-dir=ignore
 
 

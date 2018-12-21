@@ -1,4 +1,6 @@
 
+set rubydll=~/.rvm/rubies/ruby-2.5.1/lib/libruby.2.5.dylib
+
 " START NeoBundle Required
 
 if has('vim_starting')
@@ -51,6 +53,8 @@ NeoBundle 'Keithbsmiley/swift.vim'
 NeoBundle 'haya14busa/incsearch.vim'
 NeoBundle 'haya14busa/incsearch-fuzzy.vim'
 NeoBundle 'thinca/vim-localrc'
+
+NeoBundle 'christoomey/vim-titlecase'
 
 " ultisnips
 NeoBundle 'SirVer/ultisnips'
@@ -143,7 +147,7 @@ set showtabline=2
 set title
 "set showcmd
 
-" use standard regexes, not vim regexes        
+" use standard regexes, not vim regexes
 nnoremap / /\v
 vnoremap / /\v
 
@@ -191,7 +195,7 @@ nnoremap <C-y> 5<C-y>
 set autoindent
 
 " set indent to 4 spaces and expand
-set ts=8
+set ts=4
 set shiftwidth=4
 set expandtab
 set softtabstop=4
@@ -215,10 +219,12 @@ set nofoldenable
 " see whitespace
 "set list
 "set listchars=tab:>-,eol:¬
+" set listchars=tab:▸\ ,trail:·
 set listchars=tab:▸\ ,trail:·
 
+
 " turn visible whitespace off when requested
-nmap <silent> <leader>v :set nolist!<CR>
+" nmap <silent> <leader>v :set nolist!<CR>
 
 " add fancy features
 syntax on
@@ -238,20 +244,29 @@ set background=dark
 
 " let g:solarized_visibility = "high"
 " let g:solarized_contrast = "high"
-" let g:solarized_termcolors=256
-let g:solarized_termcolors=16
+let g:solarized_termcolors=256
+" let g:solarized_termcolors=16
 colorscheme solarized
-
-" colorscheme gummybears
 
 " load my settings 
 runtime custom/index.vim
+" highlight Normal ctermfg=grey ctermbg=NONE
 
-" check for changes
-" set autoread "this would work in gvim
-" but instead we use a script that provieds the following function
-let autoreadargs={'autoread':1} 
-execute WatchForChanges("*",autoreadargs) 
+"drop text background color
+" highlight Normal ctermbg=NONE
+
+"black gutter for line numbers
+highlight clear LineNr
+" highlight LineNr ctermfg=grey ctermbg=black
+" highlight LineNr ctermfg=black 
+highlight LineNr ctermfg=236 
+
+"set cursor line
+set cursorline
+"set cursorcolumn
+hi CursorLine ctermbg=235 guibg=#262626
+" hi CursorLine term=reverse ctermbg=235 guibg=#262626
+"hi CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
 
 " only show filename in tab
 set guitablabel=%t
@@ -261,7 +276,7 @@ set guitablabel=%t
 " match OverLength /\%81v.*/
 
 " These are changes for solarized
-highlight MatchParen cterm=bold ctermbg=black
+highlight MatchParen cterm=bold ctermbg=NONE
 
 " hi EasyMotionShade  ctermbg=none ctermfg=grey
 hi link EasyMotionShade  Comment
@@ -278,20 +293,18 @@ hi EasyMotionMoveHL ctermbg=none ctermfg=red
 " hi link EasyMotionTarget2First ErrorMsg
 " hi link EasyMotionTarget2Second ErrorMsg
 
-" highlight Normal ctermfg=grey ctermbg=black
-
 " remove show mode, it has to be here for whatever reason
 set noshowmode 
 
-"set cursor line
-set cursorline
-"set cursorcolumn
-hi CursorLine ctermbg=235 guibg=#262626
-" hi CursorLine term=reverse ctermbg=235 guibg=#262626
-"hi CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
-
 "remove right scroll bar in macvim fullscreen
 set guioptions-=r 
+
+" check for changes
+" set autoread "this would work in gvim
+" but instead we use a script that provieds the following function
+let autoreadargs={'autoread':1} 
+execute WatchForChanges("*",autoreadargs) 
+
 
 noremap <silent> <Leader>z :call ToggleWrap()<CR>
 function ToggleWrap()

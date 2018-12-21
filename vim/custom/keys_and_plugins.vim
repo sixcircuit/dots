@@ -16,6 +16,29 @@ nnoremap ` '
 " navigate windows easily
 noremap <C-n> <C-w>w
 
+" swap windows
+" function! MarkWindowSwap()
+"     let g:markedWinNum = winnr()
+" endfunction
+"
+" function! DoWindowSwap()
+"     "Mark destination
+"     let curNum = winnr()
+"     let curBuf = bufnr( "%" )
+"     exe g:markedWinNum . "wincmd w"
+"     "Switch to source and shuffle dest->source
+"     let markedBuf = bufnr( "%" )
+"     "Hide and open so that we aren't prompted and keep history
+"     exe 'hide buf' curBuf
+"     "Switch to dest and shuffle source->dest
+"     exe curNum . "wincmd w"
+"     "Hide and open so that we aren't prompted and keep history
+"     exe 'hide buf' markedBuf 
+" endfunction
+"
+" nnoremap <silent> <leader>yw :call MarkWindowSwap()<CR>
+" nnoremap <silent> <leader>pw :call DoWindowSwap()<CR>
+
 nmap mab ysiW)
 
 vmap <leader>a :!summer<CR>
@@ -25,10 +48,10 @@ vmap <leader>a :!summer<CR>
 " noremap <C-j> <C-w>h
 " noremap <C-k> <C-w>l
 
-noremap <C-h> <C-w>h
-noremap <C-l> <C-w>l
-noremap <C-j> <C-w>j
-noremap <C-k> <C-w>k
+" noremap <C-h> <C-w>h
+" noremap <C-l> <C-w>l
+" noremap <C-j> <C-w>j
+" noremap <C-k> <C-w>k
 
 noremap <left> <C-w><
 noremap <right> <C-w>>
@@ -89,7 +112,7 @@ nnoremap <leader>l :CommandTBuffer<cr>
 
 " end CommandT
 
-map <leader>c<leader> :TComment<cr>
+map <leader>c :TComment<cr>
 
 nnoremap <leader>h :RainbowParenthesesToggleAll<cr>
 
@@ -97,19 +120,17 @@ nnoremap <leader>h :RainbowParenthesesToggleAll<cr>
 nnoremap <leader>= ggvG=``
 
 " cycle between tabs c-t forware c-p backward
-nnoremap <silent> <C-t> :tabn<cr>
-nnoremap <silent> <C-p> :tabp<cr>
+" nnoremap <silent> <C-t> :tabn<cr>
+" nnoremap <silent> <C-p> :tabp<cr>
 
 " nnoremap <C-n> :tabnew<cr>
-nnoremap t1 :tabm 0<cr>
-nnoremap t2 :tabm 1<cr>
-nnoremap t3 :tabm 2<cr>
-nnoremap t4 :tabm 3<cr>
-nnoremap t5 :tabm 4<cr>
-nnoremap t6 :tabm 5<cr>
-nnoremap t7 :tabm 6<cr>
-nnoremap t8 :tabm 7<cr>
-nnoremap t9 :tabm 8<cr>
+nnoremap <silent> <C-h> :tabp<cr>
+nnoremap <silent> <C-l> :tabn<cr>
+nnoremap <silent> <C-p> :tabm -1<cr>
+nnoremap <silent> <C-t> :tabm +1<cr>
+
+" nnoremap t8 :tabm 7<cr>
+" nnoremap t9 :tabm 8<cr>
 
 " capitalization mappings
 if (&tildeop)
@@ -151,8 +172,9 @@ let g:EasyMotion_do_mapping = 0 " Disable default mappings
 
 " let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyz'
 " let g:EasyMotion_keys = 'asdghklqwertyuiopzxcvbnmfj;'
+let g:EasyMotion_keys = 'asdfjklghqwertyuiopzxcvbnm'
 
-let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ;'
+" let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ;'
 
 " set easy motion to just leader, instead of leader, leader
 map <Leader> <Plug>(easymotion-prefix)
@@ -204,7 +226,42 @@ map z? <Plug>(incsearch-fuzzy-?)
 
 "let g:mustache_abbreviations = 1
 
+
+function! ChangeSoftTabs(from, to)
+   execute "set ts=" . a:from . " noexpandtab"
+   execute "retab!"
+   execute "set expandtab ts=" . a:to
+   execute "retab!"
+endfunction
+
+" nnoremap <leader>3 :call ChangeSoftTabs(input("from: "), input("to: "))<CR>
+nnoremap <leader>43 :call ChangeSoftTabs(4, 3)<CR>
+nnoremap <leader>34 :call ChangeSoftTabs(3, 4)<CR>
+
 " You Complete Me
 let g:ycm_seed_identifiers_with_syntax = 1
 let g:ycm_min_num_of_chars_for_completion = 2
 " let g:ycm_key_invoke_completion = '<Space-g>'
+
+ruby << EOF
+  def open_uri
+    re = %r{(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))}
+
+    line = VIM::Buffer.current.line
+
+    if url = line[re]
+      system("open", url)
+      VIM::message(url)
+    else
+      VIM::message("No URI found in line.")
+    end
+  end
+EOF
+
+if !exists("*OpenURI")
+  function! OpenURI()
+    :ruby open_uri
+  endfunction
+endif
+map <Leader>g :call OpenURI()<CR>
+

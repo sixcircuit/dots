@@ -1,13 +1,13 @@
 
 current_dir=`pwd`
 
-cd ~/shell
-
-source ./shell/common.sh
-
-alias src="source ~/.zshrc"
-
 export PS1="[%n@%m %~] "
+
+cd ~/shell
+source ./shell/common.sh
+source ./shell/clip.zsh
+
+source ./shell/prompt.zsh
 
 #Set the auto completion on
 #autoload -U compinit

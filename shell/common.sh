@@ -19,3 +19,4 @@ source ./rvm.sh
 
 source ./ssh_agent.sh
 
+cd ..

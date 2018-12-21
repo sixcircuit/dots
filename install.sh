@@ -18,7 +18,8 @@ ln -s ./shell/load_keys.sh ./.load_keys.sh
 
 ln -s ./shell/screenrc ./.screenrc
 ln -s ./shell/tmux.conf ./.tmux.conf
-cp ./shell/tux.example.js ./shell/.tux.js
+
+cp ./shell/tux.example.js ./shell/tux.js
 ln -s ./shell/tux.js ./.tux.js
 
 ln -s ./shell/vimrc ./.vimrc
