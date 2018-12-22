@@ -6,6 +6,7 @@ SPACESHIP_PROMPT_ORDER=(
   host          # Hostname section
   git           # Git section (git_branch + git_status)
   exit_code     # Exit code section
+  char          # Prompt character
   dir           # Current directory section
   # hg            # Mercurial section (hg_branch  + hg_status)
   # package       # Package version
@@ -33,7 +34,6 @@ SPACESHIP_PROMPT_ORDER=(
   # battery       # Battery level and status
   # vi_mode       # Vi-mode indicator
   # jobs          # Background jobs indicator
-  # char          # Prompt character
 )
 
 SPACESHIP_RPROMPT_ORDER=( 
@@ -49,8 +49,17 @@ local user_color=$darkest
 local host_color=$darkest
 local exit_code_color=$darkest
 
-local highlight=214
-# local char_color=$highlight
+local gold=214 # gold
+local red=196 # red
+local green=40 # green
+local orange=202 # orange
+local purple=57 # purple
+local dark_blue=21 # dark blue
+local light_blue=33 # light blue
+
+local char_color=$light_blue
+
+# SPACESHIP_CHAR_COLORS=( $gold $red $green $orange $purple $dark_blue $light_blue )
 
 SPACESHIP_PROMPT_ADD_NEWLINE=false
 SPACESHIP_PROMPT_SEPARATE_LINE=false
@@ -61,10 +70,7 @@ SPACESHIP_PROMPT_FIRST_PREFIX_SHOW=true
 
 SPACESHIP_USER_SHOW="always"
 
-# SPACESHIP_USER_PREFIX=""
 SPACESHIP_USER_PREFIX=" "
-# SPACESHIP_USER_PREFIX="  "
-# SPACESHIP_USER_PREFIX="%F{$highlight}∙%f "
 SPACESHIP_USER_SUFFIX=""
 SPACESHIP_USER_COLOR=$user_color
 
@@ -88,20 +94,22 @@ SPACESHIP_EXIT_CODE_SUFFIX="%F{$exit_code_color}) %f" # the paren + space in the
 SPACESHIP_EXIT_CODE_COLOR_SUCCESS="$exit_code_color"
 SPACESHIP_EXIT_CODE_COLOR_FAILURE="red"
 
-SPACESHIP_DIR_PREFIX="\n%F{$highlight}∙%f%F{$foreground}[%f" # the paren in there is what we print
-# SPACESHIP_DIR_PREFIX="\n  %F{$foreground}[%f" # the paren in there is what we print
+SPACESHIP_CHAR_SYMBOL="∙"
+SPACESHIP_CHAR_PREFIX="\n"
+SPACESHIP_CHAR_SUFFIX=""
+# SPACESHIP_CHAR_SYMBOL_ROOT="#"
+SPACESHIP_CHAR_COLOR_SUCCESS=$char_color
+SPACESHIP_CHAR_COLOR_FAILURE=$char_color
+SPACESHIP_CHAR_COLOR_SECONDARY=$char_color
+
+SPACESHIP_DIR_PREFIX="%F{$foreground}[%f" # the paren in there is what we print
 SPACESHIP_DIR_SUFFIX="%F{$foreground}] %f" # the paren + space in there is what we print
 SPACESHIP_DIR_TRUNC=0
 SPACESHIP_DIR_TRUNC_REPO="false"
 SPACESHIP_DIR_COLOR=$foreground 
 SPACESHIP_DIR_LOCK_SYMBOL=""
 
-# SPACESHIP_CHAR_SYMBOL="∙"
-# SPACESHIP_CHAR_SUFFIX=" "
-# SPACESHIP_CHAR_SYMBOL_ROOT="#"
-# SPACESHIP_CHAR_COLOR_SUCCESS=$char_color
-# SPACESHIP_CHAR_COLOR_FAILURE=$char_color
-# SPACESHIP_CHAR_COLOR_SECONDARY=$char_color
+
 
 fpath=( "$HOME/shell/shell/zsh_functions" $fpath )
 
