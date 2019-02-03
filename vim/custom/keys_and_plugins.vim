@@ -55,8 +55,8 @@ vmap <leader>a :!summer<CR>
 
 " noremap <left> <C-w><
 " noremap <silent> <right> <C-w>>
-noremap <silent> <left> :vertical resize -25<CR>
-noremap <silent> <right> :vertical resize +25<CR> 
+noremap <silent> <left> :vertical resize -10<CR>
+noremap <silent> <right> :vertical resize +10<CR> 
 " noremap <silent> <left> :exe 'vertical resize ' . (winwidth('%') * 1/3)<CR>
 " noremap <silent> <right> :exe 'vertical resize ' . (winwidth('%') * 4/3)<CR> 
 " noremap <left> :echo 'vertical resize ' . (winheight('%') * 3/2)<CR> 

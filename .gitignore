@@ -5,4 +5,4 @@ load_keys.sh
 vim/sessions
 vim/bundle
 ignore/
-
+vifm/vifminfo

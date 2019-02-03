@@ -25,6 +25,8 @@ ln -s ./shell/tux.js ./.tux.js
 ln -s ./shell/vimrc ./.vimrc
 ln -s ./shell/zshrc ./.zshrc
 
+ln -s ./shell/vifm ./.vifm
+
 mkdir ./.vim
 cd ./.vim
 ln -s ../shell/vim/* ./
