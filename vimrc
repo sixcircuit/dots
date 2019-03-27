@@ -45,7 +45,7 @@ NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'othree/html5.vim'
 NeoBundle 'tpope/vim-eunuch'
 " NeoBundle 'tpope/vim-obsession'
-" NeoBundle 'Raimondi/delimitMate'
+NeoBundle 'Raimondi/delimitMate'
 NeoBundle 'sjl/gundo.vim'
 NeoBundle 'tpope/vim-abolish'
 NeoBundle 'Keithbsmiley/swift.vim'
@@ -77,6 +77,8 @@ NeoBundle 'mkitt/tabline.vim'
 
 " START NeoBundle Required
 call neobundle#end()
+
+let delimitMate_expand_cr = 1
 
 "Required:
 filetype plugin indent on
@@ -161,11 +163,6 @@ let mapleader = " "
 nnoremap ; :
 vnoremap ; :
 
-nnoremap ( %
-
-" use increment inside tmux or screen 
-" nnoremap <C-e> <C-a>
-
 " background buffers don't have to be saved
 set hidden
 
@@ -187,18 +184,14 @@ set ruler
 " minimum lines above/below cursor
 set scrolloff=4
 
-" scroll the viewport faster with ctrl-y and ctrl-e
-nnoremap <C-e> 5<C-e>
-nnoremap <C-y> 5<C-y>
-
 "" set auto indent
 set autoindent
 
-" set indent to 4 spaces and expand
-set ts=4
-set shiftwidth=4
+" set indent to 3 spaces and expand
+set ts=3
+set shiftwidth=3
 set expandtab
-set softtabstop=4
+set softtabstop=3
 
 " show bracket matches
 set showmatch

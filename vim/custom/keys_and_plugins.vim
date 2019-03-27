@@ -9,12 +9,25 @@ let g:ycm_cache_omnifunc = 1
 nnoremap + maO<esc>`a
 nnoremap - mao<esc>`a
 
+nnoremap <leader>q :%s/[“”]/"/g<cr>
+nnoremap <leader>e y$
+
 " ' now goes to the mark line and column, instead of just the line
 nnoremap ' `
 nnoremap ` '
 
-" navigate windows easily
-noremap <C-n> <C-w>w
+noremap M %
+
+" scroll the viewport faster with ctrl-y and ctrl-e
+nnoremap <C-j> 5<C-e>
+nnoremap <C-k> 5<C-y>
+
+" use increment inside tmux or screen 
+" nnoremap <C-e> <C-a>
+
+nmap <leader>mab ysiW)
+
+vmap <leader>a :!summer<CR>
 
 " swap windows
 " function! MarkWindowSwap()
@@ -39,9 +52,15 @@ noremap <C-n> <C-w>w
 " nnoremap <silent> <leader>yw :call MarkWindowSwap()<CR>
 " nnoremap <silent> <leader>pw :call DoWindowSwap()<CR>
 
-nmap mab ysiW)
 
-vmap <leader>a :!summer<CR>
+" navigate windows easily
+noremap <C-n> <C-w>w
+
+function! ResizeToPerfect()
+   exe 'vertical resize ' . (&columns - 66)
+endfunction
+
+nnoremap <leader>r <C-w>r <C-w>w :call ResizeToPerfect()<CR>
 
 " noremap <C-h> <C-w><
 " noremap <C-l> <C-w>>
@@ -55,8 +74,10 @@ vmap <leader>a :!summer<CR>
 
 " noremap <left> <C-w><
 " noremap <silent> <right> <C-w>>
-noremap <silent> <left> :vertical resize -10<CR>
-noremap <silent> <right> :vertical resize +10<CR> 
+noremap <silent> <down> :vertical resize -10<CR>
+noremap <silent> <up> :vertical resize +10<CR> 
+noremap <silent> <left> :vertical resize 65<CR> 
+noremap <silent> <right> :call ResizeToPerfect()<CR>
 " noremap <silent> <left> :exe 'vertical resize ' . (winwidth('%') * 1/3)<CR>
 " noremap <silent> <right> :exe 'vertical resize ' . (winwidth('%') * 4/3)<CR> 
 " noremap <left> :echo 'vertical resize ' . (winheight('%') * 3/2)<CR> 

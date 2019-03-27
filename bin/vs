@@ -1,4 +1,9 @@
 #!/bin/bash
 
-vagrant ssh || { vagrant up && vagrant ssh; }
+vagrant ssh 
+
+if [ $? -ne 0 ]; then
+   vagrant up 
+   vagrant ssh
+fi
 
