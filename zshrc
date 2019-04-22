@@ -9,12 +9,27 @@ source ./shell/clip.zsh
 
 source ./shell/prompt.zsh
 
+source ./shell/auto-ls.zsh
+
+# AUTO_LS_COMMANDS=(ls git-status)
+AUTO_LS_COMMANDS=(ls)
+AUTO_LS_NEWLINE=false
+
+# AUTO_LS_PATH: Detect command full path to execute (Default: true).
+# AUTO_LS_PATH=false
+
+# AUTO_LS_CHPWD: Enable/disable auto-ls on directory change (Default: true)
+# AUTO_LS_CHPWD=false
+
 #Set the auto completion on
-#autoload -U compinit
-#compinit
-setopt autolist
-unsetopt menucomplete
+autoload -U compinit
+compinit
+
+# setopt autolist
+# unsetopt menucomplete
+# setopt noautomenu
 setopt noautomenu
+setopt nomenucomplete
 
 # job control, if a bare name is used, fg the job
 setopt auto_resume
@@ -55,16 +70,40 @@ zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
 # END FOR SPEED
 
+# case insensitive completion -- if you don't like fuzzy
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+
+# a bunch of fuzzy attempts
+# 0 -- vanilla completion (abc => abc)
+# 1 -- smart case completion (abc => Abc)
+# 2 -- word flex completion (abc => A-big-Car)
+# 3 -- full flex completion (abc => ABraCadabra)
+# zstyle ':completion:*' matcher-list '' \
+  # 'm:{a-z\-}={A-Z\_}' \
+  # 'r:|?=** m:{a-z\-}={A-Z\_}'
+  # 'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}'
+  # 'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}' \
+
+# fuzzy complete
+# zstyle ':completion:*' matcher-list 'r:|?=** m:{a-z\-}={A-Z\_}'
+
+# bindkey '^i' complete-word
+
 # remove git completion
 #compdef -d git
 
 # Faster! (?)
 #zstyle ':completion::complete:*' use-cache 1
 
-# case insensitive completion
-#zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
-#zstyle ':completion:*' verbose yes
+# try some fuzzy shit.
+# zstyle ':completion:*:*:*:*:globbed-files' matcher 'r:|?=** m:{a-z\-}={A-Z\_}'
+# zstyle ':completion:*:*:*:*:local-directories' matcher 'r:|?=** m:{a-z\-}={A-Z\_}'
+# zstyle ':completion:*:*:*:*:directories' matcher 'r:|?=** m:{a-z\-}={A-Z\_}'
+# zstyle ':completion:*' menu select
+
+# zstyle ':completion:*' verbose yes
 #zstyle ':completion:*:descriptions' format '%B%d%b'
 #zstyle ':completion:*:messages' format '%d'
 #zstyle ':completion:*:warnings' format 'No matches for: %d'
@@ -76,7 +115,7 @@ zstyle ':completion:*' cache-path ~/.zsh/cache
 #zstyle ':completion:*' auto-description 'specify: %d'
 
 # Don't prompt for a huge list, page it!
-#zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+# zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 
 # Don't prompt for a huge list, menu it!
 #zstyle ':completion:*:default' menu 'select=0'
@@ -85,7 +124,7 @@ zstyle ':completion:*' cache-path ~/.zsh/cache
 #zstyle ':completion:*' file-sort modification reverse
 
 # color code completion!!!!  Wohoo!
-#zstyle ':completion:*' list-colors "=(#b) #([0-9]#)*=36=31"
+# zstyle ':completion:*' list-colors "=(#b) #([0-9]#)*=36=31"
 
 #unsetopt LIST_AMBIGUOUS
 #setopt  COMPLETE_IN_WORD

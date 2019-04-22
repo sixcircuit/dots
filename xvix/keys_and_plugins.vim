@@ -1,20 +1,46 @@
 
+" use standard regexes, not vim regexes
+nnoremap / /\v
+vnoremap / /\v
+
+" map leader to space
+let mapleader = " "
+
+" one less key for command mode
+nnoremap ; :
+vnoremap ; :
+
 let g:ycm_cache_omnifunc = 1
 
 " set timeoutlen=200
-
-" sqa creates a new session no matter what
 
 " add lines easily with + and -
 nnoremap + maO<esc>`a
 nnoremap - mao<esc>`a
 
-nnoremap <leader>q :%s/[“”]/"/g<cr>
+" Remove trailing whitespace
+" %s/\s\+$//e
+
+function ReplaceQuotes()
+   " Save cursor position
+   let l:save = winsaveview()
+   " replace curly quotes
+   %s/[“”]/"/ge
+   %s/[’]/'/ge
+   " Move cursor to original position
+   call winrestview(l:save)
+   echo "Stripped trailing whitespace"
+endfunction
+
+nnoremap <silent> <leader>q :silent call ReplaceQuotes()<CR>
+
 nnoremap <leader>e y$
 
 " ' now goes to the mark line and column, instead of just the line
 nnoremap ' `
 nnoremap ` '
+
+noremap 0 ^
 
 noremap M %
 
@@ -292,11 +318,39 @@ if !exists("*OpenURI")
 endif
 map <Leader>g :call OpenURI()<CR>
 
+" see whitespace
+"set list
+"set listchars=tab:>-,eol:¬
+" set listchars=tab:▸\ ,trail:·
+" set listchars=tab:▸\ ,trail:·
+" set showbreak=↪\ 
+" set listchars=tab:▸\ ,eol:¬,nbsp:·,trail:·,extends:›,precedes:‹
+set listchars=tab:▸\ ,nbsp:·,trail:·,extends:›,precedes:‹
+
+" if you do later have the wrap be sane
+set breakindent
+set showbreak=\ \ 
+
+function! ToggleWhitespace()
+  if &list
+    echo "show whitespace: off"
+    set nolist
+    set showbreak=\ \ 
+  else
+    echo "show whitespace: on"
+    set list
+    set showbreak=↪\ 
+  endif
+endfunction
+ 
+" turn visible whitespace off when requested
+nmap <silent> <leader>v :call ToggleWhitespace()<CR>
+
 noremap <silent> <Leader>z :call ToggleWrap()<CR>
 
 function! ToggleWrap()
   if &wrap
-    echo "Wrap OFF"
+    echo "wrap: off"
     setlocal nowrap
     " set virtualedit=all
     silent! nunmap <buffer> <Up>
@@ -312,7 +366,7 @@ function! ToggleWrap()
     silent! iunmap <buffer> 0
     silent! iunmap <buffer> $
   else
-    echo "Wrap ON"
+    echo "wrap: on"
     setlocal wrap linebreak nolist
     " set virtualedit=
     setlocal display+=lastline
