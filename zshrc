@@ -10,6 +10,7 @@ source ./shell/clip.zsh
 source ./shell/prompt.zsh
 
 source ./shell/auto-ls.zsh
+# source ./shell/fzf.zsh
 
 # AUTO_LS_COMMANDS=(ls git-status)
 AUTO_LS_COMMANDS=(ls)
