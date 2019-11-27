@@ -5,6 +5,8 @@ cd ~/shell
 
 source ./shell/common.sh
 
+export IGNOREEOF=1000
+
 alias src="source ~/.bash_profile"
 
 shopt -s histappend

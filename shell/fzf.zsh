@@ -11,3 +11,6 @@
 # Key bindings
 # ------------
 # source "/Users/kendrick/shell/fzf/shell/key-bindings.zsh"
+
+# don't wait for **, just complete on tab.
+# export FZF_DEFAULT_OPTS='--bind tab:down --cycle'

@@ -10,18 +10,20 @@ fi
 if [[ $platform == 'linux' ]]; then
    alias ls='ls -h --color=auto'
 elif [[ $platform == 'osx' ]]; then
-   alias ls='ls -h -G'
+   alias ls='ls -hG'
 fi
 
 #Aliases
 ##ls, the common ones I use a lot shortened for rapid fire usage
-alias l='ls -lFh'     #size,show type,human readable
-alias ll='ls -alhG'
-alias la='ls -lAFh'   #long list,show almost all,show type,human readable
-alias lr='ls -tRFh'   #sorted by date,recursive,show type,human readable
-alias lt='ls -ltFh'   #long list,sorted by date,show type,human readable
+alias la='ls -GA'   # no list, almost all
+alias ll='ls -lA'   # list, almost all
+alias lt='ls -lAt'   # list, almost all, sort by time
+alias lr='ls -lAR'   # list, almost all, recursive
+
+alias t='tree'
+
 alias rmr='rm -rf'
-alias f='find'
+
 alias rcp='rsync -ah --progress'
  
 ##cd, because typing the backslash is A LOT of work!!
@@ -32,10 +34,6 @@ alias ....='cd ../../../'
 alias .....='cd ../../../../'
 
 alias sudo='sudo env PATH=$PATH'
-
-function gr() {
-    grep -r "$@" . 
-}
 
 www() {
     if [[ -z "$1" ]]; then

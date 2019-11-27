@@ -6,3 +6,5 @@ vim/sessions
 vim/bundle
 ignore/
 vifm/vifminfo
+config/gcloud
+config/karabiner/automatic_backups

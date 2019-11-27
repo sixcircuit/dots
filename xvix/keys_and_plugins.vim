@@ -83,7 +83,7 @@ vmap <leader>a :!summer<CR>
 noremap <C-n> <C-w>w
 
 function! ResizeToPerfect()
-   exe 'vertical resize ' . (&columns - 66)
+   exe 'vertical resize ' . (&columns - 76)
 endfunction
 
 nnoremap <leader>r <C-w>r <C-w>w :call ResizeToPerfect()<CR>
@@ -102,7 +102,7 @@ nnoremap <leader>r <C-w>r <C-w>w :call ResizeToPerfect()<CR>
 " noremap <silent> <right> <C-w>>
 noremap <silent> <down> :vertical resize -10<CR>
 noremap <silent> <up> :vertical resize +10<CR> 
-noremap <silent> <left> :vertical resize 65<CR> 
+noremap <silent> <left> :vertical resize 75<CR> 
 noremap <silent> <right> :call ResizeToPerfect()<CR>
 " noremap <silent> <left> :exe 'vertical resize ' . (winwidth('%') * 1/3)<CR>
 " noremap <silent> <right> :exe 'vertical resize ' . (winwidth('%') * 4/3)<CR> 
@@ -223,9 +223,9 @@ call camelcasemotion#CreateMotionMappings(',')
 
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 
-" let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyz'
+let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyz;'
 " let g:EasyMotion_keys = 'asdghklqwertyuiopzxcvbnmfj;'
-let g:EasyMotion_keys = 'asdfjklghqwertyuiopzxcvbnm'
+" let g:EasyMotion_keys = 'asdklghqwertyuiopzxcvbnmfj'
 
 " let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ;'
 
@@ -267,8 +267,8 @@ map <Leader>s <Plug>(easymotion-jumptoanywhere)
 
 let g:powerline_config_overrides = {'common': {'default_top_theme': 'ascii'}}
 
-map z/ <Plug>(incsearch-fuzzy-/)
-map z? <Plug>(incsearch-fuzzy-?)
+map ? <Plug>(incsearch-fuzzy-/)
+" map ? <Plug>(incsearch-fuzzy-?)
 " map zg/ <Plug>(incsearch-fuzzy-stay)
 
 "Rainbow Parentheses Always on
@@ -279,6 +279,46 @@ map z? <Plug>(incsearch-fuzzy-?)
 
 "let g:mustache_abbreviations = 1
 
+" function! s:goyo_enter()
+"   if executable('tmux') && strlen($TMUX)
+"     silent !tmux set status off
+"     silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+"   endif
+"   set noshowmode
+"   set noshowcmd
+"   set scrolloff=999
+"   Limelight
+"   " ...
+" endfunction
+"
+" function! s:goyo_leave()
+"   if executable('tmux') && strlen($TMUX)
+"     silent !tmux set status on
+"     silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+"   endif
+"   set showmode
+"   set showcmd
+"   set scrolloff=5
+"   Limelight!
+"   " ...
+" endfunction
+"
+" autocmd! User GoyoEnter nested call <SID>goyo_enter()
+" autocmd! User GoyoLeave nested call <SID>goyo_leave()
+"
+function! ProseMode()
+  call goyo#execute(0, [])
+  " set spell noci nosi noai nolist noshowmode noshowcmd
+  " set complete+=s
+  " set bg=light
+  " if !has('gui_running')
+    " let g:solarized_termcolors=256
+  " endif
+  " colors solarized
+endfunction
+
+command! ProseMode call ProseMode()
+nmap <Leader>p :ProseMode<CR>
 
 function! ChangeSoftTabs(from, to)
    execute "set ts=" . a:from . " noexpandtab"
@@ -353,14 +393,14 @@ function! ToggleWrap()
     echo "wrap: off"
     setlocal nowrap
     " set virtualedit=all
-    silent! nunmap <buffer> <Up>
-    silent! nunmap <buffer> <Down>
-    silent! nunmap <buffer> <Home>
-    silent! nunmap <buffer> <End>
-    silent! iunmap <buffer> <Up>
-    silent! iunmap <buffer> <Down>
-    silent! iunmap <buffer> <Home>
-    silent! iunmap <buffer> <End>
+    " silent! nunmap <buffer> <Up>
+    " silent! nunmap <buffer> <Down>
+    " silent! nunmap <buffer> <Home>
+    " silent! nunmap <buffer> <End>
+    " silent! iunmap <buffer> <Up>
+    " silent! iunmap <buffer> <Down>
+    " silent! iunmap <buffer> <Home>
+    " silent! iunmap <buffer> <End>
     silent! iunmap <buffer> k
     silent! iunmap <buffer> j
     silent! iunmap <buffer> 0
@@ -370,14 +410,14 @@ function! ToggleWrap()
     setlocal wrap linebreak nolist
     " set virtualedit=
     setlocal display+=lastline
-    noremap  <buffer> <silent> <Up>   gk
-    noremap  <buffer> <silent> <Down> gj
-    noremap  <buffer> <silent> <Home> g<Home>
-    noremap  <buffer> <silent> <End>  g<End>
-    inoremap <buffer> <silent> <Up>   <C-o>gk
-    inoremap <buffer> <silent> <Down> <C-o>gj
-    inoremap <buffer> <silent> <Home> <C-o>g<Home>
-    inoremap <buffer> <silent> <End>  <C-o>g<End>
+    " noremap  <buffer> <silent> <Up>   gk
+    " noremap  <buffer> <silent> <Down> gj
+    " noremap  <buffer> <silent> <Home> g<Home>
+    " noremap  <buffer> <silent> <End>  g<End>
+    " inoremap <buffer> <silent> <Up>   <C-o>gk
+    " inoremap <buffer> <silent> <Down> <C-o>gj
+    " inoremap <buffer> <silent> <Home> <C-o>g<Home>
+    " inoremap <buffer> <silent> <End>  <C-o>g<End>
     noremap  <buffer> <silent> k gk
     noremap  <buffer> <silent> j gj
     noremap  <buffer> <silent> 0 g0

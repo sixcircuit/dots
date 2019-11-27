@@ -1,4 +1,3 @@
-
 current_dir=`pwd`
 
 export PS1="[%n@%m %~] "
@@ -9,18 +8,13 @@ source ./shell/clip.zsh
 
 source ./shell/prompt.zsh
 
-source ./shell/auto-ls.zsh
 # source ./shell/fzf.zsh
 
-# AUTO_LS_COMMANDS=(ls git-status)
-AUTO_LS_COMMANDS=(ls)
-AUTO_LS_NEWLINE=false
-
-# AUTO_LS_PATH: Detect command full path to execute (Default: true).
-# AUTO_LS_PATH=false
-
-# AUTO_LS_CHPWD: Enable/disable auto-ls on directory change (Default: true)
-# AUTO_LS_CHPWD=false
+# auto ls on cd
+function chpwd() {
+    emulate -L zsh
+    ls
+}
 
 #Set the auto completion on
 autoload -U compinit
@@ -299,5 +293,11 @@ setopt EXTENDED_HISTORY
 #     return 1  # Because we didn't really complete anything
 # }
 #
+
+setopt ignoreeof
+# ctrl-d() { zle -M "zsh: use 'exit' to exit."; return 1 } 
+ctrl-d() { return 1 } 
+zle -N ctrl-d
+bindkey '^D' ctrl-d
 
 cd "$current_dir"

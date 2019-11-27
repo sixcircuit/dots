@@ -22,7 +22,11 @@ NeoBundle 'Lokaltog/vim-easymotion'
 NeoBundle 'sktaylor/vim-colors-solarized'
 " NeoBundle 'altercation/vim-colors-solarized'
 "
-NeoBundle 'mileszs/ack.vim'
+
+NeoBundle 'junegunn/goyo.vim'
+
+" NeoBundle 'mileszs/ack.vim'
+NeoBundle 'jremmen/vim-ripgrep'
 
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'tomtom/tcomment_vim'

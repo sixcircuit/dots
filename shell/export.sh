@@ -16,8 +16,8 @@ export SAVEHIST=20000
 export HISTSIZE=20000
 export HISTFILESIZE=20000
 
-export ANDROID_HOME=/Volumes/Finity/Android
+# export ANDROID_HOME=/Volumes/Finity/Android
 
-export JAVA_HOME="$(/usr/libexec/java_home)"
+# export JAVA_HOME="$(/usr/libexec/java_home)"
 
 

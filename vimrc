@@ -1,5 +1,6 @@
 
-set rubydll=~/.rvm/rubies/ruby-2.5.1/lib/libruby.2.5.dylib
+" set rubydll=~/.rvm/rubies/ruby-2.5.1/lib/libruby.2.5.dylib
+set rubydll=~/.rvm/rubies/ruby-2.6.3/lib/libruby.2.6.dylib
 
 " START NeoBundle Required
 

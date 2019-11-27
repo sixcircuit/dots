@@ -6,8 +6,8 @@ SPACESHIP_PROMPT_ORDER=(
   host          # Hostname section
   git           # Git section (git_branch + git_status)
   exit_code     # Exit code section
-  char          # Prompt character
   dir           # Current directory section
+  char          # Prompt character
   # hg            # Mercurial section (hg_branch  + hg_status)
   # package       # Package version
   # node          # Node.js section
@@ -70,7 +70,7 @@ SPACESHIP_PROMPT_FIRST_PREFIX_SHOW=true
 
 SPACESHIP_USER_SHOW="always"
 
-SPACESHIP_USER_PREFIX=" "
+SPACESHIP_USER_PREFIX=""
 SPACESHIP_USER_SUFFIX=""
 SPACESHIP_USER_COLOR=$user_color
 
@@ -96,14 +96,14 @@ SPACESHIP_EXIT_CODE_COLOR_FAILURE="red"
 
 SPACESHIP_CHAR_SYMBOL="∙"
 SPACESHIP_CHAR_PREFIX="\n"
-SPACESHIP_CHAR_SUFFIX=""
+SPACESHIP_CHAR_SUFFIX=" "
 # SPACESHIP_CHAR_SYMBOL_ROOT="#"
 SPACESHIP_CHAR_COLOR_SUCCESS=$char_color
 SPACESHIP_CHAR_COLOR_FAILURE=$char_color
 SPACESHIP_CHAR_COLOR_SECONDARY=$char_color
 
-SPACESHIP_DIR_PREFIX="%F{$foreground}[%f" # the paren in there is what we print
-SPACESHIP_DIR_SUFFIX="%F{$foreground}] %f" # the paren + space in there is what we print
+SPACESHIP_DIR_PREFIX="\n%F{$foreground}[%f" # the paren in there is what we print
+SPACESHIP_DIR_SUFFIX="%F{$foreground}]%f" # the paren + space in there is what we print
 SPACESHIP_DIR_TRUNC=0
 SPACESHIP_DIR_TRUNC_REPO="false"
 SPACESHIP_DIR_COLOR=$foreground 

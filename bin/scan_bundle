@@ -1,0 +1,13 @@
+#!/bin/bash
+
+files=$(shopt -s nullglob dotglob; echo "$1"*)
+
+if (( ${#files} ))
+then
+  echo "error: destination name exists"
+  exit 1
+fi
+
+mkdir "$1"
+scan_rename "$@"
+mv "$1"* "$1/"
