@@ -35,8 +35,8 @@ set dir=/tmp
 " 256 colors
 set t_Co=256
 
-" set visual bell
-set vb
+" set visual bell off
+set novisualbell
 
 " it's 2012
 set encoding=utf-8
@@ -63,7 +63,7 @@ set showtabline=2
 
 " set the window title and other window stuff
 set title
-"set showcmd
+set showcmd
 
 " set text prompts to press a key when you shell out, etc.
 set shortmess=atI
@@ -123,38 +123,13 @@ set wildmenu
 "  complete till ambiguous, like a shell
 set wildmode=list:longest
 
-set background=dark
-" set background=light
-
-" let g:solarized_visibility = "high"
-let g:solarized_grayscale=1
-let g:solarized_contrast = "higher"
-let g:solarized_termcolors=256
-" let g:solarized_termcolors=16
-colorscheme solarized
-
-" highlight Normal ctermfg=grey ctermbg=NONE
-
-"drop text background color
-" highlight Normal ctermbg=NONE
-
-"black gutter for line numbers
-highlight clear LineNr
-" highlight LineNr ctermfg=grey ctermbg=black
-" highlight LineNr ctermfg=black 
-highlight LineNr ctermfg=238
-highlight TabLine ctermbg=NONE
-highlight TabLineFill ctermbg=NONE
-
 " load my settings 
 source ~/.xvix/index.vim
 
+
 "set cursor line
 set cursorline
-"set cursorcolumn
-hi CursorLine ctermbg=235 guibg=#262626
-" hi CursorLine term=reverse ctermbg=235 guibg=#262626
-"hi CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+" set cursorcolumn
 
 " only show filename in tab
 set guitablabel=%t
@@ -169,16 +144,7 @@ set noshowmode
 "remove right scroll bar in macvim fullscreen
 set guioptions-=r 
 
-" check for changes
-" set autoread "this would work in gvim
-" but instead we use a script that provieds the following function
-let autoreadargs={'autoread':1} 
-execute WatchForChanges("*",autoreadargs) 
 
-
-let delimitMate_expand_cr = 1
-
-"Required:
 filetype plugin indent on
 
 

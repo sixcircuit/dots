@@ -160,3 +160,10 @@ function! WatchForChanges(bufname, ...)
   " echo msg
   let @"=reg_saved
 endfunction
+
+" enable check for changes
+" set autoread "this would work in gvim
+" but instead we use a script that provides the following function
+let autoreadargs={'autoread':1} 
+execute WatchForChanges("*",autoreadargs) 
+

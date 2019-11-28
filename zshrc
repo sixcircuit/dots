@@ -1,3 +1,5 @@
+# zmodload zsh/zprof # profile startup time
+
 current_dir=`pwd`
 
 export PS1="[%n@%m %~] "
@@ -17,8 +19,18 @@ function chpwd() {
 }
 
 #Set the auto completion on
-autoload -U compinit
-compinit
+# old, slow way
+# autoload -U compinit
+# compinit
+
+# for startup speed, only check zcompdump once a day
+# i don't even know if we need this, because I don't think i use command completion
+# but fuck it, it's not that slow
+autoload -Uz compinit
+for dump in ~/.zcompdump(N.mh+24); do
+  compinit
+done
+compinit -C
 
 # setopt autolist
 # unsetopt menucomplete
@@ -301,3 +313,5 @@ zle -N ctrl-d
 bindkey '^D' ctrl-d
 
 cd "$current_dir"
+
+# zprof # profile startup time

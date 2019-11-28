@@ -21,5 +21,4 @@ NeoBundleCheck
 let g:auto_session_root = $HOME . "/.vim/sessions"
 
 source ~/.xvix/main.vim
-
-" source ~/.vim/main.vim
+source ~/.vim/config/main.vim
