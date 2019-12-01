@@ -1,6 +1,4 @@
 
-noremap <silent> <Leader>z :call ToggleWrap()<CR>
-
 function! ToggleWrap()
   if &wrap
     echo "wrap: off"

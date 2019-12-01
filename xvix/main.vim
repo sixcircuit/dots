@@ -1,6 +1,8 @@
 
 set path+=**
 
+" set timeoutlen=200
+
 " set foldmethod=indent
 " I don't use folds, so set it to the fastest option
 set foldmethod=manual
