@@ -1,9 +1,51 @@
 
+" core remaps
 
-nnoremap <silent> <leader>q :silent call ReplaceQuotes()<CR>
-noremap <silent> <Leader>z :call ToggleWrap()<CR>
+" use standard regexes, not vim regexes
+nnoremap / /\v
+vnoremap / /\v
 
-let g:ycm_cache_omnifunc = 1
+" one less key for command mode
+nnoremap ; :
+vnoremap ; :
+
+" ' now goes to the mark line and column, instead of just the line
+nnoremap ' `
+nnoremap ` '
+
+
+noremap M %
+
+
+" clear search highlighting
+nnoremap <leader>/ :noh<cr>
+
+
+" windows
+
+" scroll the viewport faster with ctrl-y and ctrl-e
+nnoremap <C-j> 5<C-e>
+nnoremap <C-k> 5<C-y>
+
+" navigate windows easily
+noremap <C-n> <C-w>w
+
+" resize windows easily
+
+" noremap <silent> <left> :exe 'vertical resize ' . (winwidth('%') * 1/3)<CR>
+" noremap <left> :echo 'vertical resize ' . (winheight('%') * 3/2)<CR>
+
+function! ResizeToPerfect()
+   exe 'vertical resize ' . (&columns - 76)
+endfunction
+
+nnoremap <leader>r <C-w>r <C-w>w :call ResizeToPerfect()<CR>
+
+noremap <silent> <down> :vertical resize -10<CR>
+noremap <silent> <up> :vertical resize +10<CR>
+noremap <silent> <left> :vertical resize 75<CR>
+noremap <silent> <right> :call ResizeToPerfect()<CR>
+
 
 
 " add lines easily with + and -
@@ -16,77 +58,26 @@ nnoremap <leader>y0 y^
 
 nmap <leader>mb ysiW)
 
+
+nnoremap <silent> <leader>fq :call FixQuotes()<CR>
+nnoremap <silent> <leader>fs :call FixTrailingWhitespace()<CR>
+
+nmap <silent> <leader>ts :call ToggleWhitespace()<CR>
+noremap <silent> <Leader>tw :call ToggleWrap()<CR>
+noremap <silent> <Leader>z :call ToggleWrap()<CR>
+nmap <silent> <Leader>tp :ToggleProse<CR>
+nmap <silent> <Leader>tt :ToggleTypewriter<CR>
+
+
 " Remove trailing whitespace
-" %s/\s\+$//e
 
 " noremap 0 ^
 
-" use increment inside tmux or screen 
+" use increment inside tmux or screen
 " nnoremap <C-e> <C-a>
 
-" vmap <leader>a :!summer<CR>
-
-" swap windows
-" function! MarkWindowSwap()
-"     let g:markedWinNum = winnr()
-" endfunction
-"
-" function! DoWindowSwap()
-"     "Mark destination
-"     let curNum = winnr()
-"     let curBuf = bufnr( "%" )
-"     exe g:markedWinNum . "wincmd w"
-"     "Switch to source and shuffle dest->source
-"     let markedBuf = bufnr( "%" )
-"     "Hide and open so that we aren't prompted and keep history
-"     exe 'hide buf' curBuf
-"     "Switch to dest and shuffle source->dest
-"     exe curNum . "wincmd w"
-"     "Hide and open so that we aren't prompted and keep history
-"     exe 'hide buf' markedBuf 
-" endfunction
-"
-" nnoremap <silent> <leader>yw :call MarkWindowSwap()<CR>
-" nnoremap <silent> <leader>pw :call DoWindowSwap()<CR>
 
 
-" navigate windows easily
-noremap <C-n> <C-w>w
-
-function! ResizeToPerfect()
-   exe 'vertical resize ' . (&columns - 76)
-endfunction
-
-nnoremap <leader>r <C-w>r <C-w>w :call ResizeToPerfect()<CR>
-
-" noremap <C-h> <C-w><
-" noremap <C-l> <C-w>>
-" noremap <C-j> <C-w>h
-" noremap <C-k> <C-w>l
-
-" noremap <C-h> <C-w>h
-" noremap <C-l> <C-w>l
-" noremap <C-j> <C-w>j
-" noremap <C-k> <C-w>k
-
-" noremap <left> <C-w><
-" noremap <silent> <right> <C-w>>
-noremap <silent> <down> :vertical resize -10<CR>
-noremap <silent> <up> :vertical resize +10<CR> 
-noremap <silent> <left> :vertical resize 75<CR> 
-noremap <silent> <right> :call ResizeToPerfect()<CR>
-" noremap <silent> <left> :exe 'vertical resize ' . (winwidth('%') * 1/3)<CR>
-" noremap <silent> <right> :exe 'vertical resize ' . (winwidth('%') * 4/3)<CR> 
-" noremap <left> :echo 'vertical resize ' . (winheight('%') * 3/2)<CR> 
-" noremap <right> :echo 'vertical resize ' . (winheight('%') * 2/3)<CR> 
-" noremap <up> <C-w>+
-" noremap <down> <C-w>-
-
-" navigate windows easily end
-
-
-" clear search highlighting
-nnoremap <leader>/ :noh<cr>
 
 " Match Tag Always
 
@@ -105,7 +96,7 @@ let g:mta_filetypes = {
 
 set wildignore+=*.o,*.obj,.git,node_modules,build
 
-" let g:CommandTWildIgnore=&wildignore 
+" let g:CommandTWildIgnore=&wildignore
 
 " let g:CommandTWildIgnore=&wildignore . ",**/bower_components/*"
 
@@ -231,7 +222,7 @@ map <Leader>s <Plug>(easymotion-jumptoanywhere)
 " map <Leader>w <Plug>(easymotion-jumptoanywhere)
 " map <Leader>cc <Plug>(easymotion-jumptoanywhere)
 " i would need to change the next one, because it slows down regular /
-" map // <Plug>(easymotion-sn) 
+" map // <Plug>(easymotion-sn)
 
 " use arrows to switch buffers
 " let g:miniBufExplMapWindowNavArrows = 1
@@ -250,47 +241,6 @@ map ? <Plug>(incsearch-fuzzy-/)
 
 "let g:mustache_abbreviations = 1
 
-" function! s:goyo_enter()
-"   if executable('tmux') && strlen($TMUX)
-"     silent !tmux set status off
-"     silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
-"   endif
-"   set noshowmode
-"   set noshowcmd
-"   set scrolloff=999
-"   Limelight
-"   " ...
-" endfunction
-"
-" function! s:goyo_leave()
-"   if executable('tmux') && strlen($TMUX)
-"     silent !tmux set status on
-"     silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
-"   endif
-"   set showmode
-"   set showcmd
-"   set scrolloff=5
-"   Limelight!
-"   " ...
-" endfunction
-"
-" autocmd! User GoyoEnter nested call <SID>goyo_enter()
-" autocmd! User GoyoLeave nested call <SID>goyo_leave()
-"
-function! ProseMode()
-  call goyo#execute(0, [])
-  " set spell noci nosi noai nolist noshowmode noshowcmd
-  " set complete+=s
-  " set bg=light
-  " if !has('gui_running')
-    " let g:solarized_termcolors=256
-  " endif
-  " colors solarized
-endfunction
-
-command! ProseMode call ProseMode()
-nmap <Leader>p :ProseMode<CR>
-
 function! ChangeSoftTabs(from, to)
    execute "set ts=" . a:from . " noexpandtab"
    execute "retab!"
@@ -302,7 +252,13 @@ endfunction
 nnoremap <leader>43 :call ChangeSoftTabs(4, 3)<CR>
 nnoremap <leader>34 :call ChangeSoftTabs(3, 4)<CR>
 
+"
+"
+"
 " You Complete Me
+
+let g:ycm_cache_omnifunc = 1
+
 let g:ycm_seed_identifiers_with_syntax = 1
 let g:ycm_min_num_of_chars_for_completion = 2
 " let g:ycm_key_invoke_completion = '<Space-g>'
@@ -329,33 +285,6 @@ if !exists("*OpenURI")
 endif
 map <Leader>g :call OpenURI()<CR>
 
-" see whitespace
-"set list
-"set listchars=tab:>-,eol:¬
-" set listchars=tab:▸\ ,trail:·
-" set listchars=tab:▸\ ,trail:·
-" set showbreak=↪\ 
-" set listchars=tab:▸\ ,eol:¬,nbsp:·,trail:·,extends:›,precedes:‹
-set listchars=tab:▸\ ,nbsp:·,trail:·,extends:›,precedes:‹
-
-" if you do later have the wrap be sane
-set breakindent
-set showbreak=\ \ 
-
-function! ToggleWhitespace()
-  if &list
-    echo "show whitespace: off"
-    set nolist
-    set showbreak=\ \ 
-  else
-    echo "show whitespace: on"
-    set list
-    set showbreak=↪\ 
-  endif
-endfunction
- 
-" turn visible whitespace off when requested
-nmap <silent> <leader>v :call ToggleWhitespace()<CR>
 
 
 let delimitMate_expand_cr = 1

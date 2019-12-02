@@ -1,12 +1,13 @@
 
-function ReplaceQuotes()
+function FixQuotes()
    " Save cursor position
    let l:save = winsaveview()
-   " replace curly quotes
    %s/[“”]/"/ge
    %s/[’]/'/ge
    " Move cursor to original position
    call winrestview(l:save)
-   echo "Stripped trailing whitespace"
+   echo "replaced quotes"
 endfunction
+
+command! FixQuotes call FixQuotes()
 

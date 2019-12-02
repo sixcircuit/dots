@@ -85,7 +85,7 @@ set nu
 set ruler
 
 " minimum lines above/below cursor
-set scrolloff=4
+set scrolloff=5
 
 "" set auto indent
 set autoindent
