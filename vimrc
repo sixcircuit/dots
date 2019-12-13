@@ -1,6 +1,11 @@
+source ~/.xvix/helpers.vim
 
 " set rubydll=~/.rvm/rubies/ruby-2.5.1/lib/libruby.2.5.dylib
 set rubydll=~/.rvm/rubies/ruby-2.6.3/lib/libruby.2.6.dylib
+
+let g:auto_session_root = $HOME . "/.xvix_sessions"
+
+call SourceDirectory("~/.xvix/baseline")
 
 " START NeoBundle Required
 
@@ -11,14 +16,37 @@ endif
 
 call neobundle#begin(expand('~/.vim/bundle/'))
 
-source ~/.xvix/bundle.vim
+source ~/.xvix/plugins.vim
+
+NeoBundle 'sixcircuit/powerline', {'rtp': 'powerline/bindings/vim/'}
+NeoBundle 'mkitt/tabline.vim'
+
+" NeoBundle 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
+" NeoBundle 'vim-powerline'
+" NeoBundle 'Lokaltog/vim-powerline', { 'rev' : 'develop' }
+
+" ultisnips - start
+NeoBundle 'SirVer/ultisnips'
+NeoBundle 'honza/vim-snippets'
+" ultisnips - end
 
 NeoBundle 'Valloric/YouCompleteMe'
 
 call neobundle#end()
 NeoBundleCheck
 
-let g:auto_session_root = $HOME . "/.vim/sessions"
+" don't know why but this needs to be here
+source ~/.xvix/baseline/syntax.vim
 
-source ~/.xvix/main.vim
-source ~/.vim/config/main.vim
+call SourceDirectory("~/.xvix/functions")
+call SourceDirectory("~/.xvix/plugins")
+call SourceDirectory("~/.xvix/settings")
+
+" call SourceDirectory("~/.xvix/vim")
+
+source ~/.xvix/keymaps.vim
+
+" allow project specific settings -- needs to be at the end
+source ~/.xvix/localrc.vim
+
+

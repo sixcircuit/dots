@@ -35,6 +35,26 @@ alias .....='cd ../../../../'
 
 alias sudo='sudo env PATH=$PATH'
 
+v() {
+   # nvm > /dev/null
+   rvm > /dev/null
+
+   which nvim > /dev/null 
+   if [ $? -eq 0 ]; then
+      nvim "$@"
+   else
+      which vim > /dev/null 
+      if [ $? -eq 0 ]; then
+         vim "$@"
+      else
+         which vi > /dev/null 
+         if [ $? -eq 0 ]; then
+            vi "$@"
+         fi
+      fi
+   fi
+}
+
 www() {
     if [[ -z "$1" ]]; then
         open "http://localhost:8080" && python -m SimpleHTTPServer 8080 

@@ -110,6 +110,8 @@ SPACESHIP_DIR_COLOR=$foreground
 SPACESHIP_DIR_LOCK_SYMBOL=""
 
 
+# export SPACESHIP_ROOT=${${(%):-%x}:A:h}
+SPACESHIP_ROOT="$HOME/shell/shell/spaceship-prompt"
 
 fpath=( "$HOME/shell/shell/zsh_functions" $fpath )
 

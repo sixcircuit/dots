@@ -1,6 +1,11 @@
+source ~/.xvix/helpers.vim
 
 
 
+
+let g:auto_session_root = $HOME . "/.xvix_sessions"
+
+call SourceDirectory("~/.xvix/baseline")
 
 " START NeoBundle Required
 
@@ -11,16 +16,33 @@ endif
 
 call neobundle#begin(expand('~/.nvim/bundle/'))
 
-source ~/.xvix/bundle.vim
+source ~/.xvix/plugins.vim
 
-" NeoBundle 'Valloric/YouCompleteMe'
+
+NeoBundle 'itchyny/lightline.vim'
+
+" NeoBundle 'vim-airline/vim-airline'
+" NeoBundle 'vim-airline/vim-airline-themes'
+
+NeoBundle 'mkitt/tabline.vim'
+"
+" NeoBundle 'Shougo/deoplete.nvim'
 
 call neobundle#end()
 NeoBundleCheck
 
-let g:auto_session_root = $HOME . "/.nvim/sessions"
+" don't know why but this needs to be here
+source ~/.xvix/baseline/syntax.vim
 
-source ~/.xvix/main.vim
-source ~/.nvim/config/main.vim
+call SourceDirectory("~/.xvix/functions")
+call SourceDirectory("~/.xvix/plugins")
+call SourceDirectory("~/.xvix/settings")
+
+call SourceDirectory("~/.xvix/nvim")
+
+source ~/.xvix/keymaps.vim
+
+" allow project specific settings -- needs to be at the end
+source ~/.xvix/localrc.vim
 
 

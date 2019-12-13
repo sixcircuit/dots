@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+var path = require('path');
+
+var args = process.argv;
+if(args.length !== 3){ process.stderr.write("usage: js_to_json <file.js>\n"); process.exit(1); }
+
+var js_path = path.join(process.cwd(), process.argv[2]);
+
+var js = require(js_path);
+
+process.stdout.write(JSON.stringify(js, null, 2));
+
+process.exit(0);
+
