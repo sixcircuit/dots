@@ -33,6 +33,7 @@ NeoBundle 'tpope/vim-repeat'
 
 NeoBundle 'jiangmiao/auto-pairs'
 " NeoBundle 'Raimondi/delimitMate'
+" let delimitMate_expand_cr = 1
 
 NeoBundle 'sjl/gundo.vim'
 
@@ -63,3 +64,10 @@ NeoBundle 'thinca/vim-localrc'
 
 NeoBundle 'christoomey/vim-titlecase'
 
+
+NeoBundle 'ervandew/supertab'
+
+NeoBundle 'ycm-core/YouCompleteMe'
+
+NeoBundle 'SirVer/ultisnips'
+" NeoBundle 'honza/vim-snippets'

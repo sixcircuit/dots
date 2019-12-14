@@ -39,16 +39,16 @@ endfunction
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
-function! ToggleTypewriter()
-  call goyo#execute(0, [])
-  " set spell noci nosi noai nolist noshowmode noshowcmd
-  " set complete+=s
-  " set bg=light
-  " if !has('gui_running')
-    " let g:solarized_termcolors=256
-  " endif
-  " colors solarized
-endfunction
+" function! ToggleTypewriter()
+"   call goyo#execute(0, [])
+"   " set spell noci nosi noai nolist noshowmode noshowcmd
+"   " set complete+=s
+"   " set bg=light
+"   " if !has('gui_running')
+"     " let g:solarized_termcolors=256
+"   " endif
+"   " colors solarized
+" endfunction
 
 command! ToggleTypewriter call ToggleTypewriter()
 
@@ -67,8 +67,9 @@ command! ToggleProse call ToggleProse()
 
 let g:twm_allowed_pat = "^[[:alnum:] \t\r,.!?'\"]$"
 
+" this is basically ToggleTypewriter()
 " start typewrite mode (stop with CTRL-C):
-nmap <Leader>tw <Plug>twm
+nmap <Leader>tt <Plug>twm
 
 nmap <script> <Plug>twm i<SID>m_
 imap <Plug>twm <SID>m_

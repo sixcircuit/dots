@@ -13,6 +13,8 @@ shopt -s histappend
 
 set -o vi
 
+stty -ixon
+
 if [ -f /.production ]; then
     export PS1="{bg_red}[\u@\h \w]$ "
 else

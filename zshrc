@@ -312,6 +312,10 @@ ctrl-d() { return 1 }
 zle -N ctrl-d
 bindkey '^D' ctrl-d
 
+stty start undef
+stty stop undef
+setopt noflowcontrol
+
 cd "$current_dir"
 
 # zprof # profile startup time

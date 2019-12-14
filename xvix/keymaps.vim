@@ -14,9 +14,6 @@ nnoremap ` '
 
 noremap M %
 
-
-
-
 " add lines easily with + and -
 nnoremap + maO<esc>`a
 nnoremap - mao<esc>`a
@@ -35,7 +32,7 @@ nmap <silent> <leader>ts :call ToggleWhitespace()<CR>
 noremap <silent> <Leader>tw :call ToggleWrap()<CR>
 noremap <silent> <Leader>z :call ToggleWrap()<CR>
 nmap <silent> <Leader>tp :ToggleProse<CR>
-nmap <silent> <Leader>tt :ToggleTypewriter<CR>
+" nmap <silent> <Leader>tt :ToggleTypewriter<CR>
 
 
 map <leader>c :TComment<cr>
@@ -93,19 +90,6 @@ else
   vmap gc gu~h
 endif
 
-" UtilSnips Start
-" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-
-let g:UltiSnipsExpandTrigger="<c-e>"
-let g:UltiSnipsJumpForwardTrigger="<c-j>"
-let g:UltiSnipsJumpBackwardTrigger="<c-k>"
-
-" End UtiliSnips
-
-" use arrows to switch buffers
-" let g:miniBufExplMapWindowNavArrows = 1
-
-let g:powerline_config_overrides = {'common': {'default_top_theme': 'ascii'}}
 
 map ? <Plug>(incsearch-fuzzy-/)
 " map ? <Plug>(incsearch-fuzzy-?)
@@ -124,14 +108,4 @@ nnoremap <leader>43 :call ChangeSoftTabs(4, 3)<CR>
 nnoremap <leader>34 :call ChangeSoftTabs(3, 4)<CR>
 
 
-
-" You Complete Me
-
-let g:ycm_cache_omnifunc = 1
-
-let g:ycm_seed_identifiers_with_syntax = 1
-let g:ycm_min_num_of_chars_for_completion = 2
-" let g:ycm_key_invoke_completion = '<Space-g>'
-
-let delimitMate_expand_cr = 1
 

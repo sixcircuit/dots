@@ -23,6 +23,12 @@ let g:CommandTMaxHeight = 0
 " highlight line
 let g:CommandTHighlightColor = "CursorLine"
 
+let g:CommandTAcceptSelectionCommand = 'e'
+let g:CommandTAcceptSelectionSplitCommand = 'sp'
+let g:CommandTAcceptSelectionTabCommand = 'tabe'
+" let g:CommandTAcceptSelectionTabCommand = 'CommandTOpen tabe'
+let g:CommandTAcceptSelectionVSplitCommand = 'vs'
+
 " cancel match window
 " let g:CommandTCancelMap='<c-o>'
 nnoremap <leader>o :CommandT<cr>

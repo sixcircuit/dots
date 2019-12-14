@@ -25,13 +25,6 @@ NeoBundle 'mkitt/tabline.vim'
 " NeoBundle 'vim-powerline'
 " NeoBundle 'Lokaltog/vim-powerline', { 'rev' : 'develop' }
 
-" ultisnips - start
-NeoBundle 'SirVer/ultisnips'
-NeoBundle 'honza/vim-snippets'
-" ultisnips - end
-
-NeoBundle 'Valloric/YouCompleteMe'
-
 call neobundle#end()
 NeoBundleCheck
 
@@ -42,7 +35,7 @@ call SourceDirectory("~/.xvix/functions")
 call SourceDirectory("~/.xvix/plugins")
 call SourceDirectory("~/.xvix/settings")
 
-" call SourceDirectory("~/.xvix/vim")
+call SourceDirectory("~/.xvix/vim")
 
 source ~/.xvix/keymaps.vim
 

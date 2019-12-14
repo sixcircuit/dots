@@ -26,8 +26,6 @@ NeoBundle 'itchyny/lightline.vim'
 
 NeoBundle 'mkitt/tabline.vim'
 "
-" NeoBundle 'Shougo/deoplete.nvim'
-
 call neobundle#end()
 NeoBundleCheck
 
