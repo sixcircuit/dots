@@ -1,23 +1,23 @@
 
-snippet afn "function (fun)"
+snippet ;fn "function (fun)"
 function ${1:function_name}(${2:argument}){
     ${VISUAL}$0
 }
 endsnippet
 
-snippet afa "Anonymous function"
+snippet ;fa "Anonymous function"
 function($1){
     $2
 }
 endsnippet
 
-snippet afr "Return anonymous function"
+snippet ;fr "Return anonymous function"
 return(function($1){
     $2
 });
 endsnippet
 
-snippet acd "Plumb defer"
+snippet ;cd "Plumb defer"
 _.plumb(defer($1), callback)); }
 endsnippet
 

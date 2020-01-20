@@ -36,13 +36,12 @@ alias .....='cd ../../../../'
 alias sudo='sudo env PATH=$PATH'
 
 v() {
-   # nvm > /dev/null
-   rvm > /dev/null
-
-   which nvim > /dev/null 
-   if [ $? -eq 0 ]; then
-      nvim "$@"
-   else
+   # which nvim > /dev/null 
+   # if [ $? -eq 0 ]; then
+      # nvm > /dev/null
+      # rvm > /dev/null
+      # nvim "$@"
+   # else
       which vim > /dev/null 
       if [ $? -eq 0 ]; then
          vim "$@"
@@ -52,7 +51,7 @@ v() {
             vi "$@"
          fi
       fi
-   fi
+   # fi
 }
 
 www() {

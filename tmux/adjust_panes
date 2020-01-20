@@ -1,0 +1,60 @@
+#!/bin/bash
+
+panes=$(tmux display-message -p \"#{window_panes}\" | bc)
+col_count=$(tmux display-message -p \"#{window_width}\" | bc)
+
+first_split_small=60
+second_split_small=85
+first_split_big=80
+
+if [ $col_count -lt 250 ]; then
+
+   if [ $panes -eq 1 ]; then
+      tmux split-window -h \; split-window -h 
+      tmux select-pane -t 1
+      tmux resize-pane -t 0 -x $first_split_small \; resize-pane -t 1 -x $second_split_small 
+
+   elif [ $panes -eq 2 ]; then
+      tmux resize-pane -t 0 -x $first_split_small
+
+   elif [ $panes -eq 3 ]; then
+      tmux resize-pane -t 0 -x $first_split_small \; resize-pane -t 1 -x $second_split_small 
+
+   else
+      tmux select-layout even-horizontal
+
+   fi
+
+else # big screen
+
+   if [ $panes -eq 1 ]; then
+      tmux split-window -h 
+      tmux select-pane -t 1
+      tmux resize-pane -t 0 -x $first_split_big 
+      tmux split-window -h 
+
+   elif [ $panes -eq 2 ]; then
+      tmux resize-pane -t 0 -x $first_split_big
+
+   elif [ $panes -eq 3 ]; then
+      tmux select-layout even-horizontal
+      tmux resize-pane -t 0 -x $first_split_big
+   else
+      tmux select-layout even-horizontal
+   fi
+fi
+
+
+# bind \ split-window -h \; resize-pane -t 0 -x 80 \; split-window -h \; select-pane -t 1
+# bind \ if-shell "iftmux display-message -p '#{window_panes}'" display-message -p "hello" \;\\ 
+   # display-message -p "world"\;
+   # split-window -h \; resize-pane -t 0 -x 80 \; split-window -h \; select-pane -t 1
+
+# bind \ run-shell "~/.tmux/adjust_panes > /dev/null"
+# bind \ if '[ $(echo "$(tmux display-message -p \"#{window_panes}\")" | bc) -gt 2  ]' \
+   # '' ''
+   # if '[ 1 < 2 ]' 'display-message -p "true"'
+    # '' \
+    # 'display-message -p "false"'
+
+# echo "running: $(tmux display-message -p \"#{window_panes}\")"

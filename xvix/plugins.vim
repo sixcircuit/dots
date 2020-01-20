@@ -31,9 +31,11 @@ NeoBundle 'bkad/CamelCaseMotion'
 NeoBundle 'tpope/vim-repeat'
 " NeoBundle 'tpope/vim-fugitive'
 
-NeoBundle 'jiangmiao/auto-pairs'
-" NeoBundle 'Raimondi/delimitMate'
-" let delimitMate_expand_cr = 1
+" NeoBundle 'jiangmiao/auto-pairs'
+" NeoBundle 'vim-scripts/auto-pairs-gentle'
+NeoBundle 'Raimondi/delimitMate'
+let delimitMate_expand_cr = 1
+let delimitMate_expand_space = 1
 
 NeoBundle 'sjl/gundo.vim'
 

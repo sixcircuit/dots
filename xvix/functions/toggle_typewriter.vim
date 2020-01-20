@@ -27,6 +27,7 @@
 function! s:goyo_enter()
    call WrapOn()
    set scrolloff=999
+   " Limelight
 endfunction
 
 function! s:goyo_leave()
@@ -34,6 +35,7 @@ function! s:goyo_leave()
    call WrapOff()
    highlight clear LineNr
    highlight LineNr ctermfg=238
+   " Limelight!
 endfunction
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()

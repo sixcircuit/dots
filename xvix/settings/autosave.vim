@@ -1,3 +1,3 @@
 
 " autosave
-autocmd TextChanged,TextChangedI <buffer> silent write
+" autocmd TextChanged,TextChangedI <buffer> silent write

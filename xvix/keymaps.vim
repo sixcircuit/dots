@@ -47,8 +47,6 @@ map <Leader>g :call OpenURI()<CR>
 " nnoremap <C-e> <C-a>
 
 
-
-
 " Match Tag Always
 
 let g:mta_filetypes = {
