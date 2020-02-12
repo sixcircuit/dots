@@ -42,7 +42,8 @@ function! LayoutWindows()
    let first_split_small = 65
    let second_split_small = 85
 
-   let first_split_big = 90
+   let first_split_big = 80
+   let second_split_big = 100
 
    " terminal windows - 10
 
@@ -78,6 +79,7 @@ function! LayoutWindows()
       elseif panes == 3
          exe "wincmd ="
          call ResizeWindow(1, first_split_big)
+         call ResizeWindow(2, second_split_big)
 
       else
          exe "wincmd ="
