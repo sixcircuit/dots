@@ -16,8 +16,12 @@ export SAVEHIST=20000
 export HISTSIZE=20000
 export HISTFILESIZE=20000
 
-# export ANDROID_HOME=/Volumes/Finity/Android
+HISTCONTROL=$HISTCONTROL:ignoredups
+setopt histignoredups
 
+export ANDROID_SDK_ROOT=/Users/kendrick/Library/Android/sdk
+# export ANDROID_HOME=/Volumes/Finity/Android
 # export JAVA_HOME="$(/usr/libexec/java_home)"
 
-
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8

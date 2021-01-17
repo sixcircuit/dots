@@ -1,4 +1,7 @@
 
+set splitbelow
+set splitright
+
 " windows
 
 " scroll the viewport faster with ctrl-y and ctrl-e
@@ -15,6 +18,15 @@ noremap <C-n> <C-w>w
 
 function! SwitchToWindow(win_index)
    exe a:win_index . "wincmd w"
+endfunction
+
+function! SwitchToNextWindow()
+   exe "wincmd w"
+endfunction
+
+
+function! RotatePanes()
+   exe "wincmd r"
 endfunction
 
 function! SplitWindow()
@@ -42,8 +54,8 @@ function! LayoutWindows()
    let first_split_small = 65
    let second_split_small = 85
 
-   let first_split_big = 80
-   let second_split_big = 100
+   let first_split_big = 105
+   " let second_split_big = 100
 
    " terminal windows - 10
 
@@ -71,15 +83,16 @@ function! LayoutWindows()
          call SplitWindow()
          call SplitWindow()
          call SwitchToWindow(2)
-         call ResizeWindow(1, first_split_big)
+         exe "wincmd ="
+         " call ResizeWindow(1, first_split_big)
 
       elseif panes == 2
          call ResizeWindow(1, first_split_big)
 
       elseif panes == 3
          exe "wincmd ="
-         call ResizeWindow(1, first_split_big)
-         call ResizeWindow(2, second_split_big)
+         " call ResizeWindow(1, first_split_big)
+         " call ResizeWindow(2, second_split_big)
 
       else
          exe "wincmd ="
@@ -90,12 +103,45 @@ function! LayoutWindows()
 
 endfunction
 
-nnoremap <leader>r <C-w>r <C-w>w :call LayoutWindows()<CR>
+" ((n % m) + m) % m` or `((-10 % 3) + 3) % 3` returns `2`
+" function! s:mod(n,m)
+  " return ((a:n % a:m) + a:m) % a:m
+" endfunction
+
+" TODO: i'd like this to be smart and rotate till i'm at a new file.
+" i keep a, b, b open for the 3 column layout. and i'd like to switch between
+" a or b and stay in the center
+function! RotateWindowsKeepCursor()
+   let cur_win = winnr()
+   let panes = winnr('$')
+
+   " if panes == 2
+      call RotatePanes()
+      call SwitchToWindow(cur_win)
+
+   " elseif panes == 3
+   "    call RotatePanes()
+   "    call RotatePanes()
+   "    call SwitchToWindow(cur_win)
+   "
+   " elseif panes == 4
+   "    call RotatePanes()
+   "    call RotatePanes()
+   "    call RotatePanes()
+   "    call SwitchToWindow(cur_win)
+   " endif
+
+   call LayoutWindows()
+
+endfunction
+
+nnoremap <leader>r :call RotateWindowsKeepCursor()<CR>
 
 noremap <silent> <down> :vertical resize -10<CR>
 noremap <silent> <up> :vertical resize +10<CR>
 " noremap <silent> <left> :vertical resize 80<CR>
 noremap <silent> \ :call LayoutWindows()<CR>
+" noremap <silent> \ <C-w>=
 
 
 " cycle between tabs c-t forware c-p backward

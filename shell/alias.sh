@@ -54,10 +54,12 @@ v() {
    # fi
 }
 
-www() {
-    if [[ -z "$1" ]]; then
-        open "http://localhost:8080" && python -m SimpleHTTPServer 8080 
-    else
-        open "http://localhost:${1}" && python -m SimpleHTTPServer $1
-    fi
-}
+# make main the default branch name
+# https://andre.arko.net/2020/06/06/changing-git-and-githubs-default-branch-name/
+# git() {
+#   command git "$@"
+#   if [[ "$1" == "init" && "$@" != *"--help"* ]]; then
+#     git symbolic-ref HEAD refs/heads/main
+#   fi
+# }
+

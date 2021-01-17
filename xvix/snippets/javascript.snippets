@@ -1,24 +1,28 @@
 
-snippet ;fn "function (fun)"
+snippet ;fn "function (fun)" i
 function ${1:function_name}(${2:argument}){
-    ${VISUAL}$0
+   ${VISUAL}$0
 }
 endsnippet
 
-snippet ;fa "Anonymous function"
+snippet ;fa "Anonymous function" i
 function($1){
-    $2
+   $2
 }
 endsnippet
 
-snippet ;fr "Return anonymous function"
+snippet ;fr "Return anonymous function" i
 return(function($1){
-    $2
+   $2
 });
 endsnippet
 
-snippet ;cd "Plumb defer"
-_.plumb(defer($1), callback)); }
+snippet ;td "Try defer" i
+_.try(defer($1), callback)); }
+endsnippet
+
+snippet ;pd "Plumb defer" i
+_.try(defer($1), callback)); }
 endsnippet
 
 # " autocmd FileType javascript iabbrev <buffer> zun function(){<c-o>h
