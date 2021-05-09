@@ -35,31 +35,3 @@ alias .....='cd ../../../../'
 
 alias sudo='sudo env PATH=$PATH'
 
-v() {
-   # which nvim > /dev/null 
-   # if [ $? -eq 0 ]; then
-      # nvm > /dev/null
-      # rvm > /dev/null
-      # nvim "$@"
-   # else
-      which vim > /dev/null 
-      if [ $? -eq 0 ]; then
-         vim "$@"
-      else
-         which vi > /dev/null 
-         if [ $? -eq 0 ]; then
-            vi "$@"
-         fi
-      fi
-   # fi
-}
-
-# make main the default branch name
-# https://andre.arko.net/2020/06/06/changing-git-and-githubs-default-branch-name/
-# git() {
-#   command git "$@"
-#   if [[ "$1" == "init" && "$@" != *"--help"* ]]; then
-#     git symbolic-ref HEAD refs/heads/main
-#   fi
-# }
-

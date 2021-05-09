@@ -40,10 +40,11 @@ function! LoadSession()
    if argc() == 0
       call UpdateSessionPaths()
       if (filereadable(b:session_file))
-         echo "Session loaded:" b:session_file
+         " echo "Session loaded:" b:session_file
+         echo "Session loaded." 
          exe 'source ' b:session_file
       else
-         echo "No session loaded."
+         " echo "No session loaded."
       endif
    else
       let b:session_file = ""

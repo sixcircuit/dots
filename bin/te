@@ -1,0 +1,4 @@
+#!/bin/bash
+timestamp=`date +"%Y-%m-%d.%H:%M:%S"`
+$@ > >(tee -a "stdout.$timestamp.log") 2> >(tee -a "stderr.$timestamp.log" >&2)
+

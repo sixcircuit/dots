@@ -19,7 +19,11 @@ set title
 set showcmd
 
 " set text prompts to press a key when you shell out, etc.
-set shortmess=atI
+" set shortmess=atI
+set shortmess=OatI
+
+" fix press enter to open issue with some files
+" set shortmess=Ot
 
 " show line numbers
 set nu

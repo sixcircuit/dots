@@ -1,4 +1,7 @@
 
+" https://www.johnhawthorn.com/2012/09/vi-escape-delays/
+" one part of fixing slow / missing escapes in nvim
+set timeoutlen=1000 ttimeoutlen=0
 " set timeoutlen=200
 
 " core remaps
@@ -11,6 +14,8 @@ vnoremap ; :
 nnoremap ' `
 nnoremap ` '
 
+" yank till the end of the line
+noremap Y y$
 
 noremap M %
 

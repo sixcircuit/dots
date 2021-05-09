@@ -18,11 +18,11 @@ return(function($1){
 endsnippet
 
 snippet ;td "Try defer" i
-_.try(defer($1), callback)); }
+_.try(defer($1), callback);
 endsnippet
 
 snippet ;pd "Plumb defer" i
-_.try(defer($1), callback)); }
+_.plumb(defer($1), callback)
 endsnippet
 
 # " autocmd FileType javascript iabbrev <buffer> zun function(){<c-o>h

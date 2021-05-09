@@ -1,5 +1,14 @@
 source ~/.xvix/helpers.vim
 
+" Python Setting {
+  set pythondll=~/.pyenv/versions/3.9.0/bin/python
+  set pythonhome=~/.pyenv/versions/3.9.0/
+  set pythonthreedll=~/.pyenv/versions/3.9.0/bin/python
+  set pythonthreehome=~/.pyenv/versions/3.9.0/
+" }
+
+" echo has('python3')
+"
 " set rubydll=~/.rvm/rubies/ruby-2.5.1/lib/libruby.2.5.dylib
 set rubydll=~/.rvm/rubies/ruby-2.6.3/lib/libruby.2.6.dylib
 

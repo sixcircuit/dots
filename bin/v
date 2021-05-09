@@ -1,0 +1,19 @@
+#!/bin/bash
+
+which nvim > /dev/null 
+if [ $? -eq 0 ]; then
+   # nvm > /dev/null
+   # rvm > /dev/null
+   nvim "$@"
+else
+   which vim > /dev/null 
+   if [ $? -eq 0 ]; then
+      vim "$@"
+   else
+      which vi > /dev/null 
+      if [ $? -eq 0 ]; then
+         vi "$@"
+      fi
+   fi
+fi
+

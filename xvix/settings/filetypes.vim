@@ -17,6 +17,9 @@ au BufNewFile,BufRead *.cpp set syntax=cpp11
 
 autocmd FileType terraform setlocal commentstring=#%s
 
+" autocmd BufNewFile,BufRead .*.tame.js setlocal wrap linebreak
+autocmd BufNewFile,BufRead *.tame.js setlocal readonly nomodifiable
+
 " call SolarizedSetNormal()
 
 autocmd BufEnter,FileType * 

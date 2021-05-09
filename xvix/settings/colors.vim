@@ -5,9 +5,10 @@ set t_Co=256
 set background=dark
 " set background=light
 
-" let g:solarized_visibility = "high"
 let g:solarized_grayscale=1
-let g:solarized_contrast = "higher"
+" let g:solarized_visibility = "high"
+let g:solarized_contrast = "high"
+" let g:solarized_contrast = "higher"
 let g:solarized_termcolors=256
 " let g:solarized_termcolors=16
 colorscheme solarized
