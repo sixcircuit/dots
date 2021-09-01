@@ -52,3 +52,5 @@ hi CursorLine ctermbg=235 guibg=#262626
 " hi CursorLine term=reverse ctermbg=235 guibg=#262626
 "hi CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
 
+" a little lighter than the default 241. wish there was an in between
+hi Comment ctermfg=242 

@@ -35,3 +35,15 @@ alias .....='cd ../../../../'
 
 alias sudo='sudo env PATH=$PATH'
 
+
+alias gb='git branch -v'
+alias gg='git checkout'
+alias ga='git add'
+alias gl='git lg'
+alias gm='git merge'
+alias gc='git commit'
+alias gca='git commit -am'
+alias gcm='git commit -m'
+alias gd='git difftool'
+alias gp='git push'
+alias gs='git status'

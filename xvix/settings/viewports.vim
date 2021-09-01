@@ -54,7 +54,8 @@ function! LayoutWindows()
    let first_split_small = 65
    let second_split_small = 85
 
-   let first_split_big = 93 " same as = on big screen
+   let first_split_big = 83 " same as = on big screen (for 17 font size)
+   " let first_split_big = 93 " same as = on big screen (for 15 font size)
    " let second_split_big = 100
 
    " terminal windows - 10

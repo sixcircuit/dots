@@ -5,7 +5,8 @@ col_count=$(tmux display-message -p \"#{window_width}\" | bc)
 
 first_split_small=60
 second_split_small=85
-first_split_big=80
+# first_split_big=80
+first_split_big=93 # split position with 3 even splits on the big screen
 
 if [ $col_count -lt 250 ]; then
 

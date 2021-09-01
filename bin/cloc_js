@@ -1,0 +1,2 @@
+#!/bin/bash
+cloc --force-lang="Javascript",tjs --force-lang="Javascript",tjs.mu --force-lang="HTML",html.mu --force-lang="CSS",less "$@"

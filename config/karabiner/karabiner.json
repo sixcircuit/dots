@@ -90,16 +90,39 @@
                   ]
                },
                {
-                  "description": "Convert <c-shift-'> to tilde - make tilde easier to get to",
+                  "description": "Convert <c-/> to $ - make $ easier to get to",
                   "manipulators": [
                      {
                         "type": "basic",
                         "from": {
-                           "key_code": "quote",
+                           "key_code": "slash",
                            "modifiers": {
                               "mandatory": [
-                                 "left_control",
+                                 "left_control"
+                              ]
+                           }
+                        },
+                        "to": [
+                           {
+                              "key_code": "4",
+                              "modifiers": [
                                  "shift"
+                              ]
+                           }
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "description": "Convert <c-,> to tilde - make tilde easier to get to",
+                  "manipulators": [
+                     {
+                        "type": "basic",
+                        "from": {
+                           "key_code": "comma",
+                           "modifiers": {
+                              "mandatory": [
+                                 "left_control"
                               ]
                            }
                         },

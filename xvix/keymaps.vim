@@ -30,6 +30,11 @@ nnoremap <leader>y0 y^
 nmap <leader>mb ysiW)
 
 
+" insert dates, etc
+" unmap <leader> d 
+nnoremap <leader>id "=strftime("%Y-%m-%d %H:%M")<CR>P
+nnoremap <leader>im "="= " . strftime("%Y-%m-%d %H:%M")<CR>P
+
 nnoremap <silent> <leader>fq :call FixQuotes()<CR>
 nnoremap <silent> <leader>fs :call FixTrailingWhitespace()<CR>
 
