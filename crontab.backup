@@ -1,0 +1,2 @@
+0 * * * * /Users/kendrick/notes/bin/commit "hourly snapshot" >/tmp/notes.commit.cron.stdout.log 2>/tmp/notes.commit.cron.stderr.log
+0 0 3 * * /Users/kendrick/bin/rotate_signal_backups.sh >/tmp/rotate_signal_backups.cron.stdout.log 2>/tmp/rotate_signal_backups.cron.stderr.log

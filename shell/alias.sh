@@ -36,7 +36,9 @@ alias .....='cd ../../../../'
 alias sudo='sudo env PATH=$PATH'
 
 
-alias gb='git branch -v'
+alias gb='git branch'
+alias gbl='git branch -v'
+alias gbd='git branch -d'
 alias gg='git checkout'
 alias ga='git add'
 alias gl='git lg'

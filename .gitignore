@@ -9,4 +9,5 @@ vifm/vifminfo
 config/gcloud
 config/karabiner/automatic_backups
 config/qbittorrent
+config/configstore/update-notifier-npm.json
 config/gh

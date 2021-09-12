@@ -6,6 +6,7 @@ SPACESHIP_PROMPT_ORDER=(
   host          # Hostname section
   git           # Git section (git_branch + git_status)
   exit_code     # Exit code section
+  time          # Time stamps section
   dir           # Current directory section
   char          # Prompt character
   # hg            # Mercurial section (hg_branch  + hg_status)
@@ -65,6 +66,21 @@ SPACESHIP_PROMPT_ADD_NEWLINE=false
 SPACESHIP_PROMPT_SEPARATE_LINE=false
 
 SPACESHIP_TIME_SHOW="true"
+SPACESHIP_TIME_PREFIX="%F{$git_color}(%f" # the paren in there is what we print
+SPACESHIP_TIME_SUFFIX="%F{$git_color}) %f" # the paren + space in there is what we print
+SPACESHIP_TIME_COLOR=$git_color
+SPACESHIP_TIME_FORMAT="%D{%Y-%m-%d} %D{%H:%M:%S}"
+
+# TODO: turn these into times, and compare them you can't go past 
+# https://unix.stackexchange.com/questions/84381/how-to-compare-two-dates-in-a-shell
+# also, these only work crossing the midnight boundary like they do.
+# with the two trigger hours gte 23 and the start hour gte 1
+# which is fine for me, and i'm lazy.
+# there might be something cute with subtraction and addition where you don't have to special case the different boundary conditions.
+# but again, good enough for me, so I don't care.
+SPACESHIP_TIME_TOO_LATE_DAY_START_HOUR=6
+SPACESHIP_TIME_TOO_LATE_YELLOW_HOUR=22
+SPACESHIP_TIME_TOO_LATE_RED_HOUR=23
 
 SPACESHIP_PROMPT_FIRST_PREFIX_SHOW=true
 
