@@ -69,7 +69,8 @@ SPACESHIP_TIME_SHOW="true"
 SPACESHIP_TIME_PREFIX="%F{$git_color}(%f" # the paren in there is what we print
 SPACESHIP_TIME_SUFFIX="%F{$git_color}) %f" # the paren + space in there is what we print
 SPACESHIP_TIME_COLOR=$git_color
-SPACESHIP_TIME_FORMAT="%D{%Y-%m-%d} %D{%H:%M:%S}"
+# SPACESHIP_TIME_FORMAT="%D{%Y-%m-%d} %D{%H:%M:%S}"
+SPACESHIP_TIME_FORMAT="%D{%H:%M:%S}"
 
 # TODO: turn these into times, and compare them you can't go past 
 # https://unix.stackexchange.com/questions/84381/how-to-compare-two-dates-in-a-shell
