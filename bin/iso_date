@@ -1,0 +1,2 @@
+#!/bin/bash
+gdate +"%Y-%m-%d_%H:%M:%S.%3N"

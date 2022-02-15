@@ -19,6 +19,9 @@ noremap Y y$
 
 noremap M %
 
+" so I don't have to reach for shift. I can ctrl-| to go to col 0
+noremap <c-\> \|
+
 " add lines easily with + and -
 nnoremap + maO<esc>`a
 nnoremap - mao<esc>`a
@@ -29,6 +32,8 @@ nnoremap <leader>y0 y^
 
 nmap <leader>mb ysiW)
 
+" move line to top middle. (on a big screen)
+noremap zz zz10<c-e>
 
 " insert dates, etc
 " unmap <leader> d 
@@ -47,7 +52,9 @@ nmap <silent> <Leader>tp :ToggleProse<CR>
 
 map <leader>c :TComment<cr>
 
-map <Leader>g :call OpenURI()<CR>
+map <silent> <Leader>gl :call OpenURI()<CR>
+nmap <silent> <leader>gg "gyiw:call GoogleSearch()<CR>
+vmap <silent> <leader>gg "gy:call GoogleSearch()<CR>
 
 " Remove trailing whitespace
 
@@ -114,6 +121,4 @@ map ? <Plug>(incsearch-fuzzy-/)
 " nnoremap <leader>3 :call ChangeSoftTabs(input("from: "), input("to: "))<CR>
 nnoremap <leader>43 :call ChangeSoftTabs(4, 3)<CR>
 nnoremap <leader>34 :call ChangeSoftTabs(3, 4)<CR>
-
-
 

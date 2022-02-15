@@ -1,0 +1,5 @@
+#!/bin/bash
+padding=1
+raw=`cat $1 | wc -c | gnumfmt --to=iec-i --suffix=B --padding=$padding`
+gz=`gzip -c $1 | wc -c | gnumfmt --to=iec-i --suffix=B --padding=$padding`
+echo $1: "$gz vs $raw" 

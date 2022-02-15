@@ -51,7 +51,7 @@ function! LayoutWindows()
    let all_cols = &columns
    let panes = winnr('$')
 
-   let first_split_small = 65
+   let first_split_small = 50
    let second_split_small = 85
 
    let first_split_big = 83 " same as = on big screen (for 17 font size)

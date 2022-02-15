@@ -16,30 +16,6 @@
             },
             "rules": [
                {
-                  "description": "Change left_control + left_option + s to left_control + left_option + s",
-                  "manipulators": [
-                     {
-                        "from": {
-                           "key_code": "s",
-                           "modifiers": {
-                              "mandatory": [ "left_option", "left_control" ], "optional": [ "any" ] } }, "to": [ {
-                                 "key_code": "s",
-                                 "modifiers": [
-                                    "left_option",
-                                    "left_control"
-                                 ]
-                              }
-                              ],
-                              "to_if_alone": [
-                                 {
-                                    "key_code": "s"
-                                 }
-                              ],
-                              "type": "basic"
-                     }
-                  ]
-               },
-               {
                   "description": "Change Left_control + return_or_enter to delete",
                   "manipulators": [
                      {
@@ -134,6 +110,143 @@
                               ]
                            }
                         ]
+                     }
+                  ]
+               },
+               {
+                  "description": "Change right_control + right_option + 789uiojklm,. to 10 key",
+                  "manipulators": [
+                     {
+                        "from": {
+                           "key_code": "7",
+                           "modifiers": {
+                              "mandatory": [ "right_control", "right_option" ],
+                              "optional": [ "any" ]
+                           }
+                        },
+                        "to": [ { "key_code": "7" } ],
+                        "type": "basic"
+                     },
+                     {
+                        "from": {
+                           "key_code": "8",
+                           "modifiers": {
+                              "mandatory": [ "right_control", "right_option" ],
+                              "optional": [ "any" ]
+                           }
+                        },
+                        "to": [ { "key_code": "8" } ],
+                        "type": "basic"
+                     },
+                     {
+                        "from": {
+                           "key_code": "9",
+                           "modifiers": {
+                              "mandatory": [ "right_control", "right_option" ],
+                              "optional": [ "any" ]
+                           }
+                        },
+                        "to": [ { "key_code": "9" } ],
+                        "type": "basic"
+                     },
+                     {
+                        "from": {
+                           "key_code": "u",
+                           "modifiers": {
+                              "mandatory": [ "right_control", "right_option" ],
+                              "optional": [ "any" ]
+                           }
+                        },
+                        "to": [ { "key_code": "4" } ],
+                        "type": "basic"
+                     },
+                     {
+                        "from": {
+                           "key_code": "i",
+                           "modifiers": {
+                              "mandatory": [ "right_control", "right_option" ],
+                              "optional": [ "any" ]
+                           }
+                        },
+                        "to": [ { "key_code": "5" } ],
+                        "type": "basic"
+                     },
+                     {
+                        "from": {
+                           "key_code": "o",
+                           "modifiers": {
+                              "mandatory": [ "right_control", "right_option" ],
+                              "optional": [ "any" ]
+                           }
+                        },
+                        "to": [ { "key_code": "6" } ],
+                        "type": "basic"
+                     },
+                     {
+                        "from": {
+                           "key_code": "j",
+                           "modifiers": {
+                              "mandatory": [ "right_control", "right_option" ],
+                              "optional": [ "any" ]
+                           }
+                        },
+                        "to": [ { "key_code": "1" } ],
+                        "type": "basic"
+                     },
+                     {
+                        "from": {
+                           "key_code": "k",
+                           "modifiers": {
+                              "mandatory": [ "right_control", "right_option" ],
+                              "optional": [ "any" ]
+                           }
+                        },
+                        "to": [ { "key_code": "2" } ],
+                        "type": "basic"
+                     },
+                     {
+                        "from": {
+                           "key_code": "l",
+                           "modifiers": {
+                              "mandatory": [ "right_control", "right_option" ],
+                              "optional": [ "any" ]
+                           }
+                        },
+                        "to": [ { "key_code": "3" } ],
+                        "type": "basic"
+                     },
+                     {
+                        "from": {
+                           "key_code": "m",
+                           "modifiers": {
+                              "mandatory": [ "right_control", "right_option" ],
+                              "optional": [ "any" ]
+                           }
+                        },
+                        "to": [ { "key_code": "0" } ],
+                        "type": "basic"
+                     },
+                     {
+                        "from": {
+                           "key_code": ",",
+                           "modifiers": {
+                              "mandatory": [ "right_control", "right_option" ],
+                              "optional": [ "any" ]
+                           }
+                        },
+                        "to": [ { "key_code": "0" } ],
+                        "type": "basic"
+                     },
+                     {
+                        "from": {
+                           "key_code": ".",
+                           "modifiers": {
+                              "mandatory": [ "right_control", "right_option" ],
+                              "optional": [ "any" ]
+                           }
+                        },
+                        "to": [ { "key_code": "." } ],
+                        "type": "basic"
                      }
                   ]
                },
@@ -320,6 +433,38 @@
                         "to_if_alone": [
                            {
                               "key_code": "s"
+                           }
+                        ],
+                        "type": "basic"
+                     }
+                  ]
+               },
+               {
+                  "description": "Change left_control + spacebar to right_option + right_control if pressed with other keys (Post spacebar when pressed alone)",
+                  "manipulators": [
+                     {
+                        "from": {
+                           "key_code": "spacebar",
+                           "modifiers": {
+                              "mandatory": [
+                                 "left_control"
+                              ],
+                              "optional": [
+                                 "any"
+                              ]
+                           }
+                        },
+                        "to": [
+                           {
+                              "key_code": "right_option",
+                              "modifiers": [
+                                 "right_control"
+                              ]
+                           }
+                        ],
+                        "to_if_alone": [
+                           {
+                              "key_code": "spacebar"
                            }
                         ],
                         "type": "basic"
