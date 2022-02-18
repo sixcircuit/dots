@@ -11,6 +11,7 @@ source ./export.sh
 source ./alias.sh
 
 # these mess with the path, but only add themselves
+source ./homebrew.sh
 source ./macports.sh
 source ./nvm.sh
 source ./pyenv.sh

@@ -1,10 +1,11 @@
 
 # install reattach-to-user-namespace with macports or brew
 
-// install command-t with rvm
+# local brew install
+mkdir homebrew && curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C homebrew
 
-cd ~/.vim/bundle/command-t/ruby/command-t
-rm Makefile
-/System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/bin/ruby extconf.rb
-make
-sudo make install
+# local rvm install with 
+brew install ruby@2.6
+rvm mount ~/.homebrew/Cellar/ruby@2.6/2.6.9 -n ruby-2.6.9
+rvm alias create default ext-ruby-2.6.9
+

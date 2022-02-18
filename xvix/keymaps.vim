@@ -53,7 +53,11 @@ nmap <silent> <Leader>tp :ToggleProse<CR>
 map <leader>c :TComment<cr>
 
 map <silent> <Leader>gl :call OpenURI()<CR>
+
+" google the word under the cursor
 nmap <silent> <leader>gg "gyiw:call GoogleSearch()<CR>
+
+" google the visual selection
 vmap <silent> <leader>gg "gy:call GoogleSearch()<CR>
 
 " Remove trailing whitespace

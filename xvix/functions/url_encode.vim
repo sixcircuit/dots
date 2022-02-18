@@ -1,4 +1,5 @@
 
+" http://www.danielbigham.ca/cgi-bin/document.pl?mode=Display&DocumentID=1053
 " URL encode a string. ie. Percent-encode characters as necessary.
 function! UrlEncode(string)
 

@@ -10,7 +10,8 @@ source ~/.xvix/helpers.vim
 " echo has('python3')
 "
 " set rubydll=~/.rvm/rubies/ruby-2.5.1/lib/libruby.2.5.dylib
-set rubydll=~/.rvm/rubies/ruby-2.6.3/lib/libruby.2.6.dylib
+" set rubydll=~/.rvm/rubies/ruby-2.6.3/lib/libruby.2.6.dylib
+set rubydll=~/.homebrew/Cellar/ruby@2.6/2.6.9/lib/libruby.2.6.dylib
 
 let g:auto_session_root = $HOME . "/.xvix_sessions"
 
