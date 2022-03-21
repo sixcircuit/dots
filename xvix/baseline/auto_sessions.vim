@@ -15,7 +15,7 @@ endfunction
 function! MakeSession()
    call UpdateSessionPaths()
    if (filewritable(b:session_dir) != 2)
-      exe 'silent !mkdir -p ' b:session_dir
+      exe 'silent !mkdir -p "' . b:session_dir . '"'
       redraw!
    endif
    exe "mksession! " . b:session_file
