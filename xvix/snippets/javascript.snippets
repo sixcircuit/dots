@@ -1,29 +1,39 @@
 
-snippet ;fn "function (fun)" i
-function ${1:function_name}(${2:argument}){
+snippet ;fn "function(args)" i
+function ${1:name}(${2:args}){
    ${VISUAL}$0
 }
 endsnippet
 
-snippet ;fa "Anonymous function" i
+snippet ;fa "anonymous function" i
 function($1){
    $2
 }
 endsnippet
 
-snippet ;fr "Return anonymous function" i
+snippet ;fr "return anonymous function" i
 return(function($1){
    $2
 });
 endsnippet
 
-snippet ;td "Try defer" i
+snippet ;td "try defer" i
 _.try(defer($1), callback);
 endsnippet
 
-snippet ;pd "Plumb defer" i
+snippet ;pd "plumb defer" i
 _.plumb(defer($1), callback)
 endsnippet
+
+snippet ;eb "export bundle" i
+exports.bundle = function(_, _opts){
+   _opts = _opts || {};
+	$1
+	return(_);
+};
+endsnippet
+
+
 
 # " autocmd FileType javascript iabbrev <buffer> zun function(){<c-o>h
 # " autocmd FileType javascript iabbrev <buffer> aun function(){<c-o>h

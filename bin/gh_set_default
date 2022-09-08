@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "gh api -XPATCH \"repos/$1\" -f default_branch=\"$2\""
+gh api -XPATCH "repos/$1" -f default_branch="$2"

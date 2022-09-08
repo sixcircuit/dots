@@ -1,8 +1,6 @@
 
 set path+=**
 
-set wildignore+=*.o,*.obj,.git,node_modules,build,Pods
-
 " edit temp files in place, for crontab mostly
 set backupskip=/tmp/*,/private/tmp/*" 
 

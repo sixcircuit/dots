@@ -60,6 +60,10 @@ nmap <silent> <leader>gg "gyiw:call GoogleSearch()<CR>
 " google the visual selection
 vmap <silent> <leader>gg "gy:call GoogleSearch()<CR>
 
+" move things to the bottom and come back up think: 'done'
+nnoremap <leader>d dapGpGmd<C-o><C-o>
+vnoremap <leader>d dGo<esc>GpGmd<C-o><C-o>
+
 " Remove trailing whitespace
 
 " noremap 0 ^
