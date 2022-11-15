@@ -319,3 +319,4 @@ setopt noflowcontrol
 cd "$current_dir"
 
 # zprof # profile startup time
+

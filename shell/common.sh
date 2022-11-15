@@ -14,9 +14,10 @@ source ./alias.sh
 source ./homebrew.sh
 source ./macports.sh
 source ./nvm.sh
-source ./pyenv.sh
 source ./ec2_api_tools.sh
 source ./rvm.sh
+source ./conda.sh
+source ./pyenv.sh
 
 source ./ssh_agent.sh
 
