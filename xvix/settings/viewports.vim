@@ -82,10 +82,10 @@ function! LayoutWindows()
 
       if panes == 1
          call SplitWindow()
-         call SplitWindow()
+         " call SplitWindow()
          call SwitchToWindow(2)
-         exe "wincmd ="
-         " call ResizeWindow(1, first_split_big)
+         " exe "wincmd ="
+         call ResizeWindow(1, first_split_big)
 
       elseif panes == 2
          call ResizeWindow(1, first_split_big)
