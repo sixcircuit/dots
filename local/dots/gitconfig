@@ -1,0 +1,52 @@
+[user]
+	name = Kendrick Taylor
+	email = kendrick@circuitsix.com
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	unstage = reset HEAD --
+	last = log -1 HEAD
+        tr = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+        lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+[core]
+	excludesfile = ~/.gitignore
+	editor = nvim
+[pager]
+      diff =
+[push]
+	default = simple
+	followTags = true
+
+[color]
+	ui = auto
+[init]
+	defaultBranch = main
+
+
+[merge]
+   tool = vimdiff
+[mergetool]
+   keepBackup = true
+   prompt = false
+	trustExitCode = true
+[difftool]
+   prompt = false
+	trustExitCode = true
+[mergetool "vimdiff"]
+   # cmd = nvim -d $LOCAL $REMOTE $MERGED -c 'wincmd w' -c 'wincmd J'
+   # cmd = vim.old -d $LOCAL $MERGED -c ':call LayoutWindows()' -c 'wincmd l'
+   cmd = nvim -d $LOCAL $MERGED -c ':call LayoutWindows()' -c 'wincmd l'
+[diff]
+   tool = vimdiff
+
+# [merge]
+#    external = ~/bin/git_diff_tool
+#  was git_diff_tool
+   #!/bin/bash
+   # ~/bin/vimdiff "$2" "$5"
+# 	conflictstyle = diff4
+# 	tool = vimdiff
+
+

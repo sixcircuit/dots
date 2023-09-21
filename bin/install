@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# don't link at the top level, link the directories inside
+merge_dirs=("ssh" "config" "vim" "nvim")
+
+# get to the root of term/
+# term_root="`dirname "$0"`"
+# term_root="`dirname "$term_root"`"
+
+term_root="$HOME/term"
+
+cd ~
+
+# echo "term_root: $term_root"
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+   plat="linux"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+   plat="macos"
+else
+   echo "UNKNOWN SYSTEM FOR INSTALL: ~/term/bin/install"
+fi
+
+link_dotfile(){
+   local link_from=$1
+   local link_to=$2
+   local depth=$3
+   local home_pattern="$HOME/"
+   local short_from="${link_from/"$home_pattern"}"
+   local short_to="${link_to/"$home_pattern"}"
+   short_from="$depth$short_from"
+   local existing_link
+   existing_link=`readlink $link_to`
+   local isnt_linked=$?
+   # echo "link_from: $link_from link_to: $link_to existing_link: $existing_link isnt_linked: $isnt_linked"
+   if [ $isnt_linked = 0 ]; then
+      # echo "should link [$link_from] to: [$link_to] short_from: [$short_from] short_to: [$short_to]"
+      if [[ $existing_link == $short_from ]]; then
+         echo "link correct: [$short_from] to [$short_to]"
+      elif [[ "$existing_link" == "./shell/"* ]]; then
+	 echo "error: old shell match: $existing_link. you need to unlink $link_to"
+	 # unlink $link_to
+      else
+         echo "error: [$short_to] should point to [$short_from] it points to [$existing_link]. you must fix this by hand."
+      fi
+   else
+      echo "linking [$short_from] to: [$short_to]"
+      ln -s $short_from $short_to
+   fi
+}
+
+
+process_dotdir(){
+   echo "processing: $1"
+   local f
+   local sf
+   for f in $1/*; do
+      local filename="`basename $f`"
+      local link_to="$HOME/.$filename"
+      if [[ ${merge_dirs[@]} =~ "$filename" ]]; then
+         echo "merging dir: $f"
+         if [[ ! -e $link_to ]]; then
+            echo "making dir: $link_to"
+            mkdir "$link_to"
+         elif [[ ! -d $link_to ]]; then
+            echo "$link_to already exists but is not a directory" 1>&2
+            echo "you'll need to solve this by hand. we're exiting."
+	    exit
+         fi
+         for sf in $f/*; do
+	    # echo "link_to: $link_to"
+      	    sfilename=`basename $sf`
+	    link_dotfile $sf "$link_to/$sfilename" "../"
+	 done
+      else
+         link_dotfile $f "$HOME/.$filename" ""
+      fi
+   done
+}
+
+process_dotdir $term_root/xnix/dots
+process_dotdir $term_root/$plat/dots
+process_dotdir $term_root/local/dots
+

@@ -1,0 +1,17 @@
+
+source ~/term/shell.sh bash
+
+export IGNOREEOF=1000
+
+shopt -s histappend
+
+set -o vi
+
+stty -ixon
+
+if [ -f /.production ]; then
+    export PS1="{bg_red}[\u@\h \w]$ "
+else
+    export PS1="[\u@\h \w]$ "
+fi
+

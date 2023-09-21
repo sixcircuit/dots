@@ -1,5 +1,30 @@
 
-# install reattach-to-user-namespace with macports or brew
+# new stuff
+
+# setup key repeats - these are the right values
+defaults write -g KeyRepeat -int 1 # normal minimum is 2 (30 ms)
+defaults write -g InitialKeyRepeat -int 15 # normal minimum is 15 (225 ms)
+
+defaults read -g KeyRepeat
+defaults read -g InitialKeyRepeat
+
+clone sixcircuit/spaceship-prompt into xnix/shell/zsh/spaceship-prompt
+? maybe just do a static include here. it never changes.
+
+install nvim somewhere (maybe ~/plat/nvim) but link the bin into ~/plat/bin/nvim)
+link any platform specific bin into ~/plat/bin
+
+install nvm without touching the existing dotfiles profiles. example here (update the version number):
+PROFILE=/dev/null bash -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash'
+
+# local macports install
+download macports and update version number in bin/install_ports.sh and then `bash bin/install_ports.sh`
+
+# install ripgrep
+# install tmux
+# install reattach-to-user-namespace with macports (tmux-pasteboard) or brew (reaattach-to-user-namespace?)
+
+# old stuff
 
 # local brew install
 mkdir homebrew && curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C homebrew
