@@ -1,14 +1,15 @@
 
-= shell
-   - blow away the old dotfiles repo. force push over the old github. save the old one locally in an archive (you need to figure out archiving old projects anyway).
-   - finish fixing the zsh config and (maybe) the bash config. i don't know if it's short circuited
-   - change the name of the master branch to main
-
 = vim
+   - fix the backspace issue in command-t and fix up the styling and options!
    - fix the vim config. move to vim-plug. fix it up. make it easy. it's pretty good right now. maybe move to tree sitter?
    - basically redo the core bundle stuff. look for faster / better code highlighting
    - look for automatic setup of all your plugins. doing it by hand is a pain.
    - fix all the weird ruby / python dependencies once and for all (if you can).
+
+= shell
+   - blow away the old dotfiles repo. force push over the old github. save the old one locally in an archive (you need to figure out archiving old projects anyway).
+   - finish fixing the zsh config and (maybe) the bash config. i don't know if it's short circuited
+   - change the name of the master branch to main
 
 = /dropbox/system and 
    - figure this out. copy plat and term and local

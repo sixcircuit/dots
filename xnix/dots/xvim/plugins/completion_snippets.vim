@@ -1,5 +1,5 @@
 
-let g:UltiSnipsSnippetDirectories=[$HOME.'/.xvix/snippets/']
+let g:UltiSnipsSnippetDirectories=[$HOME.'/.xvim/snippets/']
 
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 " let g:UltiSnipsExpandTrigger="<c-;>"

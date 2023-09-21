@@ -1,44 +1,39 @@
-source ~/.xvix/helpers.vim
+source ~/.xvim/helpers.vim
 
+let g:auto_session_root = $HOME . "/.xvim_sessions"
 
-let g:auto_session_root = $HOME . "/.xvix_sessions"
+call SourceDirectory("~/.xvim/baseline")
 
-call SourceDirectory("~/.xvix/baseline")
+call plug#begin()
 
-" START NeoBundle Required
+source ~/.xvim/plugins.vim
 
-if has('vim_starting')
-    set nocompatible
-    set runtimepath+=~/.nvim/bundle/neobundle.vim/
-endif
+"" NeoBundle 'vim-airline/vim-airline'
+"" NeoBundle 'vim-airline/vim-airline-themes'
 
-call neobundle#begin(expand('~/.nvim/bundle/'))
+Plug 'itchyny/lightline.vim'
 
-source ~/.xvix/plugins.vim
+Plug 'mkitt/tabline.vim'
 
+let g:CommandTPreferredImplementation='lua'
 
-NeoBundle 'itchyny/lightline.vim'
+Plug 'wincent/command-t', { 'do': 'cd lua/wincent/commandt/lib && make' }
 
-" NeoBundle 'vim-airline/vim-airline'
-" NeoBundle 'vim-airline/vim-airline-themes'
+call plug#end()
 
-NeoBundle 'mkitt/tabline.vim'
-"
-call neobundle#end()
-NeoBundleCheck
 
 " don't know why but this needs to be here
-source ~/.xvix/baseline/syntax.vim
+source ~/.xvim/baseline/syntax.vim
 
-call SourceDirectory("~/.xvix/functions")
-call SourceDirectory("~/.xvix/plugins")
-call SourceDirectory("~/.xvix/settings")
+call SourceDirectory("~/.xvim/functions")
+call SourceDirectory("~/.xvim/plugins")
+call SourceDirectory("~/.xvim/settings")
 
-call SourceDirectory("~/.xvix/nvim")
+call SourceDirectory("~/.xvim/nvim")
 
-source ~/.xvix/keymaps.vim
+source ~/.xvim/keymaps.vim
 
 " allow project specific settings -- needs to be at the end
-source ~/.xvix/localrc.vim
+source ~/.xvim/localrc.vim
 
 

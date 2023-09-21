@@ -29,7 +29,7 @@ alias .....='cd ../../../../'
 
 alias sudo='sudo env PATH=$PATH'
 
-alias vi="nvim"
+alias vi="/usr/bin/vim"
 alias vim="nvim"
 alias vimdiff="nvim -d"
 
