@@ -78,6 +78,3 @@ set nofoldenable
 " don't show the preview window while coding, I don't care about docs
 set completeopt-=preview
 
-" don't add comment leader when you press O
-set formatoptions-=o
-" set formatoptions-=cro

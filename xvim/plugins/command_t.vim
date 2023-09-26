@@ -6,10 +6,10 @@
 " uses find as a fallback
 " let g:CommandTFileScanner = "find"
 
-" let s:path = fnamemodify(resolve(expand('<sfile>:p')), ':h')
+let s:path = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 " echo "PATH: " . s:path
 
-" exe 'source ' . s:path . '/command_t.lua'
+exe 'source ' . s:path . '/command_t.lua'
 
 " file, dir, or pwd (which doesn't scan)
 let g:CommandTTraverseSCM = "pwd"

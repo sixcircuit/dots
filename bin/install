@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # don't link at the top level, link the directories inside
-merge_dirs=("ssh" "config" "vim" "nvim")
+merge_dirs=("ssh" "config" "nvim")
 
 # get to the root of term/
 # term_root="`dirname "$0"`"

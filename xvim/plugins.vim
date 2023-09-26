@@ -12,8 +12,6 @@
 
 Plug 'Lokaltog/vim-easymotion'
 
-Plug 'sktaylor/vim-colors-solarized'
-
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 
@@ -25,28 +23,33 @@ Plug 'bkad/CamelCaseMotion'
 
 Plug 'tpope/vim-repeat'
 
+" Plug 'ycm-core/YouCompleteMe'
+
+Plug 'jiangmiao/auto-pairs'
+
+" this is a hack that tricks auto-pairs into not breaking command-t. all other
+" bracket completion plugins completely blow up when we use backspace in the
+" command-t completion window.
+autocmd FileType CommandTPrompt let b:autopairs_loaded=1
+
+Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
+
+"
+Plug 'pangloss/vim-javascript'
+
+" i use this.
 Plug 'ervandew/supertab'
 
-Plug 'ycm-core/YouCompleteMe'
-
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'abecodes/tabout.nvim'
-
-" Plug 'Raimondi/delimitMate'
-" let delimitMate_expand_cr = 1
-" let delimitMate_expand_space = 1
-"
 Plug 'sjl/gundo.vim'
 Plug 'Valloric/MatchTagAlways'
 
-Plug 'kien/rainbow_parentheses.vim'
+" fun but I don't use them
+" Plug 'kien/rainbow_parentheses.vim'
 
 Plug 'groenewege/vim-less'
 Plug 'mustache/vim-mustache-handlebars'
 Plug 'hashivim/vim-terraform'
 Plug 'vim-scripts/Cpp11-Syntax-Support'
-
-Plug 'pangloss/vim-javascript'
 
 Plug 'tpope/vim-markdown'
 Plug 'othree/html5.vim'
@@ -64,6 +67,22 @@ Plug 'christoomey/vim-titlecase'
 
 Plug 'Keithbsmiley/swift.vim'
 
+"" NeoBundle 'vim-airline/vim-airline'
+"" NeoBundle 'vim-airline/vim-airline-themes'
+
+Plug 'itchyny/lightline.vim'
+
+Plug 'mkitt/tabline.vim'
+
+let g:CommandTPreferredImplementation='lua'
+
+Plug 'wincent/command-t', { 'do': 'cd lua/wincent/commandt/lib && make' }
+
 " Plug 'SirVer/ultisnips'
 " Plug 'honza/vim-snippets'
 "
+
+" Plug 'sktaylor/vim-colors-solarized'
+
+" Plug 'maxmx03/solarized.nvim'
+
