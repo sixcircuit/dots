@@ -5,9 +5,14 @@ plat=$2
 echo "shell: $shell"
 echo "plat: $plat"
 
-xnix_root=`dirname $PWD`
+shell_root=`dirname $PWD`
+xnix_root=`dirname $shell_root`
 term_root=`dirname $xnix_root`
 
+# echo "PWD: $PWD"
+# echo "shell_root: $shell_root"
+# echo "xnix_root: $xnix_root"
+# echo "term_root: $term_root"
 # add all the directories in bin paths to path
 
 add_paths () {

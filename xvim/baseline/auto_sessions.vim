@@ -5,7 +5,7 @@ set sessionoptions-=options
 
 function! UpdateSessionPaths()
    if !exists("g:auto_session_root")
-      let g:auto_session_root = $HOME . "/.vim/sessions"
+      let g:auto_session_root = $HOME . "/.nvim/sessions"
    endif
    let b:session_dir = g:auto_session_root . getcwd()
    let b:session_file = b:session_dir . "/session.vim"
