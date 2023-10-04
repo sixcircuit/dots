@@ -9,8 +9,6 @@ export HISTFILESIZE=20000
 
 if [[ "$1" == "zsh" ]]; then
    setopt histignoredups
-   echo ignore dupes!
 elif [[ "$1" == "bash" ]]; then
    HISTCONTROL=$HISTCONTROL:ignoredups
-   echo ignore dupes!
 fi

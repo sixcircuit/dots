@@ -5,6 +5,7 @@ commandt.setup({
    -- height = 10000,
    -- position = top,
    -- order = "reverse"
+   ignore_case = true,
    open = function(buffer, command)
       -- print("item: ", item)
       -- print("kind: ", kind)

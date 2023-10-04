@@ -2,15 +2,15 @@
 = vim
    x fix the backspace issue in command-t and fix up the styling and options!
    x fix tree sitter (i think this is fixed)
-   - open treesitter on a dry include bundle and see what happens.
-      - maybe you want regex instead?
-   - learn wordmotions
-   - maybe write your own tabout. tabout seems shitty
+   x open treesitter on a dry include bundle and see what happens.
+      - you want treesitter. it's way faster. "G" to the bottom and see how slow regex is
    - figure out code completion
       - setup cmp, lsp, mason, try ctrl+space completion instead of tab?
       ? "google best code completion neovim"
    - fix colors -- just strip out js and solarized stuff and make one big color.vim
    - basically redo the core bundle stuff. look for faster / better code highlighting
+   - learn wordmotions
+   - maybe write your own tabout. tabout seems shitty
    - look for automatic setup of all your plugins. doing it by hand is a pain.
    - fix all the weird ruby / python dependencies once and for all (if you can).
    - do a lockfile! (https://shyr.io/blog/vim-plugin-lockfile)

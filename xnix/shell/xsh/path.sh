@@ -2,13 +2,12 @@
 shell=$1
 plat=$2
 
-echo "shell: $shell"
-echo "plat: $plat"
-
 shell_root=`dirname $PWD`
 xnix_root=`dirname $shell_root`
 term_root=`dirname $xnix_root`
 
+# echo "shell: $shell"
+# echo "plat: $plat"
 # echo "PWD: $PWD"
 # echo "shell_root: $shell_root"
 # echo "xnix_root: $xnix_root"
