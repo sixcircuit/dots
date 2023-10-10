@@ -1,27 +1,16 @@
 shell=$1
 plat=$2
 
-if [[ $plat == 'linux' ]]; then
-   alias ls='ls -h --color=auto'
-elif [[ $plat == 'macos' ]]; then
-   alias ls='ls -hG'
-fi
-
-# Aliases
-## ls, the common ones I use a lot shortened for rapid fire usage
-alias la='ls -GA'   # no list, almost all
-alias ll='ls -lA'   # list, almost all
-alias lt='ls -lAt'   # list, almost all, sort by time
-alias lr='ls -lAR'   # list, almost all, recursive
-
+alias x='exit'
 alias t='tree'
+alias v='vim'
+alias vd='vimdiff'
 
 alias rmr='rm -rf'
 
 alias rcp='rsync -ah --progress'
  
 ## cd, because typing the backslash is A LOT of work!!
-alias pd='popd'
 alias ..='cd ../'
 alias ...='cd ../../'
 alias ....='cd ../../../'
@@ -46,3 +35,12 @@ alias gcm='git commit -m'
 alias gd='git difftool'
 alias gp='git push'
 alias gs='git status'
+
+gco() {
+  local branches branch
+  branches=$(git branch --all | grep -v HEAD) &&
+  branch=$(echo "$branches" |
+           fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
+  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+}
+

@@ -1,37 +1,55 @@
 
-#Set the auto completion on
-# old, slow way
-# autoload -U compinit
-# compinit
-
-# for startup speed, only check zcompdump once a day
-
 shell=$1
 plat=$2
 
-if [[ "$plat" == "macos" ]]; then
-   autoload -Uz compinit
-   if [[ ! -f ~/.zcompdump || $(date +'%j') != $(stat -f '%Sm' -t '%j' ~/.zcompdump) ]]; then
-      # echo "reload compinit..."
-      compinit
-   else
-     compinit -C
-   fi
+# the "slow" way? this was slow but now it's not. 
+# don't know what the deal is.
+autoload -Uz compinit
+compinit
+
+if [[ -f $HOME/plat/fzf-tab/fzf-tab.plugin.zsh ]]; then
+   source $HOME/plat/fzf-tab/fzf-tab.plugin.zsh  
 else
-   echo "everything else"
-   autoload -Uz compinit
-   for dump in ~/.zcompdump(N.mh+24); do
-      # echo "reload compinit..."
-      compinit
-   done
-   compinit -C
+   echo "missing $HOME/plat/fzf-tab/fzf-tab.plugin.zsh you should clone fzf-tab into ~/plat/fzf-tab from here: https://github.com/Aloxaf/fzf-tab"
 fi
+
+# for startup speed, only check zcompdump once a day, this seems unnecessary now.
+# if [[ "$plat" == "macos" ]]; then
+#    autoload -Uz compinit
+#    if [[ ! -f ~/.zcompdump || $(date +'%j') != $(stat -f '%Sm' -t '%j' ~/.zcompdump) ]]; then
+#       # echo "reloading compinit. (you should only see this once per day)"
+#       compinit
+#    else
+#      compinit -C
+#    fi
+# else
+#    autoload -Uz compinit
+#    for dump in ~/.zcompdump(N.mh+24); do
+#       # echo "reloading compinit. (you should only see this once per day)"
+#       # compdump
+#       compinit
+#    done
+#    compinit -C
+# fi
 
 # setopt autolist
 # unsetopt menucomplete
 # setopt noautomenu
 setopt noautomenu
 setopt nomenucomplete
+
+# disable sort when completing `git checkout`
+zstyle ':completion:*:git-checkout:*' sort false
+# set descriptions format to enable group support
+zstyle ':completion:*:descriptions' format '[%d]'
+# set list-colors to enable filename colorizing
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+# preview directory's content with exa when completing cd
+# zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'find $realpath -type d -maxdepth 1'
+
+# switch group using `,` and `.`
+zstyle ':fzf-tab:*' switch-group ',' '.'
 
 
 # COMPLETION 
@@ -41,20 +59,15 @@ zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
 # END FOR SPEED
 
+# Don't prompt for a huge list, page it!
+zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+
+#Set some ZSH styles
+#zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
+#zstyle ':completion:*:warnings' format '%BSorry, no matches for: %d%b'
+
 # case insensitive completion -- if you don't like fuzzy
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-
-
-# a bunch of fuzzy attempts
-# 0 -- vanilla completion (abc => abc)
-# 1 -- smart case completion (abc => Abc)
-# 2 -- word flex completion (abc => A-big-Car)
-# 3 -- full flex completion (abc => ABraCadabra)
-# zstyle ':completion:*' matcher-list '' \
-#   'm:{a-z\-}={A-Z\_}' \
-#   'r:|?=** m:{a-z\-}={A-Z\_}'
-#   'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}'
-#   'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}' \
+# zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
 # fuzzy complete
 # zstyle ':completion:*' matcher-list 'r:|?=** m:{a-z\-}={A-Z\_}'
@@ -73,6 +86,12 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 # zstyle ':completion:*:*:*:*:directories' matcher 'r:|?=** m:{a-z\-}={A-Z\_}'
 # zstyle ':completion:*' menu select
 
+
+# _force_rehash() {
+#   (( CURRENT == 1 )) && rehash
+#     return 1  # Because we didn't really complete anything
+# }
+
 # zstyle ':completion:*' verbose yes
 #zstyle ':completion:*:descriptions' format '%B%d%b'
 #zstyle ':completion:*:messages' format '%d'
@@ -84,8 +103,6 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 # generate descriptions with magic.
 #zstyle ':completion:*' auto-description 'specify: %d'
 
-# Don't prompt for a huge list, page it!
-zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 
 # Don't prompt for a huge list, menu it!
 # zstyle ':completion:*:default' menu 'select=0'

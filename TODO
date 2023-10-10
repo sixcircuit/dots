@@ -1,9 +1,32 @@
 
+= setup fzf 
+   x fix up the keybinding code in your own files. 
+
+= setup tux
+   - create a tux init . <name> which will add this directory to the tux. 
+      - rewrite tux with new dry. should take like 2 hours.
+      - name the tmux window! 
+   - do tux tab <name> to start it in a new iterm tab.
+
+   = alias this stuff
+      - fzf tux init
+      - fzf tux ls (can you show a description but only search and pull out the first string?)
+
+= fix ls
+   - move to eza
+   - alias everything
+   - fix colors 
+      - especially weird background color
+   - drop lscolors
+   - fix ls_colors
+
 = vim
    x fix the backspace issue in command-t and fix up the styling and options!
    x fix tree sitter (i think this is fixed)
    x open treesitter on a dry include bundle and see what happens.
-      - you want treesitter. it's way faster. "G" to the bottom and see how slow regex is
+      x you want treesitter. it's way faster. "G" to the bottom and see how slow regex is
+   x fix autopairs. it sucks because it adds a " even if the next character is a letter.
+      x try delimitmate again
    - figure out code completion
       - setup cmp, lsp, mason, try ctrl+space completion instead of tab?
       ? "google best code completion neovim"

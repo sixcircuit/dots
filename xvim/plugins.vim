@@ -1,4 +1,4 @@
-" mut setup vim-plug before you get here. see .vimrc and .nvimrc
+" must setup vim-plug before you get here. see .vimrc and .nvimrc
 
 " Plug 'vim-scripts/Gummybears'
 " Plug 'altercation/vim-colors-solarized'
@@ -25,16 +25,23 @@ Plug 'tpope/vim-repeat'
 
 " Plug 'ycm-core/YouCompleteMe'
 
-Plug 'jiangmiao/auto-pairs'
-
-" this is a hack that tricks auto-pairs into not breaking command-t. all other
-" bracket completion plugins completely blow up when we use backspace in the
-" command-t completion window.
-autocmd FileType CommandTPrompt let b:autopairs_loaded=1
-
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 
-"
+" the autocmd is a hack that tricks delimitmate into not breaking command-t. 
+" if we don't do this it completely blows up when we use backspace in the
+" command-t completion window.
+Plug 'Raimondi/delimitMate'
+let delimitMate_expand_cr = 1
+let delimitMate_expand_space = 1
+autocmd FileType CommandTPrompt let b:loaded_delimitMate = 1
+
+" the autocmd is a hack that tricks auto-pairs into not breaking command-t. 
+" if we don't do this it completely blows up when we use backspace in the
+" command-t completion window.
+" Plug 'jiangmiao/auto-pairs'
+" autocmd FileType CommandTPrompt let b:autopairs_loaded=1
+
+
 Plug 'pangloss/vim-javascript'
 
 " i use this.

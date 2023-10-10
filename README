@@ -45,6 +45,7 @@ this setup no longer supports vim. i've standardized on neovim. vim support stop
       - install tmux
       - install reattach-to-user-namespace with macports (tmux-pasteboard) or brew (reaattach-to-user-namespace?)
       - install rsync (then ln -s ~/.macports/bin/rsync ~/plat/bin/rsync3)
+      - install ports on existing computer (list with "ports installed")
 
    - link any platform specific bin into ~/plat/bin
 

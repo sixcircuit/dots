@@ -27,3 +27,6 @@ source ./plat.sh $shell $plat
 
 cd "$restore_working_dir"
 
+if [ -f ~/.motd ]; then
+   source ~/.motd 
+fi
