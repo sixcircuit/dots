@@ -1,32 +1,5 @@
 
-= setup fzf 
-   x fix up the keybinding code in your own files. 
-
-= setup tux
-   - create a tux init . <name> which will add this directory to the tux. 
-      - rewrite tux with new dry. should take like 2 hours.
-      - name the tmux window! 
-   - do tux tab <name> to start it in a new iterm tab.
-
-   = alias this stuff
-      - fzf tux init
-      - fzf tux ls (can you show a description but only search and pull out the first string?)
-
-= fix ls
-   - move to eza
-   - alias everything
-   - fix colors 
-      - especially weird background color
-   - drop lscolors
-   - fix ls_colors
-
 = vim
-   x fix the backspace issue in command-t and fix up the styling and options!
-   x fix tree sitter (i think this is fixed)
-   x open treesitter on a dry include bundle and see what happens.
-      x you want treesitter. it's way faster. "G" to the bottom and see how slow regex is
-   x fix autopairs. it sucks because it adds a " even if the next character is a letter.
-      x try delimitmate again
    - figure out code completion
       - setup cmp, lsp, mason, try ctrl+space completion instead of tab?
       ? "google best code completion neovim"
@@ -38,6 +11,16 @@
    - fix all the weird ruby / python dependencies once and for all (if you can).
    - do a lockfile! (https://shyr.io/blog/vim-plugin-lockfile)
 
+= setup tux
+   - create a tux init . <name> which will add this directory to the tux. 
+      - rewrite tux with new dry. should take like 2 hours.
+      - name the tmux window! 
+   - do tux tab <name> to start it in a new iterm tab.
+
+   = alias this stuff
+      - fzf tux init
+      - fzf tux ls (can you show a description but only search and pull out the first string?)
+
 = shell
    - blow away the old dotfiles repo. force push over the old github. save the old one locally in an archive (you need to figure out archiving old projects anyway).
    - finish fixing the zsh config and (maybe) the bash config. i don't know if it's short circuited
@@ -47,4 +30,26 @@
    - figure this out. copy plat and term and local
    - clean up and remove /dropbox/system.old
 
+
+= done
+
+   x setup fzf 
+      x fix up the keybinding code in your own files. 
+
+   x fix ls
+      / move to eza
+         x nope! coreutils ls is the best.
+      x alias everything
+      x fix colors 
+         x especially weird background color
+      x drop lscolors
+      x fix ls_colors
+
+x vim
+   x fix the backspace issue in command-t and fix up the styling and options!
+   x fix tree sitter (i think this is fixed)
+   x open treesitter on a dry include bundle and see what happens.
+      x you want treesitter. it's way faster. "G" to the bottom and see how slow regex is
+   x fix autopairs. it sucks because it adds a " even if the next character is a letter.
+      x try delimitmate again
 

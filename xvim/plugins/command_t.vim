@@ -1,8 +1,4 @@
 
-" let g:CommandTWildIgnore=&wildignore
-
-" let g:CommandTWildIgnore=&wildignore . ",**/bower_components/*"
-
 " uses find as a fallback
 " let g:CommandTFileScanner = "find"
 
@@ -36,6 +32,9 @@ let g:CommandTAcceptSelectionVSplitCommand = 'vs'
 
 " cancel match window
 " let g:CommandTCancelMap='<c-o>'
-nnoremap <leader>o :CommandT<cr>
-nnoremap <leader>l :CommandTBuffer<cr>
+" nnoremap <leader>o :CommandTRipgrep<cr>
+nnoremap <leader>l :CommandT<cr>
+" this excludes some files. see the code.
+nnoremap <leader>o :CommandTFind<cr>
+" nnoremap <leader>l :CommandTBuffer<cr>
 

@@ -7,6 +7,8 @@ plat=$2
 autoload -Uz compinit
 compinit
 
+# https://github.com/Aloxaf/fzf-tab/wiki/Configuration
+
 if [[ -f $HOME/plat/fzf-tab/fzf-tab.plugin.zsh ]]; then
    source $HOME/plat/fzf-tab/fzf-tab.plugin.zsh  
 else
@@ -46,7 +48,20 @@ zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 # preview directory's content with exa when completing cd
 # zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'find $realpath -type d -maxdepth 1'
+# zstyle ':fzf-tab:complete:cd:*' fzf-preview 'find $realpath -type d -maxdepth 1'
+
+# Allowlist:
+# zstyle ':fzf-tab:*' disabled-on any
+# zstyle ':fzf-tab:complete:<command in allowlist>:*' disabled-on none
+
+# Denylist:
+# zstyle ':fzf-tab:complete:<command in denylist>:*' disabled-on any
+# Default value: zstyle ':fzf-tab:*' disabled-on none
+
+# zstyle ':fzf-tab:complete:cd:*' disabled-on any
+zstyle ':fzf-tab:complete:cd:*' accept-line enter
+# zstyle ':fzf-tab:*' accept-line enter
+
 
 # switch group using `,` and `.`
 zstyle ':fzf-tab:*' switch-group ',' '.'

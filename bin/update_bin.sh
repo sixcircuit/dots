@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "this is deprecated"
+exit 1
 # git subtree add  --prefix .vim/bundle/tpope-vim-surround https://bitbucket.org/vim-plugins-mirror/vim-surround.git master --squash
 # git subtree pull --prefix .vim/bundle/tpope-vim-surround https://bitbucket.org/vim-plugins-mirror/vim-surround.git master --squash
 

@@ -35,7 +35,18 @@ bindkey -v
 # bindkey -M viins 'jj' vi-cmd-mode
 bindkey -M vicmd 'u' undo
 
-bindkey -M viins '\C-l' clear-screen
+# clear_and_ls(){ zle clear-screen;  ls; }
+# clear_and_ls(){ clear -x && ls; }
+
+dateclear() { clear -x; date; zle reset-prompt; }
+zle -N dateclear
+bindkey '^l' dateclear
+
+
+# bindkey '^L' clear -x && ls
+# zle     -N              clear_and_ls
+# bindkey -M viins '\C-l' clear -x && ls
+# bindkey -M viins '\C-l' clear-screen
 
 # Rebind the insert key.  I really can't stand what it currently does.
 # bindkey '\e[2~' overwrite-mode
@@ -68,7 +79,14 @@ bindkey -M emacs '^H' fzf-history-widget
 bindkey -M vicmd '^H' fzf-history-widget
 bindkey -M viins '^H' fzf-history-widget
 
+zle     -N            fzf-history-widget
+bindkey -M emacs '^R' fzf-history-widget
+bindkey -M vicmd '^R' fzf-history-widget
+bindkey -M viins '^R' fzf-history-widget
+
+
 zle     -N            fzf-file-widget
 bindkey -M emacs '^K' fzf-file-widget
 bindkey -M vicmd '^K' fzf-file-widget
 bindkey -M viins '^K' fzf-file-widget
+

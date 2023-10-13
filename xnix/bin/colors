@@ -1,0 +1,187 @@
+#!/usr/bin/env node
+
+// SOLARIZED HEX     16/8 TERMCOL  XTERM/HEX   L*A*B      RGB         HSB
+// --------- ------- ---- -------  ----------- ---------- ----------- -----------
+// base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
+// base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
+// base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46
+// base00    #657b83 11/7 bryellow 241 #626262 50 -07 -07 101 123 131 195  23  51
+// base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
+// base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
+// base2     #eee8d5  7/7 white    254 #e4e4e4 92 -00  10 238 232 213  44  11  93
+// base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
+// yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
+// orange    #cb4b16  9/3 brred    166 #d75f00 50  50  55 203  75  22  18  89  80
+// red       #dc322f  1/1 red      160 #d70000 50  65  45 220  50  47   1  79  86
+// magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
+// violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
+// blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
+// cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
+// green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
+
+const solarized = [
+   { name: "base03" , hex: "002b36", c16:  "8", c8: "4", term_name: "brblack"  , xterm: "234", xterm_hex: "1c1c1c" },
+   { name: "base02" , hex: "073642", c16:  "0", c8: "4", term_name: "black"    , xterm: "235", xterm_hex: "262626" },
+   { name: "base01" , hex: "586e75", c16: "10", c8: "7", term_name: "brgreen"  , xterm: "240", xterm_hex: "585858" },
+   { name: "base00" , hex: "657b83", c16: "11", c8: "7", term_name: "bryellow" , xterm: "241", xterm_hex: "626262" },
+   { name: "base0"  , hex: "839496", c16: "12", c8: "6", term_name: "brblue"   , xterm: "244", xterm_hex: "808080" },
+   { name: "base1"  , hex: "93a1a1", c16: "14", c8: "4", term_name: "brcyan"   , xterm: "245", xterm_hex: "8a8a8a" },
+   { name: "base2"  , hex: "eee8d5", c16:  "7", c8: "7", term_name: "white"    , xterm: "254", xterm_hex: "e4e4e4" },
+   { name: "base3"  , hex: "fdf6e3", c16: "15", c8: "7", term_name: "brwhite"  , xterm: "230", xterm_hex: "ffffd7" },
+   { name: "yellow" , hex: "b58900", c16:  "3", c8: "3", term_name: "yellow"   , xterm: "136", xterm_hex: "af8700" },
+   { name: "orange" , hex: "cb4b16", c16:  "9", c8: "3", term_name: "brred"    , xterm: "166", xterm_hex: "d75f00" },
+   { name: "red"    , hex: "dc322f", c16:  "1", c8: "1", term_name: "red"      , xterm: "160", xterm_hex: "d70000" },
+   { name: "magenta", hex: "d33682", c16:  "5", c8: "5", term_name: "magenta"  , xterm: "125", xterm_hex: "af005f" },
+   { name: "violet" , hex: "6c71c4", c16: "13", c8: "5", term_name: "brmagenta", xterm:  "61", xterm_hex: "5f5faf" },
+   { name: "blue"   , hex: "268bd2", c16:  "4", c8: "4", term_name: "blue"     , xterm:  "33", xterm_hex: "0087ff" },
+   { name: "cyan"   , hex: "2aa198", c16:  "6", c8: "6", term_name: "cyan"     , xterm:  "37", xterm_hex: "00afaf" },
+   { name: "green"  , hex: "859900", c16:  "2", c8: "2", term_name: "green"    , xterm:  "64", xterm_hex: "5f8700" }
+];
+
+function hex_to_rgb(hex, ary){
+   const r = parseInt(hex.substr(0, 2), 16);
+   const g = parseInt(hex.substr(2, 2), 16);
+   const b = parseInt(hex.substr(4, 2), 16);
+   if(ary){
+      return([ r, g, b ]);
+   }else{
+      return({ r, g, b });
+   }
+}
+
+for(let i = 0; i < solarized.length; i++){
+   const item = solarized[i];
+   item.rgb = hex_to_rgb(item.hex, true);
+}
+ 
+function padl(str, n){ 
+   return str.padStart(n, " ");
+}
+
+function out(...str){
+   str.push("\n")
+   process.stdout.write(str.join(""));
+}
+
+function color_16(fg, str, npad){
+   if(fg > 15 || fg < 0){ throw("unkown color number. must be between 0 and 15. got: " + fg); }
+   if(fg <= 7){ fg += 30; }
+   else{ fg = (fg-8) + 90; }
+
+   return(["\033[", `${fg}m`, padl(str, npad), "\033[0m"].join(""));
+}
+
+function color_256(fg, str, npad){
+   return(["\033[38;5;", `${fg}m`, padl(str, npad), "\033[0m"].join(""));
+}
+
+function color_hex(fg_hex, str, npad){
+   const rgb = hex_to_rgb(fg_hex);
+   return color_rgb(rgb, str, npad);
+}
+
+function color_rgb(rgb, str, npad){
+   return(["\033[38;2;", `${rgb.r};${rgb.g};${rgb.b}m`, padl(str, npad), "\033[0m"].join(""));
+}
+
+
+function print_solarized(){
+
+   out(
+      padl("name", 7) , " ", 
+      padl("16", 2), " ", 
+      padl("256", 3), " ",
+      padl("256hex", 6), " ",
+      padl("24mhex", 6)
+   )
+
+   for(let i = 0; i < solarized.length; i++){
+      const item = solarized[i];
+      out(
+         padl(item.name, 7) , " ", 
+         color_16(item.c16-0, item.c16, 2), " ", 
+         color_256(item.xterm, item.xterm, 3), " ",
+         color_hex(item.xterm_hex, item.xterm_hex, 6), " ",
+         color_hex(item.hex, item.hex, 6), " ",
+         color_hex(item.hex, JSON.stringify(item.rgb), 6)
+      )
+   }
+}
+
+function print_color(rgb){
+   const { r, b, g } = rgb;
+   let rgb_str = `[${r.toString().padStart(3)}, ${g.toString().padStart(3)}, ${b.toString().padStart(3)}]`
+   let hex_str = `[${r.toString(16).padStart(2, "0")}, ${g.toString(16).padStart(2, "0")}, ${b.toString(16).padStart(2, "0")}]`
+   out(color_rgb(rgb, `rgb: ${rgb_str} hex: ${hex_str} text: lorem ipsum dolor`));
+
+}
+
+function print_colors(){
+   for(let i = 0; i < 16; i++){ out(color_16(i, i+"")); }
+   const step = 128;
+   for(let r = 0; r < 255; r += step){ 
+      for(let g = 0; g < 255; g += step){ 
+         for(let b = 0; b < 255; b += step){ 
+            print_color({ r, g, b });
+         }
+      }
+   }
+}
+
+(function main(){
+
+   const opt = process.argv[2];
+   // out("opt: ", opt);
+
+   function print_help(){
+      out([
+         "<number or hex>", 
+         "-s for solarized",
+         "-c for colors (default)", 
+         "-h for help",
+      ].join("\n"));
+   }
+
+   if(opt === "-h"){
+      print_help();
+   }else if(opt === "-s"){
+      return print_solarized();
+   }else if(opt === "-c"){
+      return print_colors();
+   }else{
+      if(opt.length === 7){ 
+         // #xxxxxx -> xxxxxx
+         opt = opt.slice(1);
+      }
+      if(opt.length === 6){
+         out(print_color(hex_to_rgb(opt)));
+      }else if(opt.length <= 3){
+         out(color_256(opt, `term_color: ${opt} text: lorem ipsum dolor`));
+      }else{
+         return print_help();
+      }
+   }
+})();
+
+
+
+// \033[38;2;<r>;<g>;<b>m     #Select RGB foreground color
+// \033[48;2;<r>;<g>;<b>m     #Select RGB background color
+// for i in range(30, 37 + 1):
+//     print("\033[%dm%d\t\t\033[%dm%d" % (i, i, i + 60, i + 60))
+//
+// # print("\033[39m\\033[49m                 - Reset color")
+// # print("\\033[2K                          - Clear Line")
+// # print("\\033[<L>;<C>H or \\033[<L>;<C>f  - Put the cursor at line L and column C.")
+// # print("\\033[<N>A                        - Move the cursor up N lines")
+// # print("\\033[<N>B                        - Move the cursor down N lines")
+// # print("\\033[<N>C                        - Move the cursor forward N columns")
+// # print("\\033[<N>D                        - Move the cursor backward N columns\n")
+// # print("\\033[2J                          - Clear the screen, move to (0,0)")
+// # print("\\033[K                           - Erase to end of line")
+// # print("\\033[s                           - Save cursor position")
+// # print("\\033[u                           - Restore cursor position\n")
+// # print("\\033[4m                          - Underline on")
+// # print("\\033[24m                         - Underline off\n")
+// # print("\\033[1m                          - Bold on")
+// # print("\\033[21m                         - Bold off")

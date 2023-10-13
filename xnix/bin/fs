@@ -1,5 +1,0 @@
-#!/bin/zsh
-. ~/.nvm/nvm.sh
-nvm exec 0.12 fstats $@
-
-

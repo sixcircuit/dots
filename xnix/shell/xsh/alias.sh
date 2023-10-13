@@ -2,9 +2,14 @@ shell=$1
 plat=$2
 
 alias x='exit'
+alias s='source $HOME/.zshrc'
 alias t='tree'
 alias v='vim'
 alias vd='vimdiff'
+
+alias wget='curl -L -O'
+
+alias fs='fstats'
 
 alias rmr='rm -rf'
 

@@ -31,4 +31,5 @@ add_paths () {
 add_paths "$HOME/plat/bin"
 add_paths "$term_root/$plat/bin"
 add_paths "$xnix_root/bin"
+add_paths "$term_root/local/bin"
 

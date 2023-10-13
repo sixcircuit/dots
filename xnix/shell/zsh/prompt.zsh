@@ -7,6 +7,7 @@ SPACESHIP_PROMPT_ORDER=(
   git           # Git section (git_branch + git_status)
   exit_code     # Exit code section
   time          # Time stamps section
+  exec_time     # Execution time
   dir           # Current directory section
   char          # Prompt character
   # hg            # Mercurial section (hg_branch  + hg_status)
@@ -30,7 +31,6 @@ SPACESHIP_PROMPT_ORDER=(
   # ember         # Ember.js section
   # kubecontext   # Kubectl context section
   # terraform     # Terraform workspace section
-  # exec_time     # Execution time
   # line_sep      # Line break
   # battery       # Battery level and status
   # vi_mode       # Vi-mode indicator
@@ -71,6 +71,15 @@ SPACESHIP_TIME_SUFFIX="%F{$git_color}) %f" # the paren + space in there is what 
 SPACESHIP_TIME_COLOR=$git_color
 # SPACESHIP_TIME_FORMAT="%D{%Y-%m-%d} %D{%H:%M:%S}"
 SPACESHIP_TIME_FORMAT="%D{%H:%M:%S}"
+
+SPACESHIP_EXEC_TIME_SHOW="true"
+SPACESHIP_EXEC_TIME_PREFIX="%F{$git_color}(%f" # the paren in there is what we print
+SPACESHIP_EXEC_TIME_SUFFIX="%F{$git_color}) %f" # the paren + space in there is what we print
+SPACESHIP_EXEC_TIME_COLOR=$git_color
+SPACESHIP_EXEC_TIME_ELAPSED=1
+# SPACESHIP_TIME_FORMAT="%D{%Y-%m-%d} %D{%H:%M:%S}"
+# SPACESHIP_TIME_FORMAT="%D{%H:%M:%S}"
+
 
 # TODO: turn these into times, and compare them you can't go past 
 # https://unix.stackexchange.com/questions/84381/how-to-compare-two-dates-in-a-shell
@@ -127,6 +136,19 @@ SPACESHIP_DIR_TRUNC=0
 SPACESHIP_DIR_TRUNC_REPO="false"
 SPACESHIP_DIR_COLOR=$foreground 
 SPACESHIP_DIR_LOCK_SYMBOL=""
+
+
+# without fzf-tab this would work great.
+# TRAPALRM(){ zle reset-prompt }
+# TMOUT=1
+
+# TRAPALRM(){ 
+#    # tput sc; tput cuu 3; tput cr; date +%H:%M:%S; tput rc
+#    # 
+#    # echo "here";
+#    # zle reset-prompt 
+# }
+# TMOUT=1
 
 
 # export SPACESHIP_ROOT=${${(%):-%x}:A:h}
