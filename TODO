@@ -1,8 +1,41 @@
 
 = vim
+   = replace easymotion
+      x remove easymotion
+      - remove easymotion files
+      - setup hop 
+         - setup commands
+            - setup paste anywhere command
+            - setup command to delete inside and paste something
+         - setup colors
+      - setup pounce
+         - setup commands
+         - setup colors
+   = setup lsp
+      - learn the commands. use them. gd (go to declaration)
+   = finish colors
+      - write scripts to copy groups
+         - syntax, tree sitter, lsp
+      - strip out solarized
+      - just put everything in colors.vim / colors.lua
+         - maybe break it out into a directory
+            - import common everywhere.
+            - /colors/common.lua
+            - /colors/javascript.lua
+            - /colors/hop.lua
+            - /colors/pounce.lua
+         - drop old javascript highlighting
+   = setup snippets
+      - remove ultisnip
+      - look into snippet plugins (luasnip)
+      - setup luasnip (implement old ultisnip snippets)
    - figure out code completion
-      - setup cmp, lsp, mason, try ctrl+space completion instead of tab?
+      - setup cmp, lsp, mason
+      - try ctrl+space completion instead of tab?
       ? "google best code completion neovim"
+      - turn off complete for vim command line ":"
+      - turn off complete for plain text files? like notes? it's weird.
+   
    - fix colors -- just strip out js and solarized stuff and make one big color.vim
    - basically redo the core bundle stuff. look for faster / better code highlighting
    - learn wordmotions
@@ -16,6 +49,9 @@
       - rewrite tux with new dry. should take like 2 hours.
       - name the tmux window! 
    - do tux tab <name> to start it in a new iterm tab.
+   - use paths as the tmux name - and have aliases
+      - support tux move Projects/dry/dry-wip/dry-underscore projects/dry/baseline
+      - support tux move du projects/dry/baseline
 
    = alias this stuff
       - fzf tux init

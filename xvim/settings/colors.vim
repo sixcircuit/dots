@@ -12,7 +12,6 @@ let g:solarized_termcolors=256
 " let g:solarized_termcolors=16
 " colorscheme solarized
 
-
 " Author:   Ethan Schoonover <es@ethanschoonover.com>
 " URL:      http://ethanschoonover.com/solarized
 "           (see this url for latest release & screenshots)
@@ -1347,4 +1346,19 @@ hi CursorLine ctermbg=235 guibg=#262626
 hi Comment ctermfg=242 " Name:     Solarized vim colorscheme
 
 
+
+set signcolumn=yes
+highlight clear SignColumn
+" highlight GitSignsAdd guibg=NONE
+" highlight GitSignsChange guibg=NONE
+" highlight GitSignsDelete guibg=NONE
+
+" sign define DiagnosticSignError text=⚠  texthl=DiagnosticSignError
+sign define DiagnosticSignError text=E  texthl=DiagnosticSignError
+sign define DiagnosticSignWarn text=W  texthl=DiagnosticSignWarn
+sign define DiagnosticSignInfo text=I  texthl=DiagnosticSignInfo
+sign define DiagnosticSignHint text=H  texthl=DiagnosticSignHint
+
+" highlight Sneak guifg=black guibg=#00C7DF ctermfg=black ctermbg=cyan
+" highlight SneakScope guifg=red guibg=yellow ctermfg=red ctermbg=yellow
 

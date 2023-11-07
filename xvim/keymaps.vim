@@ -50,6 +50,10 @@ nmap <silent> <Leader>tp :ToggleProse<CR>
 " nmap <silent> <Leader>tt :ToggleTypewriter<CR>
 
 
+" map <C-i> :Inspect<cr>
+map <C-i> :call SynStack()<cr>
+map <C-m> :w <bar> :source %<cr>
+
 map <leader>c :TComment<cr>
 
 map <silent> <Leader>gl :call OpenURI()<CR>

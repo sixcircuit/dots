@@ -25,6 +25,10 @@ this setup no longer supports vim. i've standardized on neovim. vim support stop
       - install nvim into ~/plat/nvim and link the bin into ~/plat/bin/nvim
       = install vim-plug for vim and nvim
          - `sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'`
+      = https://github.com/neovim/pynvim
+         . run: pip3 install pynvim
+         - run :MUndoShow in neovim
+         - run :checkhealth in neovim
 
    = install nvm 
       - install nvm without touching the existing dotfiles. example here (update the version number):

@@ -10,11 +10,9 @@ function! SourceDirectory(file)
 endfunction
 
 function! SourceFile(file)
-  echo 'source abs: ' . a:file
+  " echo 'source abs: ' . a:file
   exe 'source ' . a:file
 endfunction
-
-let g:auto_session_root = $HOME . "/.nvim_sessions"
 
 call SourceDirectory(s:root . "/baseline")
 

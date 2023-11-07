@@ -130,7 +130,7 @@ function print_colors(){
 
 (function main(){
 
-   const opt = process.argv[2];
+   const opt = process.argv[2] || "";
    // out("opt: ", opt);
 
    function print_help(){
@@ -142,7 +142,7 @@ function print_colors(){
       ].join("\n"));
    }
 
-   if(opt === "-h"){
+   if(opt === "-h" || opt == ""){
       print_help();
    }else if(opt === "-s"){
       return print_solarized();

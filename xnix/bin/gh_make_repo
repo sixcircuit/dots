@@ -1,0 +1,24 @@
+#!/bin/bash
+
+repo_name=`basename $PWD`
+
+if [[ "$1" == "--public" ]]; then
+   vis_opt="--public"
+   vis_str="PUBLIC"
+elif [[ "$1" == "--private" ]]; then
+   vis_opt="--private"
+   vis_str="private"
+else
+   echo "usage: gh_make_repo [--public | --private]"
+   exit 1
+fi
+   
+echo "creating a $vis_str github repo named: '$repo_name' from the git repo in the current directory."
+
+read -p "you sure you want to do this (y/N)? " -n 1 -r
+echo ""   
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+   gh repo create "$repo_name" $vis_opt --source=. --remote=upstream
+   git push --set-upstream upstream main
+   gh repo view --web
+fi
