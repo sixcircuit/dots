@@ -1,33 +1,88 @@
 
-local function syn_stack()
-   local tbl = vim.inspect_pos()
-   vim.print(tbl)
-
-   local str = ""
-
-   print("syntax")
-   if(tbl.syntax[0] ~= nil) then
-      for k,v in pairs(tbl.syntax[0]) do
-         print(k, v)
-      end
-   end
-
-   print("treesitter")
-   if(tbl.treesitter[0] ~= nil) then
-      for k,v in pairs(tbl.treesitter[0]) do
-         print(k, v)
-      end
-   end
-
-   print("lsp")
-   if(tbl.semantic_tokens[0] ~= nil) then
-      for k,v in pairs(tbl.semantic_tokens[0]) do
-        print(k, v)
-      end
-   end
+local function echon_colored(hl_group, msg)
+  vim.api.nvim_command('echohl ' .. hl_group)
+  vim.api.nvim_command('echon "' .. msg .. '"')
+  vim.api.nvim_command('echohl None')
 end
 
-vim.keymap.set("n", "<C-i>", syn_stack, { noremap=true })
+local function syn_stack()
+   local tbl = vim.inspect_pos()
+
+   local result = {}
+
+   for _, item in pairs(tbl.syntax) do
+      table.insert(result, {
+         hl_source = "syntax",
+         hl_group = item.hl_group,
+         hl_link = item.hl_group_link,
+      })
+   end
+
+   for _, item in pairs(tbl.treesitter) do
+      table.insert(result, {
+         hl_source = "treesitter",
+         hl_group = item.hl_group,
+         hl_link = item.hl_group_link,
+      })
+   end
+
+   for _, item in pairs(tbl.semantic_tokens) do
+      table.insert(result, {
+         hl_source = "lsp",
+         hl_group = item.opts.hl_group,
+         hl_link = item.opts.hl_group_link
+      })
+   end
+
+   for _, item in pairs(result) do
+      item.hl = vim.api.nvim_get_hl_by_name(item.hl_group, false)
+   end
+
+   local code = {}
+
+   local function make_hl_code(item)
+
+      local c = {
+         'vim.api.nvim_set_hl(0, "', item.hl_group, '", { ',
+      }
+      if(item.hl_link ~= item.hl_group) then
+         table.insert(c, 'link = "' .. item.hl_link .. '" ')
+      end
+      if(item.hl.foreground ~= nil) then
+         table.insert(c, 'ctermfg = "' .. item.hl.foreground .. '" ')
+      end
+      if(item.hl.background ~= nil) then
+         table.insert(c, 'ctermbg = ' .. item.hl.background .. ' ')
+      end
+ 
+      table.insert(c, 'default = true ')
+      table.insert(c, '}')
+
+      return table.concat(c, "")
+   end
+
+   for _, item in pairs(result) do
+      echon_colored('None', item.hl_group .. " -> " .. item.hl_link .. " (" .. item.hl_source .. "): ")
+      echon_colored(item.hl_group, vim.inspect(item.hl))
+      echon_colored('None', "\n")
+      table.insert(code, make_hl_code(item))
+   end
+
+   -- local code_str = table.concat(code, "\n")
+   -- echon_colored('None', code_str .. "\n")
+   vim.fn.setreg('+', table.concat(code, "\n"))
+
+   -- vim.api.nvim_exec([[
+   -- source /path/to/file.vim
+   -- ]], false)
+   -- vim.print("stack: ", result)
+   -- vim.api.nvim_echo({{ "result: " .. vim.inspect(result) }}, false, {})
+
+   -- vim.api.nvim_command('echomsg "' .. msg .. '"')
+   -- echo_colored('This is a red message', 'MyHighlight')
+end
+
+vim.keymap.set("n", "<leader>i", syn_stack, { noremap=true })
 
 -- local function syn_stack()
 --    echo "SynStack"

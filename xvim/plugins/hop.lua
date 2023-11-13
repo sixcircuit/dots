@@ -1,4 +1,3 @@
-
 local hop = require('hop')
 
 hop.setup {
@@ -9,7 +8,47 @@ hop.setup {
    create_hl_autocmd = false,
 }
 
-vim.keymap.set('', '<leader>w', ":HopWordAC<cr>")
+-- vim.keymap.set('', '<leader>w', ":HopWord<cr>")
+vim.keymap.set('', 'ff', ":HopAnywhere<cr>")
+vim.keymap.set('', 'fl', ":HopWordAC<cr>")
+vim.keymap.set('', 'fh', ":HopWordBC<cr>")
+vim.keymap.set('', 'fw', ":HopWordAC<cr>")
+vim.keymap.set('', 'fb', ":HopWordBC<cr>")
+vim.keymap.set('', 'fk', ":HopLineStartBC<cr>")
+vim.keymap.set('', 'fj', ":HopLineStartAC<cr>")
+vim.keymap.set('', 'fc', ":HopChar1<cr>")
+vim.keymap.set('', 'fs', ":HopCamelCase<cr>")
+vim.keymap.set('', 'fp', ":HopPasteChar1<cr>")
+-- vim.keymap.set('', 'f/', ":Pounce<cr>")
+-- vim.keymap.set('', '<leader>f', "<Plug>(incsearch-fuzzy-?)")
+-- vim.keymap.set('', '/', "<Plug>(incsearch-fuzzy-/)")
+-- vim.keymap.set('', '?', "/")
+
+-- " use standard regexes, not vim regexes
+-- nnoremap / /\v
+-- vnoremap / /\v
+
+-- " clear search highlighting
+vim.keymap.set('', '<leader>/', ":noh<cr>")
+
+
+-- map ? <Plug>(incsearch-fuzzy-/)
+-- " map ? <Plug>(incsearch-fuzzy-?)
+-- " map zg/ <Plug>(incsearch-fuzzy-stay)
+--
+-- nmap s <cmd>Pounce<CR>
+-- nmap S <cmd>PounceRepeat<CR>
+-- xmap s <cmd>Pounce<CR>
+-- omap gs <cmd>Pounce<CR>  " 's' is used by vim-surround
+-- nmap S :Pounce <C-r>/<cr> " note: if you want to use <C-r> you cannot use <cmd>
+
+-- vim.keymap.set('', '<leader>w', ":HopWordAC<cr>")
+-- vim.keymap.set('', '<leader>b', ":HopWordBC<cr>")
+-- vim.keymap.set('', '<leader>k', ":HopChar1<cr>")
+-- vim.keymap.set('', '<leader>s', ":HopCamelCase<cr>")
+-- vim.keymap.set('', '<leader>a', ":HopCamelCase<cr>")
+-- vim.keymap.set('', '<leader>p', ":HopPasteChar1<cr>")
+
 -- map <Leader>w <Plug>(easymotion-w)
 -- map <Leader>b <Plug>(easymotion-b)
 --

@@ -17,7 +17,7 @@ end
 
 open = function(buffer, command)
    vim.cmd(command .. ' ' .. buffer)
-   -- vim.cmd("call LayoutWindows()")
+   vim.cmd("call LayoutWindows()")
 
    -- this is the try to be smart function that fucks everything up.
 

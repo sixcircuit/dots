@@ -1,4 +1,10 @@
-" must setup vim-plug before you get here. see .vimrc and .nvimrc
+-- must setup vim-plug before you get here. see .vimrc and .nvimrc
+
+local plugins = {
+   "plugin1",
+   "plugin2",
+   "plugin3"
+}
 
 " Plug 'vim-scripts/Gummybears'
 " Plug 'altercation/vim-colors-solarized'
@@ -131,4 +137,8 @@ Plug 'saadparwaiz1/cmp_luasnip'
 " Plug 'sktaylor/vim-colors-solarized'
 
 " Plug 'maxmx03/solarized.nvim'
+
+for _, plugin in ipairs(plugins) do
+  vim.cmd('Plug \'' .. plugin .. '\'')
+end
 

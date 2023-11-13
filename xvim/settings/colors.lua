@@ -1,6 +1,29 @@
 
 local blue = { ctermfg = 33 }
-local orange = { ctermfg = 166 }
+local orange = { 
+   ctermfg = 166,
+   bold = true, 
+   italic = true, 
+   -- cterm = { italic = true },
+   -- standout = true,
+   -- underline = true,
+   -- undercurl = true,
+   -- underdouble = true,
+   -- blend = 50 , -- integer between 0 and 100
+   -- blend = 0 , -- integer between 0 and 100
+   -- underdotted = true,
+   -- underdashed = true,
+   -- strikethrough = true,
+   -- reverse = true,
+   -- nocombine = true,
+   -- link = "some_hl_group" -- name of another highlight group to link to, see :hi-link.
+   -- default = true
+   -- ctermfg = Sets foreground of cterm color ctermfg
+   -- ctermbg = Sets background of cterm color ctermbg
+   -- cterm = cterm attribute map, like highlight-args. If not set, cterm attributes will match those from the attribute map documented above.
+   -- force = if true force update the highlight group when it exists.
+}
+
 
 local links = {
   ['@lsp.type.namespace'] = '@namespace',
@@ -28,7 +51,13 @@ end
 -- vim.api.nvim_set_hl(0, '@variable.javascript', blue)
 -- vim.api.nvim_set_hl(0, '@variable.javascript', { ctermfg=125})
 
-vim.api.nvim_set_hl(0, '@function', orange)
+vim.api.nvim_set_hl(0, '@keyword.javascript', { italic = true })
+vim.api.nvim_set_hl(0, '@conditional.javascript', { italic = true })
+vim.api.nvim_set_hl(0, '@function.javascript', { italic = true })
+vim.api.nvim_set_hl(0, '@keyword.function.javascript', { italic = true })
+
+-- vim.api.nvim_set_hl(0, '@function', orange)
+-- vim.api.nvim_set_hl(0, '@lsp.mod.local.javascript', orange)
 -- vim.api.nvim_set_hl(0, '@function', blue)
 
 -- hop highlights

@@ -1,5 +1,20 @@
 
 = vim
+   = <leader>/ does :Rg (Make sure this works well, open a new tab before running Rg, check the jumplist, setup keys to move through the jumplist)
+   = / Does fuzzy
+   = ? Does regular /
+   = https://github.com/haya14busa/vim-asterisk (set z star as default)
+
+   = Do this too. See if you like it. Turn it on for z star. 
+      - https://github.com/haya14busa/is.vim
+
+   - https://github.com/haya14busa/vim-operator-flashy
+
+   - https://vi.stackexchange.com/questions/14465/fuzzy-find-within-buffer 
+   - incsearch plugin is no longer necessary. It's in main vim/nvim. Just use this one and drop the other two
+
+   - Maybe this, I feel like it would be slow for very large buffers. So maybe skip it. https://github.com/osyo-manga/vim-anzu
+
    = replace easymotion
       x remove easymotion
       - remove easymotion files
@@ -8,9 +23,16 @@
             - setup paste anywhere command
             - setup command to delete inside and paste something
          - setup colors
+      - setup fuzzy incremental search that sets up the hop list
+         - maybe fix pounce?
+         - maybe you don't need fuzzy search because it works?
       - setup pounce
          - setup commands
          - setup colors
+   = manage hover with:
+      - make it auto hover hover. and then you can "q" out
+      - https://vi.stackexchange.com/questions/37225/how-do-i-close-a-hovered-window-with-lsp-information-escape-does-not-work
+      - vim.lsp.buf.hover
    = setup lsp
       - learn the commands. use them. gd (go to declaration)
    = finish colors

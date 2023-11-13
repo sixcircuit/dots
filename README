@@ -21,6 +21,10 @@ this setup no longer supports vim. i've standardized on neovim. vim support stop
       - git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
       - ~/.fzf/install
 
+   = install monego font
+      - install regular and italic
+      - don't install bold. it's too bold. iterm (or macos) bolds the regular font just enough. maybe one day fontforge a real bold version but for now it's good enough.
+
    = install neovim
       - install nvim into ~/plat/nvim and link the bin into ~/plat/bin/nvim
       = install vim-plug for vim and nvim

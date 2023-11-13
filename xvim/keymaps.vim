@@ -50,11 +50,13 @@ nmap <silent> <Leader>tp :ToggleProse<CR>
 " nmap <silent> <Leader>tt :ToggleTypewriter<CR>
 
 
+" map <C-m> :Rg input("/") <bar> :cc 0<cr>
 " map <C-i> :Inspect<cr>
-map <C-i> :call SynStack()<cr>
-map <C-m> :w <bar> :source %<cr>
+" map <C-i> :call SynStack()<cr>
+map <C-\> :w <bar> :source %<cr>
 
 map <leader>c :TComment<cr>
+" map <leader>n :cnext<cr>
 
 map <silent> <Leader>gl :call OpenURI()<CR>
 
@@ -117,10 +119,6 @@ else
   vmap gc gu~h
 endif
 
-
-map ? <Plug>(incsearch-fuzzy-/)
-" map ? <Plug>(incsearch-fuzzy-?)
-" map zg/ <Plug>(incsearch-fuzzy-stay)
 
 "Rainbow Parentheses Always on
 "au VimEnter * RainbowParenthesesToggleAll
