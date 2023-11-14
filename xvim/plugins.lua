@@ -6,16 +6,7 @@ local plugins = {
    "plugin3"
 }
 
-" Plug 'vim-scripts/Gummybears'
-" Plug 'altercation/vim-colors-solarized'
-" Plug 'mileszs/ack.vim'
-" Plug 'sktaylor/vim-javascript'
 Plug 'pangloss/vim-javascript'
-" Plug 'tpope/vim-eunuch'
-" Plug 'tpope/vim-obsession'
-" Plug 'tpope/vim-fugitive'
-" Plug 'jiangmiao/auto-pairs'
-" Plug 'vim-scripts/auto-pairs-gentle'
 
 Plug 'haya14busa/vim-asterisk'
 

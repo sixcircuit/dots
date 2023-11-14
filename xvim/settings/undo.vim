@@ -1,2 +1,2 @@
 set undofile
-set undodir=~/.nvim_undo
+set undodir=~/.nvim/undo

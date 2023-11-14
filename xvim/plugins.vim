@@ -1,15 +1,6 @@
 " must setup vim-plug before you get here. see .vimrc and .nvimrc
 
-" Plug 'vim-scripts/Gummybears'
-" Plug 'altercation/vim-colors-solarized'
-" Plug 'mileszs/ack.vim'
-" Plug 'sktaylor/vim-javascript'
 Plug 'pangloss/vim-javascript'
-" Plug 'tpope/vim-eunuch'
-" Plug 'tpope/vim-obsession'
-" Plug 'tpope/vim-fugitive'
-" Plug 'jiangmiao/auto-pairs'
-" Plug 'vim-scripts/auto-pairs-gentle'
 
 Plug 'haya14busa/vim-asterisk'
 
@@ -35,12 +26,16 @@ Plug 'jremmen/vim-ripgrep'
 " Plug 'duane9/nvim-rg'
 
 Plug 'tpope/vim-surround'
-Plug 'tomtom/tcomment_vim'
 Plug 'bkad/CamelCaseMotion'
+
+Plug 'tpope/vim-commentary'
+
+" radical requires magium. number conversion with gA
+Plug 'glts/vim-magnum'
+Plug 'glts/vim-radical'
 
 Plug 'tpope/vim-repeat'
 
-" Plug 'ycm-core/YouCompleteMe'
 
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 
@@ -57,7 +52,6 @@ autocmd FileType CommandTPrompt let b:loaded_delimitMate = 1
 " command-t completion window.
 " Plug 'jiangmiao/auto-pairs'
 " autocmd FileType CommandTPrompt let b:autopairs_loaded=1
-
 
 
 " no longer supported

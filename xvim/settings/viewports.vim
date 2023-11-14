@@ -141,7 +141,7 @@ nnoremap <leader>r :call RotateWindowsKeepCursor()<CR>
 noremap <silent> <down> :vertical resize -10<CR>
 noremap <silent> <up> :vertical resize +10<CR>
 " noremap <silent> <left> :vertical resize 80<CR>
-noremap <silent> \ :call LayoutWindows()<CR>
+noremap <silent> \\ :call LayoutWindows()<CR>
 " noremap <silent> \ <C-w>=
 
 

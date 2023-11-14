@@ -4,22 +4,30 @@ hop.setup {
    -- keys = 'etovxqpdygfblzhckisuran',
    -- keys = 'asdfghjkl;qwertyuiopvbcnxmz,',
    keys = 'abcdefghijklmnopqrstuvwxyz;',
+   -- keys = 'abcdefghijklmnopqrstuvwxyz;',
    jump_on_sole_occurrence = true,
    create_hl_autocmd = false,
 }
 
--- vim.keymap.set('', '<leader>w', ":HopWord<cr>")
-vim.keymap.set('', 'ff', ":HopAnywhere<cr>")
-vim.keymap.set('', 'fl', ":HopWordAC<cr>")
-vim.keymap.set('', 'fh', ":HopWordBC<cr>")
-vim.keymap.set('', 'fw', ":HopWordAC<cr>")
-vim.keymap.set('', 'fb', ":HopWordBC<cr>")
-vim.keymap.set('', 'fk', ":HopLineStartBC<cr>")
-vim.keymap.set('', 'fj', ":HopLineStartAC<cr>")
-vim.keymap.set('', 'fc', ":HopChar1<cr>")
-vim.keymap.set('', 'fs', ":HopCamelCase<cr>")
-vim.keymap.set('', 'fp', ":HopPasteChar1<cr>")
--- vim.keymap.set('', 'f/', ":Pounce<cr>")
+vim.api.nvim_set_keymap('n', 'mm', 'm', { noremap=true })
+
+-- vim.keymap.set('', '<leader>w', "<cmd>HopWord<cr>")
+vim.keymap.set('', 'ma', "<cmd>HopAnywhere<cr>")
+vim.keymap.set('', 'mw', "<cmd>HopWordAC<cr>")
+vim.keymap.set('', 'mf', "<cmd>HopWordCurrentLineAC<cr>")
+vim.keymap.set('', 'mf', "<cmd>HopAnywhereCurrentLineAC<cr>")
+vim.keymap.set('', 'mb', "<cmd>HopWordBC<cr>")
+
+vim.keymap.set('', 'mj', "<cmd>HopLineStartAC<cr>")
+vim.keymap.set('', '<leader>j', "<cmd>HopLineStartAC<cr>")
+
+vim.keymap.set('', 'mk', "<cmd>HopLineStartBC<cr>")
+vim.keymap.set('', '<leader>k', "<cmd>HopLineStartBC<cr>")
+
+vim.keymap.set('', 'mc', "<cmd>HopChar1<cr>")
+vim.keymap.set('', 'ms', "<cmd>HopCamelCase<cr>")
+vim.keymap.set('', 'mp', "<cmd>HopPasteChar1<cr>")
+-- vim.keymap.set('', 'f/', "<cmd>Pounce<cr>")
 -- vim.keymap.set('', '<leader>f', "<Plug>(incsearch-fuzzy-?)")
 -- vim.keymap.set('', '/', "<Plug>(incsearch-fuzzy-/)")
 -- vim.keymap.set('', '?', "/")

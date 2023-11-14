@@ -118,7 +118,7 @@ function print_color(rgb){
 
 function print_colors(){
    for(let i = 0; i < 16; i++){ out(color_16(i, i+"")); }
-   const step = 128;
+   const step = 16;
    for(let r = 0; r < 255; r += step){ 
       for(let g = 0; g < 255; g += step){ 
          for(let b = 0; b < 255; b += step){ 

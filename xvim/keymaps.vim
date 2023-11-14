@@ -20,7 +20,12 @@ noremap Y y$
 noremap M %
 
 " so I don't have to reach for shift. I can ctrl-| to go to col 0
-noremap <c-\> \|
+" noremap <c-\> \|
+" map <C-m> :Rg input("/") <bar> :cc 0<cr>
+" map <C-i> :Inspect<cr>
+" map <C-i> :call SynStack()<cr>
+map <leader>s :w <bar> :source %<cr>
+
 
 " add lines easily with + and -
 nnoremap + maO<esc>`a
@@ -50,18 +55,15 @@ nmap <silent> <Leader>tp :ToggleProse<CR>
 " nmap <silent> <Leader>tt :ToggleTypewriter<CR>
 
 
-" map <C-m> :Rg input("/") <bar> :cc 0<cr>
-" map <C-i> :Inspect<cr>
-" map <C-i> :call SynStack()<cr>
-map <C-\> :w <bar> :source %<cr>
-
-map <leader>c :TComment<cr>
+map <leader>c :Commentary<cr>
 " map <leader>n :cnext<cr>
 
 map <silent> <Leader>gl :call OpenURI()<CR>
 
 " google the word under the cursor
 nmap <silent> <leader>gg "gyiw:call GoogleSearch()<CR>
+nmap <silent> <leader>gi' "gyi':call GoogleSearch()<CR>
+nmap <silent> <leader>gi" "gyi":call GoogleSearch()<CR>
 
 " google the visual selection
 vmap <silent> <leader>gg "gy:call GoogleSearch()<CR>
@@ -95,30 +97,6 @@ nnoremap <leader>h :RainbowParenthesesToggleAll<cr>
 
 " reformat buffer
 nnoremap <leader>= ggvG=``
-
-" capitalization mappings
-if (&tildeop)
-  nmap gcw guw~l
-  nmap gcW guW~l
-  nmap gciw guiw~l
-  nmap gciW guiW~l
-  nmap gcis guis~l
-  nmap gc$ gu$~l
-  nmap gcgc guu~l
-  nmap gcc guu~l
-  vmap gc gu~l
-else
-  nmap gcw guw~h
-  nmap gcW guW~h
-  nmap gciw guiw~h
-  nmap gciW guiW~h
-  nmap gcis guis~h
-  nmap gc$ gu$~h
-  nmap gcgc guu~h
-  nmap gcc guu~h
-  vmap gc gu~h
-endif
-
 
 "Rainbow Parentheses Always on
 "au VimEnter * RainbowParenthesesToggleAll

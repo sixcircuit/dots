@@ -1,43 +1,9 @@
 
-
--- " let g:UltiSnipsSnippetDirectories=[$HOME.'/.xvim/snippets/']
---
--- "
--- " " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
--- " " let g:UltiSnipsExpandTrigger="<c-;>"
--- " " let g:UltiSnipsExpandTrigger="<c-e>"
--- " " let g:UltiSnipsJumpForwardTrigger="<c-;>"
--- " " let g:UltiSnipsJumpForwardTrigger="<tab>"
--- " " let g:UltiSnipsJumpBackwardTrigger="<c-p>"
--- "
--- " " You Complete Me
--- "
--- " " let g:ycm_auto_trigger = 1
--- "
--- " " let g:ycm_cache_omnifunc = 1
--- "
--- " " let g:ycm_seed_identifiers_with_syntax = 1
--- " " let g:ycm_min_num_of_chars_for_completion = 2
--- " " let g:ycm_key_invoke_completion = '<Space-g>'
--- "
--- " " make YCM compatible with UltiSnips (using supertab)
--- " let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
--- " let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
--- " let g:SuperTabDefaultCompletionType = '<C-n>'
--- "
--- " " better key bindings for UltiSnipsExpandTrigger
--- " " let g:UltiSnipsExpandTrigger = "<tab>"
--- " let g:UltiSnipsExpandTrigger = "<C-e>"
--- " let g:UltiSnipsJumpForwardTrigger = "<tab>"
--- " let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
--- "
--- " let g:ycm_auto_hover=''
-
 -- https://github.com/williamboman/mason-lspconfig.nvim
 
 -- tsserver does javascript
 
-local lsp_servers = { "lua_ls", "tsserver" } 
+local lsp_servers = { "lua_ls", "tsserver" }
 
 -- this needs to come before the lsp server setup below
 require("mason").setup()
@@ -46,25 +12,21 @@ require("mason-lspconfig").setup {
    ensure_installed = lsp_servers,
 }
 
-luasnip = require("luasnip")
-
-require("luasnip.loaders.from_snipmate").lazy_load({paths = "~/term/xvim/snippets"})
-
--- Set up nvim-cmp.
-local cmp = require'cmp'
-
 local has_words_before = function()
   unpack = unpack or table.unpack
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
-local luasnip = require("luasnip")
 local cmp = require("cmp")
 
-mapping = {
+local luasnip = require("luasnip")
+
+require("luasnip.loaders.from_snipmate").lazy_load({paths = "~/term/xvim/snippets"})
+
+local mapping = {
    -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-   ['<CR>'] = cmp.mapping.confirm({ select = true }), 
+   ['<CR>'] = cmp.mapping.confirm({ select = true }),
    ['<C-e>'] = cmp.mapping.abort(),
    ['<C-Space>'] = cmp.mapping.complete(),
    ["<Tab>"] = cmp.mapping(function(fallback)
@@ -156,14 +118,14 @@ cmp.setup.cmdline({ '/', '?' }, {
 
 -- turn off completion for : cmd line
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
--- cmp.setup.cmdline(':', {
--- mapping = cmp.mapping.preset.cmdline(),
---  sources = cmp.config.sources({
---    { name = 'path' }
---  }, {
---    { name = 'cmdline' }
---  })
---})
+cmp.setup.cmdline(':', {
+   sources = cmp.config.sources({
+      { name = 'path' }
+   }, {
+      { name = 'cmdline' }
+   }),
+   mapping = cmp.mapping.preset.cmdline(),
+})
 
 -- Set up lspconfig.
 -- local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -249,7 +211,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
     -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
 
-    function jump_into_hover_window()
+    local function jump_into_hover_window()
        vim.lsp.buf.hover()
        vim.lsp.buf.hover()
     end

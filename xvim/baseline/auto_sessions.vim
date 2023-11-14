@@ -1,9 +1,8 @@
 
-set sessionoptions-=options
+" sessionoptions are from tpope/obesssion
+set sessionoptions-=blank sessionoptions-=options sessionoptions+=tabpages
 
 " if you call vim with arguments, we don't engage the session code
-
-let g:auto_session_root = $HOME . "/.nvim_sessions"
 
 function! UpdateSessionPaths()
    if !exists("g:auto_session_root")
