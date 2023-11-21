@@ -2,25 +2,33 @@
 
 Plug 'pangloss/vim-javascript'
 
+Plug 'haya14busa/is.vim'
 Plug 'haya14busa/vim-asterisk'
+
+let g:asterisk#keeppos = 1
 
 " map *   <Plug>(asterisk-*)
 " map #   <Plug>(asterisk-#)
 " map g*  <Plug>(asterisk-g*)
 " map g#  <Plug>(asterisk-g#)
 
-map *  <Plug>(asterisk-z*)
-map #  <Plug>(asterisk-z#)
-map g* <Plug>(asterisk-gz*)
-map g# <Plug>(asterisk-gz#)
-let g:asterisk#keeppos = 1
+" map *  <Plug>(asterisk-z*)
+" map #  <Plug>(asterisk-z#)
+" map g* <Plug>(asterisk-gz*)
+" map g# <Plug>(asterisk-gz#)
+
+map *  <Plug>(asterisk-z*)<Plug>(is-nohl-1)
+map g* <Plug>(asterisk-gz*)<Plug>(is-nohl-1)
+map #  <Plug>(asterisk-z#)<Plug>(is-nohl-1)
+map g# <Plug>(asterisk-gz#)<Plug>(is-nohl-1)
 
 Plug 'smoka7/hop.nvim'
 " Plug 'rlane/pounce.nvim'
 
-
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
+
+Plug 'ggvgc/vim-fuzzysearch'
 
 Plug 'jremmen/vim-ripgrep'
 " Plug 'duane9/nvim-rg'
@@ -35,6 +43,7 @@ Plug 'glts/vim-magnum'
 Plug 'glts/vim-radical'
 
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-fugitive'
 
 
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
@@ -60,9 +69,6 @@ Plug 'simnalamburt/vim-mundo'
 
 Plug 'Valloric/MatchTagAlways'
 
-" fun but I don't use them
-" Plug 'kien/rainbow_parentheses.vim'
-
 Plug 'groenewege/vim-less'
 Plug 'mustache/vim-mustache-handlebars'
 Plug 'hashivim/vim-terraform'
@@ -83,12 +89,11 @@ Plug 'christoomey/vim-titlecase'
 
 Plug 'Keithbsmiley/swift.vim'
 
-"" NeoBundle 'vim-airline/vim-airline'
-"" NeoBundle 'vim-airline/vim-airline-themes'
-
 Plug 'itchyny/lightline.vim'
-
 Plug 'mkitt/tabline.vim'
+
+
+" Plug 'itchyny/vim-cursorword'
 
 let g:CommandTPreferredImplementation='lua'
 

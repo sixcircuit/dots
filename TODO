@@ -1,41 +1,17 @@
 
+= review commands
+   - completion (rename, gd go to definition)
+   - move myi mpi m" m' m[
+
+= longterm
+   - move tabline to lightline and get rid of tabline
+   - maybe write your own tabout. tabout seems shitty
+
 = vim
-   = <leader>/ does :Rg (Make sure this works well, open a new tab before running Rg, check the jumplist, setup keys to move through the jumplist)
-   = / Does fuzzy
-   = ? Does regular /
-   = https://github.com/haya14busa/vim-asterisk (set z star as default)
 
-   = Do this too. See if you like it. Turn it on for z star. 
-      - https://github.com/haya14busa/is.vim
-
-   - https://github.com/haya14busa/vim-operator-flashy
-
-   - https://vi.stackexchange.com/questions/14465/fuzzy-find-within-buffer 
-   - incsearch plugin is no longer necessary. It's in main vim/nvim. Just use this one and drop the other two
-
-   - Maybe this, I feel like it would be slow for very large buffers. So maybe skip it. https://github.com/osyo-manga/vim-anzu
-
-   = replace easymotion
-      x remove easymotion
-      - remove easymotion files
-      - setup hop 
-         - setup commands
-            - setup paste anywhere command
-            - setup command to delete inside and paste something
-         - setup colors
-      - setup fuzzy incremental search that sets up the hop list
-         - maybe fix pounce?
-         - maybe you don't need fuzzy search because it works?
-      - setup pounce
-         - setup commands
-         - setup colors
-   = manage hover with:
-      - make it auto hover hover. and then you can "q" out
-      - https://vi.stackexchange.com/questions/37225/how-do-i-close-a-hovered-window-with-lsp-information-escape-does-not-work
-      - vim.lsp.buf.hover
-   = setup lsp
-      - learn the commands. use them. gd (go to declaration)
    = finish colors
+      - fix colors -- just strip out js and solarized stuff and make one big color.vim
+      - basically redo the core bundle stuff. look for faster / better code highlighting
       - write scripts to copy groups
          - syntax, tree sitter, lsp
       - strip out solarized
@@ -47,23 +23,19 @@
             - /colors/hop.lua
             - /colors/pounce.lua
          - drop old javascript highlighting
+
    = setup snippets
       - remove ultisnip
       - look into snippet plugins (luasnip)
       - setup luasnip (implement old ultisnip snippets)
-   - figure out code completion
-      - setup cmp, lsp, mason
+
+   = figure out code completion
+      x setup cmp, lsp, mason
+      x "google best code completion neovim"
       - try ctrl+space completion instead of tab?
-      ? "google best code completion neovim"
-      - turn off complete for vim command line ":"
       - turn off complete for plain text files? like notes? it's weird.
+      / turn off complete for vim command line ":"
    
-   - fix colors -- just strip out js and solarized stuff and make one big color.vim
-   - basically redo the core bundle stuff. look for faster / better code highlighting
-   - learn wordmotions
-   - maybe write your own tabout. tabout seems shitty
-   - look for automatic setup of all your plugins. doing it by hand is a pain.
-   - fix all the weird ruby / python dependencies once and for all (if you can).
    - do a lockfile! (https://shyr.io/blog/vim-plugin-lockfile)
 
 = setup tux
@@ -110,4 +82,51 @@ x vim
       x you want treesitter. it's way faster. "G" to the bottom and see how slow regex is
    x fix autopairs. it sucks because it adds a " even if the next character is a letter.
       x try delimitmate again
+
+   x https://github.com/haya14busa/vim-asterisk (set z star as default)
+
+   x Do this too. See if you like it. Turn it on for z star. 
+      x https://github.com/haya14busa/is.vim
+
+   x https://github.com/haya14busa/vim-operator-flashy
+      . replaced by an autocmd
+
+   x setup search
+      x ? does :Rg (Make sure this works well, open a new tab before running Rg, check the jumplist, setup keys to move through the jumplist)
+      x / Does fuzzy
+      x ? Does regular /
+
+   x fuzzy find
+      x https://github.com/ggvgc/vim-fuzzysearch
+      x https://vi.stackexchange.com/questions/14465/fuzzy-find-within-buffer 
+      x incsearch plugin is no longer necessary. It's in main vim/nvim. Just use this one and drop the other two
+
+   x maybe this, i feel like it would be slow for very large buffers. so maybe skip it. https://github.com/osyo-manga/vim-anzu (don't need it, built into neovim)
+
+   x replace easymotion
+      x remove easymotion
+      x remove easymotion files
+      x setup hop 
+         x setup commands
+            x setup paste anywhere command
+            x setup command to delete inside and paste something
+         x setup colors
+      x setup fuzzy incremental search that sets up the hop list
+         x maybe fix pounce?
+         x maybe you don't need fuzzy search because it works?
+      / setup pounce
+         / setup commands
+         / setup colors
+
+   x manage hover with
+      x make it auto hover hover. and then you can "q" out
+      x https://vi.stackexchange.com/questions/37225/how-do-i-close-a-hovered-window-with-lsp-information-escape-does-not-work
+      x vim.lsp.buf.hover
+
+   x setup lsp
+      x learn the commands. use them. gd (go to declaration)
+
+   x learn wordmotions
+   x look for automatic setup of all your plugins. doing it by hand is a pain.
+   x fix all the weird ruby / python dependencies once and for all (if you can).
 

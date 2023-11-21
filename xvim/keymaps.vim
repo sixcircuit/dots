@@ -1,14 +1,21 @@
 
 " https://www.johnhawthorn.com/2012/09/vi-escape-delays/
 " one part of fixing slow / missing escapes in nvim
-set timeoutlen=1000 ttimeoutlen=0
-" set timeoutlen=200
+set ttimeoutlen=50
+
+" don't timeout keymap sequences. because we shouldn't rely on the timeout
+set notimeout
+" set ttimeoutlen=10000
 
 " core remaps
 
 " one less key for command mode
 nnoremap ; :
 vnoremap ; :
+
+nnoremap : ;
+vnoremap ; :
+
 
 " ' now goes to the mark line and column, instead of just the line
 nnoremap ' `
@@ -26,6 +33,8 @@ noremap M %
 " map <C-i> :call SynStack()<cr>
 map <leader>s :w <bar> :source %<cr>
 
+" nnoremap <C-k> <Up>
+" nnoremap <C-j> <Down>
 
 " add lines easily with + and -
 nnoremap + maO<esc>`a
@@ -54,8 +63,15 @@ noremap <silent> <Leader>z :call ToggleWrap()<CR>
 nmap <silent> <Leader>tp :ToggleProse<CR>
 " nmap <silent> <Leader>tt :ToggleTypewriter<CR>
 
+" unmap s
+noremap ss s
 
-map <leader>c :Commentary<cr>
+" i always want linewise
+noremap v V
+noremap V v
+
+nmap <leader>c gcc
+vmap <leader>c gc
 " map <leader>n :cnext<cr>
 
 map <silent> <Leader>gl :call OpenURI()<CR>
@@ -72,13 +88,13 @@ vmap <silent> <leader>gg "gy:call GoogleSearch()<CR>
 nnoremap <leader>d dapGpGmd<C-o><C-o>
 vnoremap <leader>d dGo<esc>GpGmd<C-o><C-o>
 
+
 " Remove trailing whitespace
 
 " noremap 0 ^
 
 " use increment inside tmux or screen
 " nnoremap <C-e> <C-a>
-
 
 " Match Tag Always
 
@@ -92,8 +108,6 @@ let g:mta_filetypes = {
     \}
 
 " end Match Tag Always
-
-nnoremap <leader>h :RainbowParenthesesToggleAll<cr>
 
 " reformat buffer
 nnoremap <leader>= ggvG=``

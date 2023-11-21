@@ -1,51 +1,81 @@
 
-commandt = require('wincent.commandt')
+local commandt = require('wincent.commandt')
 
-find_ignore_dir = {".git", "node_modules"}
-find_ignore_file = {"*.o", "*.obj"}
-find_max_files = 20000
--- find_max_files = 2
-
-head = "head"
-
-if jit.os == "OSX" then
-   head = "ghead"
-end
-
+local find_ignore_dir = {".git", "node_modules"}
+local find_ignore_file = {"*.o", "*.obj"}
 -- find_ignore_dir = {}
 -- find_ignore_file = {}
 
-open = function(buffer, command)
-   vim.cmd(command .. ' ' .. buffer)
+-- max_files = -1
+local max_files = 100000
+
+local function open_file_in_tab_or_switch(filename)
+   local fullPath = vim.fn.getcwd() .. '/' .. filename
+
+   local buffers = vim.api.nvim_list_bufs()
+   for _, buf in ipairs(buffers) do
+      if vim.api.nvim_buf_is_loaded(buf) and vim.api.nvim_buf_get_name(buf) == fullPath then
+         -- Check if the buffer is visible in any window
+         for _, win in ipairs(vim.api.nvim_list_wins()) do
+            if vim.api.nvim_win_get_buf(win) == buf then
+               -- Switch to the tabpage containing the window
+               local tabpage = vim.api.nvim_win_get_tabpage(win)
+               vim.api.nvim_set_current_tabpage(tabpage)
+               -- Switch to the window displaying the buffer
+               vim.api.nvim_set_current_win(win)
+               return
+            end
+         end
+         -- If the buffer is loaded but not displayed in any window, open it in a new tab
+         vim.cmd('tabnew ' .. fullPath)
+         return
+      end
+   end
+
+   -- If the file is not open in any buffer, open it in a new tab
+   vim.cmd('tabnew ' .. fullPath)
+end
+
+local open = function(buffer, command)
+   if command == "edit" then
+      open_file_in_tab_or_switch(buffer)
+   else
+      if command == "split" then command = "edit" end
+      vim.cmd(command .. ' ' .. buffer)
+   end
    vim.cmd("call LayoutWindows()")
-
-   -- this is the try to be smart function that fucks everything up.
-
-   -- local open = function(buffer, command)
-      --   buffer = vim.fn.fnameescape(buffer)
-      --   local is_visible = require('wincent.commandt.private.buffer_visible')(buffer)
-      --   if is_visible then
-      --     -- In order to be useful, `:sbuffer` needs `vim.o.switchbuf = 'usetab'`.
-      --     vim.cmd('sbuffer ' .. buffer)
-      --   else
-      --     vim.cmd(command .. ' ' .. buffer)
-      --   end
-      -- end
-      --
-      -- commandt.open(item, kind)
-      -- vim.cmd.normal('call LayoutWindows()<CR>')
-      -- end 
 end
 
 commandt.setup({
    -- height = 10000,
-   -- position = top,
+   -- position = 'top',
+   margin = 35,
+   position = 'center',
+   -- position = 'bottom',
    -- order = "reverse"
    ignore_case = true,
    -- always_show_dot_files = true,
-   open = open,
+   -- open = open,
+   scanners = {
+      file = { max_files = max_files, },
+      find = { max_files = max_files, },
+      git = { max_files = max_files, },
+      rg = { max_files = max_files, },
+   },
+   mappings = {
+      i = {
+         ['<C-r>'] = 'open_split',
+      },
+      n = {
+         ['<C-r>'] = 'open_split',
+      },
+   },
    finders = {
+      buffer = {
+         open = open
+      },
       find = {
+         -- max_depth = 100,
          open = open,
          command = function(directory)
             if vim.startswith(directory, './') then
@@ -80,12 +110,19 @@ commandt.setup({
                command = command .. ' -not \\( -path "*/' .. file_name .. '" -prune \\)'
             end
 
-            command = command .. ' -type f -print0 2> /dev/null' 
+            command = command .. ' -type f -print0 2> /dev/null'
             -- command = command .. ' -type f -print0' 
-            if find_max_files > 0 then
-               command = command .. " | " .. head .. " -z -n " .. find_max_files
-               command = command .. ' 2> /dev/null'
-            end
+
+            -- local head = "head"
+
+            -- if jit.os == "OSX" then
+            --    head = "ghead"
+            -- end
+
+            -- if find_max_files > 0 then
+            --    command = command .. " | " .. head .. " -z -n " .. find_max_files
+            --    command = command .. ' 2> /dev/null'
+            -- end
 
             -- print("command: " .. command)
 

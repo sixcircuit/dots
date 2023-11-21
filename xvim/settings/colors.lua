@@ -1,4 +1,5 @@
 
+
 local blue = { ctermfg = 33 }
 local orange = { 
    ctermfg = 166,
@@ -62,21 +63,63 @@ vim.api.nvim_set_hl(0, '@keyword.function.javascript', { italic = true })
 
 -- hop highlights
 
--- Highlight used for the mono-sequence keys (i.e. sequence of 1).
-vim.api.nvim_set_hl(0, 'HopNextKey', { fg = '#ff007c', bold = true, ctermfg = 198, cterm = { bold = true } })
+local red = 198
+local yellow = 190
+local orange = 208
+local pink = 201
+local teal = 45
+local dark_teal = 33
 
--- Highlight used for the first key in a sequence.
-vim.api.nvim_set_hl(0, 'HopNextKey1', { fg = '#00dfff', bold = true, ctermfg = 45, cterm = { bold = true } })
-
--- Highlight used for the second and remaining keys in a sequence.
-vim.api.nvim_set_hl(0, 'HopNextKey2', { fg = '#2b8db3', ctermfg = 33 })
-
--- Highlight used for the unmatched part of the buffer.
+vim.api.nvim_set_hl(0, 'HopNextKey', { fg = '#ff007c', bold = true, ctermfg = yellow, cterm = { bold = true } })
+vim.api.nvim_set_hl(0, 'HopNextKey1', { fg = '#00dfff', bold = true, ctermfg = red, cterm = { bold = true } })
+vim.api.nvim_set_hl(0, 'HopNextKey2', { fg = '#2b8db3', ctermfg = dark_teal })
 vim.api.nvim_set_hl(0, 'HopUnmatched', { fg = '#666666', sp = '#666666', ctermfg = 242 })
-
--- Highlight used for the fake cursor visible when hopping.
 vim.api.nvim_set_hl(0, 'HopCursor', { link = 'Cursor' })
-
--- Highlight used for preview pattern
 vim.api.nvim_set_hl(0, 'HopPreview', { link = 'IncSearch' })
+
+local black = 232
+local menu_bg = 234
+local select_bg = 233
+local menu_fg = 249
+local select_fg = 'white'
+-- 'white', 'darkblue'
+-- local menu_bg = 33
+-- local menu_fg = 254
+local fg_orange = 1
+local border_bg = black
+local border_fg = 241
+local title_fg = 244
+
+-- Setting highlights
+vim.api.nvim_set_hl(0, "FloatBorder", { ctermbg = menu_bg, ctermfg = menu_fg })
+-- vim.api.nvim_set_hl(0, "FloatTitle", { ctermbg = bg_color, ctermfg = fg_orange })
+vim.api.nvim_set_hl(0, "Pmenu", { ctermbg = menu_bg, ctermfg = menu_fg })
+vim.api.nvim_set_hl(0, "PmenuSel", { ctermbg = menu_fg, ctermfg = menu_bg })
+-- vim.api.nvim_set_hl(0, "PmenuKind", { ctermbg = bg_color, ctermfg = fg_orange })
+-- vim.api.nvim_set_hl(0, "PmenuKindSel", { ctermbg = bg_color, ctermfg = fg_orange })
+-- vim.api.nvim_set_hl(0, "PmenuExtra", { ctermbg = bg_color, ctermfg = fg_orange })
+-- vim.api.nvim_set_hl(0, "PmenuExtraSel", { ctermbg = bg_color, ctermfg = fg_orange })
+-- vim.api.nvim_set_hl(0, "PmenuSbar", { ctermbg = bg_color, ctermfg = fg_orange })
+-- vim.api.nvim_set_hl(0, "PmenuThumb", { ctermbg = bg_color, ctermfg = fg_orange })
+
+
+local vertsplit_fg = 236;
+
+-- set fill char to non-breaking space (it's there between the ' '', it's not a normal space) 
+-- since we set the statusbar colors the same below it'll add ^^^ to the status line because it doesn't know anything about lightline
+vim.opt.fillchars = { stl = ' ' }
+
+vim.api.nvim_set_hl(0, 'VertSplit', { ctermfg = vertsplit_fg, ctermbg = vertsplit_fg })
+vim.api.nvim_set_hl(0, 'StatusLine', { ctermfg = vertsplit_fg, ctermbg = vertsplit_fg })
+vim.api.nvim_set_hl(0, 'StatusLineNC', { ctermfg = vertsplit_fg, ctermbg = vertsplit_fg })
+
+local yank_group = vim.api.nvim_create_augroup("highlight_yank", { clear = true })
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+    group = yank_group,
+    pattern = "*",
+    callback = function()
+        vim.highlight.on_yank({ higroup = "IncSearch", timeout = 200 })
+    end,
+})
 
