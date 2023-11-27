@@ -10,11 +10,11 @@ local find_ignore_file = {"*.o", "*.obj"}
 local max_files = 100000
 
 local function open_file_in_tab_or_switch(filename)
-   local fullPath = vim.fn.getcwd() .. '/' .. filename
+   local full_path = vim.fn.getcwd() .. '/' .. filename
 
    local buffers = vim.api.nvim_list_bufs()
    for _, buf in ipairs(buffers) do
-      if vim.api.nvim_buf_is_loaded(buf) and vim.api.nvim_buf_get_name(buf) == fullPath then
+      if vim.api.nvim_buf_is_loaded(buf) and vim.api.nvim_buf_get_name(buf) == full_path then
          -- Check if the buffer is visible in any window
          for _, win in ipairs(vim.api.nvim_list_wins()) do
             if vim.api.nvim_win_get_buf(win) == buf then
@@ -27,13 +27,13 @@ local function open_file_in_tab_or_switch(filename)
             end
          end
          -- If the buffer is loaded but not displayed in any window, open it in a new tab
-         vim.cmd('tabnew ' .. fullPath)
+         vim.cmd('tabnew ' .. filename)
          return
       end
    end
 
    -- If the file is not open in any buffer, open it in a new tab
-   vim.cmd('tabnew ' .. fullPath)
+   vim.cmd('tabnew ' .. filename)
 end
 
 local open = function(buffer, command)
@@ -43,7 +43,7 @@ local open = function(buffer, command)
       if command == "split" then command = "edit" end
       vim.cmd(command .. ' ' .. buffer)
    end
-   vim.cmd("call LayoutWindows()")
+   layout_windows()
 end
 
 commandt.setup({

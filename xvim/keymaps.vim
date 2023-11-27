@@ -26,19 +26,13 @@ noremap Y y$
 
 noremap M %
 
-" so I don't have to reach for shift. I can ctrl-| to go to col 0
-" noremap <c-\> \|
-" map <C-m> :Rg input("/") <bar> :cc 0<cr>
-" map <C-i> :Inspect<cr>
-" map <C-i> :call SynStack()<cr>
 map <leader>s :w <bar> :source %<cr>
 
 " nnoremap <C-k> <Up>
 " nnoremap <C-j> <Down>
 
 " add lines easily with + and -
-nnoremap + maO<esc>`a
-nnoremap - mao<esc>`a
+nnoremap + myO<esc>`y
 
 nnoremap <leader>ye y$
 nnoremap <leader>yb y^

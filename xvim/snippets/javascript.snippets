@@ -8,31 +8,31 @@ snippet proto
 	};
 
 # Function
-snippet fn "function"
+snippet fun "function"
 	function ${1:function_name}(${2}){
 	   ${0:${VISUAL}}
 	}
 
 # Asynchronous Function
-snippet af "async function"
+snippet asfun "async function"
 	async function ${1:function_name}(${2}){
 	   ${0:${VISUAL}}
 	}
 
 # Anonymous Function
-snippet anf "" w
+snippet anfun "" w
 	function(${1}){
 	   ${0:${VISUAL}}
 	}
 
 # Anonymous Function assigned to variable
-snippet caf
+snippet coasfun
 	const ${1:function_name} = async function(${2}){
 		${0:${VISUAL}}
 	};
 
 # Function assigned to variable
-snippet cf
+snippet cofun
 	const ${1:function_name} = function $1(${2}){
 		${0:${VISUAL}}
 	};
@@ -75,6 +75,41 @@ snippet ife "if (condition) { ... } else { ... }"
 	   ${2}
 	}
 
+
+snippet try "try { ... } catch(e) { ... }"
+	try{
+		${0:${VISUAL}}
+	}catch(${1:e}){
+	   ${2:/* handle error */}
+	}
+
+snippet tryf "try { ... } catch(e) { ... } finally { ... }"
+	try{
+		${0:${VISUAL}}
+	}catch (${1:e}){
+		${2:catch}
+	}finally{
+		${3:finally}
+	}
+
+# throw Error
+snippet terr
+	throw(_.error("${1:code}", "${2:message}"));
+
+snippet rerr
+	throw(_.error("${1:code}", "${2:message}"));
+
+snippet fat
+	_.fatal("${1:message}");
+
+snippet ret
+ 	return(${0:result});
+
+snippet for "for (...) {...}"
+	for (let ${1:i} = 0, ${2:len} = ${3:Things.length}; $1 < $2; $1++) {
+ 		${0:${VISUAL}}
+ 	}
+
 # tertiary conditional
 # snippet ter Ternary: `condition ? true : false`
 # 	$1 ? $2: $0
@@ -95,38 +130,6 @@ snippet ife "if (condition) { ... } else { ... }"
 # 		${0:${VISUAL}}
 # 		break;
 
-snippet try "try { ... } catch(e) { ... }"
-	try{
-		${0:${VISUAL}}
-	}catch(${1:e}){
-	   ${2:/* handle error */}
-	}
-
-snippet tryf "try { ... } catch(e) { ... } finally { ... }"
-	try{
-		${0:${VISUAL}}
-	}catch (${1:e}){
-		${2:catch}
-	}finally{
-		${3:finally}
-	}
-
-# throw Error
-snippet ter
-	throw(_.error("${1:code}", "${2:message}"));
-
-snippet fat
-	_.fatal("${1:message}");
-
-
-# # return
-# snippet ret
-# 	return(${0:result});
-#
-# snippet for "for (...) {...}"
-# 	for (let ${1:i} = 0, ${2:len} = ${3:Things.length}; $1 < $2; $1++) {
-# 		${0:${VISUAL}}
-# 	}
 #
 # snippet forr "reversed for (...) {...}"
 # 	for (let ${2:i} = ${1:Things.length} - 1; $2 >= 0; $2--) {

@@ -46,17 +46,17 @@ local function syn_stack()
          'vim.api.nvim_set_hl(0, "', item.hl_group, '", { ',
       }
       if(item.hl_link ~= item.hl_group) then
-         table.insert(c, 'link = "' .. item.hl_link .. '" ')
+         table.insert(c, 'link = "' .. item.hl_link .. '", ')
       end
       if(item.hl.foreground ~= nil) then
-         table.insert(c, 'ctermfg = "' .. item.hl.foreground .. '" ')
+         table.insert(c, 'ctermfg = ' .. item.hl.foreground .. ', ')
       end
       if(item.hl.background ~= nil) then
-         table.insert(c, 'ctermbg = ' .. item.hl.background .. ' ')
+         table.insert(c, 'ctermbg = ' .. item.hl.background .. ', ')
       end
  
-      table.insert(c, 'default = true ')
-      table.insert(c, '}')
+      -- table.insert(c, 'default = true ')
+      table.insert(c, '})')
 
       return table.concat(c, "")
    end
@@ -82,7 +82,8 @@ local function syn_stack()
    -- echo_colored('This is a red message', 'MyHighlight')
 end
 
-vim.keymap.set("n", "<leader>i", syn_stack, { noremap=true })
+-- vim.keymap.set("n", "<leader>i", syn_stack)
+vim.keymap.set("n", "<c-i>", syn_stack)
 
 -- local function syn_stack()
 --    echo "SynStack"

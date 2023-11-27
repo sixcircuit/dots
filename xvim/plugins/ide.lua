@@ -1,4 +1,23 @@
 
+require('nvim-treesitter.configs').setup({
+  ensure_installed = "all",
+  highlight = {
+    enable = true,
+    -- enable = false,
+    -- additional_vim_regex_highlighting = false,
+    -- additional_vim_regex_highlighting = true,
+
+    -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
+    -- disable = function(lang, buf)
+    --     local max_filesize = 100 * 1024 -- 100 KB
+    --     local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+    --     if ok and stats and stats.size > max_filesize then
+    --         return true
+    --     end
+    -- end,
+  },
+})
+
 -- https://github.com/williamboman/mason-lspconfig.nvim
 
 -- tsserver does javascript
@@ -8,9 +27,9 @@ local lsp_servers = { "lua_ls", "tsserver" }
 -- this needs to come before the lsp server setup below
 require("mason").setup()
 
-require("mason-lspconfig").setup {
+require("mason-lspconfig").setup({
    ensure_installed = lsp_servers,
-}
+})
 
 local has_words_before = function()
   unpack = unpack or table.unpack
@@ -138,7 +157,7 @@ local lspconfig = require 'lspconfig'
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-lspconfig.lua_ls.setup {
+lspconfig.lua_ls.setup({
    capabilities = capabilities,
    -- on_attach = on_attach,
    settings = {
@@ -160,33 +179,22 @@ lspconfig.lua_ls.setup {
             -- library = vim.api.nvim_get_runtime_file("", true),
          },
          -- Do not send telemetry data containing a randomized but unique identifier
-         telemetry = {
-            enable = false,
-         },
+         telemetry = { enable = false, },
       },
-   },
-}
+   }
+})
 
-lspconfig.tsserver.setup {
+lspconfig.tsserver.setup({
    capabilities = capabilities,
    -- on_attach = on_attach,
    init_options = {
       hostInfo = "neovim",
       preferences = {
          disableSuggestions = true,
-         -- documentFormatting = true
+         --    -- documentFormatting = true
       }
    }
-}
-
--- Setup language servers.
--- local lspconfig = require('lspconfig')
--- lspconfig.rust_analyzer.setup {
---   -- Server-specific settings. See `:help lspconfig-setup`
---   settings = {
---     ['rust-analyzer'] = {},
---   },
--- }
+})
 
 vim.diagnostic.config({
    virtual_text = false,  -- Disables the floating text
@@ -194,73 +202,5 @@ vim.diagnostic.config({
    underline = true,      -- Optional, to underline the text with errors/warnings
    update_in_insert = false, -- Prevents diagnostics from updating in insert mode
    severity_sort = true,  -- Sorts diagnostics by severity
-})
-
-function ToggleVirtualText()
-   local current_state = vim.diagnostic.config().virtual_text
-   vim.g.diagnostics_visible = true
-   vim.diagnostic.config({ virtual_text = not current_state })
-end
-
-function ToggleDiagnostics()
-   if vim.g.diagnostics_visible == nil or vim.g.diagnostics_visible == false then
-      vim.diagnostic.show()
-      vim.g.diagnostics_visible = true
-   else
-      vim.diagnostic.hide()
-      vim.g.diagnostics_visible = false
-   end
-end
-
--- Global mappings.
--- See `:help vim.diagnostic.*` for documentation on any of the below functions
-vim.keymap.set('n', 'sl', ToggleVirtualText)
-vim.keymap.set('n', 'sd', ToggleDiagnostics)
-vim.keymap.set('n', 'si', vim.diagnostic.open_float)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
--- vim.keymap.set('n', '<leader>d', vim.diagnostic.setloclist)
-
--- Use LspAttach autocommand to only map the following keys
--- after the language server attaches to the current buffer
-vim.api.nvim_create_autocmd('LspAttach', {
-  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
-  callback = function(ev)
-    -- Enable completion triggered by <c-x><c-o>
-    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-
-    -- Buffer local mappings.
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-
-    local opts = { buffer = ev.buf }
-
-    local function jump_into_hover_window()
-       vim.lsp.buf.hover()
-       vim.lsp.buf.hover()
-    end
-
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-    -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-    -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-
-    vim.keymap.set('n', 'sh', jump_into_hover_window, opts)
-    vim.keymap.set('n', 'crn', vim.lsp.buf.rename, opts)
-
-    -- can't use w slows down easymotions
-    -- vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
-    -- vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
-    -- vim.keymap.set('n', '<leader>wl', function()
-      -- print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    -- end, opts)
-    -- vim.keymap.set('n', 'gD', vim.lsp.buf.type_definition, opts)
-    -- can't use "r" as first letter. slows swap
-    -- can't use "c" as first letter. slows comment
-    -- vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
-    -- vim.keymap.set('n', '<leader>f', function()
-    --   vim.lsp.buf.format { async = true }
-    -- end, opts)
-  end,
 })
 

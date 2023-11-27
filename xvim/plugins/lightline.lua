@@ -265,6 +265,50 @@ local function width_check(value_f)
    end
 end
 
+local function to_fixed(number, digits)
+    local formatString = "%." .. digits .. "f"
+    return string.format(formatString, number)
+end
+
+local function left_pad(str, len, pad_char)
+   str = tostring(str)
+   pad_char = pad_char or ' '  -- Default padding character is a space if not provided
+   if #str < len then
+      return string.rep(pad_char, len - #str) .. str
+   else
+      return str
+   end
+end
+
+LightlineWordCount = width_check(function()
+   local wc = vim.fn.wordcount()
+
+   local word_total = tostring(wc.words)
+   local word_count = ""
+   local percent = ""
+   -- percent = left_pad(percent, 2)
+   -- local percent = left_pad(tostring(math.floor((wc.cursor_words/wc.words)*1000)/10), 4)
+   -- local percent = left_pad(tostring(math.floor(((wc.cursor_words/wc.words)*100)), 2)
+
+   if wc.visual_words then
+      word_count = wc.visual_words
+      percent = to_fixed(((wc.visual_words/wc.words)*1000)/10, 1)
+   else
+      word_count = wc.cursor_words
+      percent = to_fixed(((wc.cursor_words/wc.words)*1000)/10, 1)
+   end
+
+   percent = left_pad(percent, 4)
+   local word_count_str = left_pad(tostring(word_count), #word_total)
+
+   if percent == "100.0" then
+      -- return word_count_str.."/"..word_total.." [99.9%]"
+      return word_count_str.."/"..word_total.." [00.0%]"
+   else
+      return word_count_str.."/"..word_total.." ["..percent.."%]"
+   end
+end)
+
 LightlineFugitive = width_check(function()
    local status, branch = pcall(vim.fn["fugitive#Head"])
    if status and branch ~= "" then
@@ -365,6 +409,7 @@ vim.api.nvim_set_var('LightlineFileType', LightlineFileType)
 vim.api.nvim_set_var('LightlineFileEncoding', LightlineFileEncoding)
 vim.api.nvim_set_var('LightlineFugitive', LightlineFugitive)
 vim.api.nvim_set_var('LightlineClock', LightlineClock)
+vim.api.nvim_set_var('LightlineWordCount', LightlineWordCount)
 
 vim.api.nvim_exec([[
   function! UpdateClock()
@@ -391,7 +436,9 @@ local function lightline_setup()
       subseparator = { left = '', right = '' },
       active = {
          left = { { 'mode_active', 'paste' }, { 'filename', 'modified', 'diagnostics', 'readonly' } },
-         right = { {'lineinfo'}, {'percent'}, { 'fileformat', 'fileencoding', 'filetype', 'fugitive', 'clock' } }
+         right = { {'lineinfo'}, {'word_count'}, { 'fileformat', 'fileencoding', 'filetype', 'fugitive', 'clock' } }
+         -- right = { {'lineinfo'}, {'percent', 'word_count'}, { 'fileformat', 'fileencoding', 'filetype', 'fugitive', 'clock' } }
+         -- right = { {'lineinfo'}, {'word_count', 'percent' }, { 'fileformat', 'fileencoding', 'filetype', 'fugitive', 'clock' } }
       },
       inactive = {
          left = { { 'mode_inactive' }, { 'filename' } },
@@ -418,6 +465,7 @@ local function lightline_setup()
          clock = 'raw'
       },
       component_function = {
+         word_count = 'LightlineWordCount',
          mode_active = 'LightlineModeActive',
          mode_inactive = 'LightlineModeInactive',
          filename = 'LightlineFileName',

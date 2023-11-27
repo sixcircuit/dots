@@ -5,6 +5,9 @@ Plug 'pangloss/vim-javascript'
 Plug 'haya14busa/is.vim'
 Plug 'haya14busa/vim-asterisk'
 
+Plug 'stevearc/oil.nvim'
+
+
 let g:asterisk#keeppos = 1
 
 " map *   <Plug>(asterisk-*)

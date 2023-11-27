@@ -91,10 +91,17 @@ vim.keymap.set('', 'm{', hop_to_chars_f('{'))
 vim.keymap.set('', 'm}', hop_to_chars_f('}'))
 vim.keymap.set('', 'm[', hop_to_chars_f('['))
 vim.keymap.set('', 'm]', hop_to_chars_f(']'))
+vim.keymap.set('', 'm(', hop_to_chars_f('('))
+vim.keymap.set('', 'm)', hop_to_chars_f(')'))
 vim.keymap.set('', 'm-', hop_to_chars_f('-'))
 vim.keymap.set('', 'm"', hop_to_chars_f('"'))
 vim.keymap.set('', 'm\'', hop_to_chars_f("'"))
-vim.keymap.set('', ',,', "@@")
+vim.keymap.set('', 'm,', hop_to_chars_f(","))
+vim.keymap.set('', 'm;', hop_to_chars_f(";"))
+vim.keymap.set('', 'm|', hop_to_chars_f("|"))
+vim.keymap.set('', 'm&', hop_to_chars_f("&"))
+vim.keymap.set('', 'm ', hop_to_chars_f(" "))
+
 
 
 -- local hr = require('hop_repeat')

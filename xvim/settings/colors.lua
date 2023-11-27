@@ -92,7 +92,7 @@ local title_fg = 244
 
 -- Setting highlights
 vim.api.nvim_set_hl(0, "FloatBorder", { ctermbg = menu_bg, ctermfg = menu_fg })
--- vim.api.nvim_set_hl(0, "FloatTitle", { ctermbg = bg_color, ctermfg = fg_orange })
+vim.api.nvim_set_hl(0, "FloatTitle", { ctermbg = menu_bg, ctermfg = menu_fg })
 vim.api.nvim_set_hl(0, "Pmenu", { ctermbg = menu_bg, ctermfg = menu_fg })
 vim.api.nvim_set_hl(0, "PmenuSel", { ctermbg = menu_fg, ctermfg = menu_bg })
 -- vim.api.nvim_set_hl(0, "PmenuKind", { ctermbg = bg_color, ctermfg = fg_orange })
