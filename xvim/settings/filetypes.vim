@@ -25,8 +25,8 @@ autocmd BufNewFile,BufRead *.tame.js setlocal readonly nomodifiable
 
 " call SolarizedSetNormal()
 
-autocmd BufEnter,FileType * 
-\   if &ft ==# 'javascript' | call SolarizedSetNormal() | endif
+" autocmd BufEnter,FileType * 
+" \   if &ft ==# 'javascript' | call SolarizedSetNormal() | endif
 
 " autocmd BufEnter,FileType * 
 " \   if &ft ==# 'javascript' | call SolarizedBoldNormal() | endif

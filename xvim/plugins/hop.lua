@@ -11,10 +11,11 @@ hop.setup {
    create_hl_autocmd = false,
 }
 
-local function hop_to_chars(chars)
+local function hop_to_chars(chars, hint_offset, is_regex)
    assert(chars ~= nil)
    local opts = hop.opts
-   hop.hint_with_regex(jump_regex.regex_by_case_searching(chars, true, opts), opts)
+   opts.hint_offset = hint_offset
+   hop.hint_with_regex(jump_regex.regex_by_case_searching(chars, (not is_regex), opts), opts)
 end
 
 local function run_keys(keys)
@@ -36,8 +37,12 @@ local function hop_yank_inside(chars)
 end
 
 
-local function hop_to_chars_f(chars)
-   return function() hop_to_chars(chars) end
+local function f_to_chars_f(chars, is_regex)
+   return function() hop_to_chars(chars, 0, is_regex) end
+end
+
+local function t_to_chars_f(chars, is_regex)
+   return function() hop_to_chars(chars, -1, is_regex) end
 end
 
 local function hop_paste_inside_f(chars)
@@ -52,8 +57,6 @@ vim.keymap.set('n', 'mm', 'm')
 
 -- vim.keymap.set('', '<leader>w', "<cmd>HopWord<cr>")
 vim.keymap.set('', 'ma', "<cmd>HopAnywhere<cr>")
-vim.keymap.set('', 'mf', "<cmd>HopWordCurrentLineAC<cr>")
-vim.keymap.set('', 'mf', "<cmd>HopAnywhereCurrentLineAC<cr>")
 
 vim.keymap.set('', 'mw', "<cmd>HopWordAC<cr>")
 vim.keymap.set('', '<leader>w', "<cmd>HopWordAC<cr>")
@@ -68,8 +71,12 @@ vim.keymap.set('', 'mk', "<cmd>HopLineBC<cr>")
 vim.keymap.set('', '<leader>k', "<cmd>HopLineBC<cr>")
 
 vim.keymap.set('', 'mc', "<cmd>HopChar1<cr>")
+
+vim.keymap.set('', 'mlw', "<cmd>HopWordCurrentLineAC<cr>")
 vim.keymap.set('', 'mlc', "<cmd>HopChar1CurrentLineAC<cr>")
 vim.keymap.set('', 'mla', "<cmd>HopAnywhereCurrentLineAC<cr>")
+vim.keymap.set('', 'mll', "<cmd>HopAnywhereCurrentLineAC<cr>")
+vim.keymap.set('', 'mls', "<cmd>HopCamelCaseCurrentLineAC<cr>")
 vim.keymap.set('', 'ms', "<cmd>HopCamelCase<cr>")
 
 vim.keymap.set('', 'mpp', "<cmd>HopPasteChar1<cr>")
@@ -78,72 +85,82 @@ vim.keymap.set('', 'm/', "<cmd>HopPatternAC<cr>")
 vim.keymap.set('', 'm?', "<cmd>HopPatternBC<cr>")
 
 vim.keymap.set('', 'mpi"', hop_paste_inside_f('"'))
+vim.keymap.set('', 'mpi`', hop_paste_inside_f('`'))
 vim.keymap.set('', 'mpi\'', hop_paste_inside_f("'"))
 vim.keymap.set('', 'mpi(', hop_paste_inside_f("("))
 vim.keymap.set('', 'myi"', hop_yank_inside_f('"'))
 vim.keymap.set('', 'myi\'', hop_yank_inside_f("'"))
+vim.keymap.set('', 'myi`', hop_yank_inside_f("`"))
 vim.keymap.set('', 'myi(', hop_yank_inside_f('('))
 
 
-vim.keymap.set('', 'm<', hop_to_chars_f('<'))
-vim.keymap.set('', 'm>', hop_to_chars_f('>'))
-vim.keymap.set('', 'm{', hop_to_chars_f('{'))
-vim.keymap.set('', 'm}', hop_to_chars_f('}'))
-vim.keymap.set('', 'm[', hop_to_chars_f('['))
-vim.keymap.set('', 'm]', hop_to_chars_f(']'))
-vim.keymap.set('', 'm(', hop_to_chars_f('('))
-vim.keymap.set('', 'm)', hop_to_chars_f(')'))
-vim.keymap.set('', 'm-', hop_to_chars_f('-'))
-vim.keymap.set('', 'm"', hop_to_chars_f('"'))
-vim.keymap.set('', 'm\'', hop_to_chars_f("'"))
-vim.keymap.set('', 'm,', hop_to_chars_f(","))
-vim.keymap.set('', 'm;', hop_to_chars_f(";"))
-vim.keymap.set('', 'm|', hop_to_chars_f("|"))
-vim.keymap.set('', 'm&', hop_to_chars_f("&"))
-vim.keymap.set('', 'm ', hop_to_chars_f(" "))
+vim.keymap.set('', 'm<', f_to_chars_f('<'))
+vim.keymap.set('', 'm>', f_to_chars_f('>'))
+vim.keymap.set('', 'm{', f_to_chars_f('{'))
+vim.keymap.set('', 'm}', f_to_chars_f('}'))
+vim.keymap.set('', 'm[', f_to_chars_f('['))
+vim.keymap.set('', 'm]', f_to_chars_f(']'))
+vim.keymap.set('', 'm(', f_to_chars_f('('))
+vim.keymap.set('', 'm)', f_to_chars_f(')'))
+vim.keymap.set('', 'm-', f_to_chars_f('-'))
+vim.keymap.set('', 'm"', f_to_chars_f('"'))
+vim.keymap.set('', 'm\'', f_to_chars_f("'"))
+vim.keymap.set('', 'm`', f_to_chars_f("`"))
+vim.keymap.set('', 'm,', f_to_chars_f(","))
+vim.keymap.set('', 'm;', f_to_chars_f(";"))
+vim.keymap.set('', 'm|', f_to_chars_f("|"))
+vim.keymap.set('', 'm&', f_to_chars_f("&"))
+vim.keymap.set('', 'm:', f_to_chars_f(":"))
+-- vim.keymap.set('', 'm ', f_to_chars_f(" "))
+-- match all spaces that aren't at the start of a line
+vim.keymap.set('', 'm ', f_to_chars_f("\\S\\zs \\+", true))
 
+vim.keymap.set('', 'mf<', f_to_chars_f('<'))
+vim.keymap.set('', 'mf>', f_to_chars_f('>'))
+vim.keymap.set('', 'mf{', f_to_chars_f('{'))
+vim.keymap.set('', 'mf}', f_to_chars_f('}'))
+vim.keymap.set('', 'mf[', f_to_chars_f('['))
+vim.keymap.set('', 'mf]', f_to_chars_f(']'))
+vim.keymap.set('', 'mf(', f_to_chars_f('('))
+vim.keymap.set('', 'mf)', f_to_chars_f(')'))
+vim.keymap.set('', 'mf-', f_to_chars_f('-'))
+vim.keymap.set('', 'mf"', f_to_chars_f('"'))
+vim.keymap.set('', 'mf`', f_to_chars_f('`'))
+vim.keymap.set('', 'mf\'', f_to_chars_f("'"))
+vim.keymap.set('', 'mf,', f_to_chars_f(","))
+vim.keymap.set('', 'mf;', f_to_chars_f(";"))
+vim.keymap.set('', 'mf|', f_to_chars_f("|"))
+vim.keymap.set('', 'mf&', f_to_chars_f("&"))
+vim.keymap.set('', 'mf:', f_to_chars_f(":"))
+-- vim.keymap.set('', 'mf ', f_to_chars_f(" "))
+-- match all spaces that aren't at the start of a line
+vim.keymap.set('', 'mf ', f_to_chars_f("\\S\\zs \\+", true))
 
+vim.keymap.set('', 'mt<', t_to_chars_f('<'))
+vim.keymap.set('', 'mt>', t_to_chars_f('>'))
+vim.keymap.set('', 'mt{', t_to_chars_f('{'))
+vim.keymap.set('', 'mt}', t_to_chars_f('}'))
+vim.keymap.set('', 'mt[', t_to_chars_f('['))
+vim.keymap.set('', 'mt]', t_to_chars_f(']'))
+vim.keymap.set('', 'mt(', t_to_chars_f('('))
+vim.keymap.set('', 'mt)', t_to_chars_f(')'))
+vim.keymap.set('', 'mt-', t_to_chars_f('-'))
+vim.keymap.set('', 'mt"', t_to_chars_f('"'))
+vim.keymap.set('', 'mt`', t_to_chars_f('`'))
+vim.keymap.set('', 'mt\'', t_to_chars_f("'"))
+vim.keymap.set('', 'mt,', t_to_chars_f(","))
+vim.keymap.set('', 'mt;', t_to_chars_f(";"))
+vim.keymap.set('', 'mt|', t_to_chars_f("|"))
+vim.keymap.set('', 'mt&', t_to_chars_f("&"))
+-- vim.keymap.set('', 'mt ', t_to_chars_f(" "))
+-- match all spaces that aren't at the start of a line
+vim.keymap.set('', 'mt ', t_to_chars_f("\\S\\zs \\+", true))
+vim.keymap.set('', 'mt:', t_to_chars_f(":"))
 
 -- local hr = require('hop_repeat')
 -- hr.setup()
 
 -- vim.keymap.set('', 'mrc', hr.hint_char1)
-
--- vim.keymap.set('', '<leader>w', ":HopWordAC<cr>")
--- vim.keymap.set('', '<leader>b', ":HopWordBC<cr>")
--- vim.keymap.set('', '<leader>k', ":HopChar1<cr>")
--- vim.keymap.set('', '<leader>s', ":HopCamelCase<cr>")
--- vim.keymap.set('', '<leader>a', ":HopCamelCase<cr>")
--- vim.keymap.set('', '<leader>p', ":HopPasteChar1<cr>")
-
--- map <Leader>w <Plug>(easymotion-w)
--- map <Leader>b <Plug>(easymotion-b)
---
--- " JK motions: Line motions
--- map <Leader>j <Plug>(easymotion-j)
--- map <Leader>k <Plug>(easymotion-k)
---
--- map <Leader>s <Plug>(easymotion-jumptoanywhere) -- should be camelcase
-
--- " Jump to anywhere you want with minimal keystrokes, with just one key binding.
--- " `s{char}{label}`
--- " nmap s <Plug>(easymotion-s)
---
--- " `s{char}{char}{label}`
--- " Need one more keystroke, but on average, it may be more comfortable.
--- " nmap s <Plug>(easymotion-s2)
---
--- " map <Leader>l <Plug>(easymotion-special-l)
--- " map <Leader>p <Plug>(easymotion-special-p)
---
---
--- " map <Leader>w <Plug>(easymotion-jumptoanywhere)
--- " map <Leader>w <Plug>(easymotion-jumptoanywhere)
--- " map <Leader>cc <Plug>(easymotion-jumptoanywhere)
--- " i would need to change the next one, because it slows down regular /
--- " map // <Plug>(easymotion-sn)
---
-
 
 -- local directions = require('hop.hint').HintDirection
 -- vim.keymap.set('', 'f', function()

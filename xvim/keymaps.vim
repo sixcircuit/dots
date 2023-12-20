@@ -51,10 +51,10 @@ nnoremap <leader>im "="= " . strftime("%Y-%m-%d %H:%M")<CR>P
 nnoremap <silent> <leader>fq :call FixQuotes()<CR>
 nnoremap <silent> <leader>fs :call FixTrailingWhitespace()<CR>
 
-nmap <silent> <leader>ts :call ToggleWhitespace()<CR>
-noremap <silent> <Leader>tw :call ToggleWrap()<CR>
-noremap <silent> <Leader>z :call ToggleWrap()<CR>
-nmap <silent> <Leader>tp :ToggleProse<CR>
+nmap sw :call ToggleWhitespace()<CR>
+noremap <Leader>z :call ToggleWrap()<CR>
+noremap <Leader>tw :call ToggleWrap()<CR>
+nmap <Leader>tp :ToggleProse<CR>
 " nmap <silent> <Leader>tt :ToggleTypewriter<CR>
 
 " unmap s

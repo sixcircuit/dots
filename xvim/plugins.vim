@@ -1,6 +1,6 @@
 " must setup vim-plug before you get here. see .vimrc and .nvimrc
 
-Plug 'pangloss/vim-javascript'
+" Plug 'pangloss/vim-javascript'
 
 Plug 'haya14busa/is.vim'
 Plug 'haya14busa/vim-asterisk'

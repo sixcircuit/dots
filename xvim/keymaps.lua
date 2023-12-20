@@ -90,9 +90,9 @@ vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory
 
 vim.keymap.set('', '/', "<nop>")
 
--- this only works because i have <c-/> mapped to $ in carabiner
-vim.keymap.set({ 'n', 'v' }, '$', "/")
 
+-- this only works because i have <c-/> mapped to $ in carabiner
+vim.keymap.set({ 'n', 'v' }, '$', "/") -- <c-/>
 vim.keymap.set('', '/', fuzzy_search)
 vim.keymap.set('n', 'sf', rg_and_open_first)
 vim.keymap.set('', 'sr', ':%s///g<left><left>')

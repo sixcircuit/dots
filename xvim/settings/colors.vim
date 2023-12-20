@@ -2,179 +2,13 @@
 set t_Co=256
 
 set background=dark
-" set background=light
 
 let g:solarized_grayscale=1
-" let g:solarized_visibility = "high"
 let g:solarized_contrast = "high"
-" let g:solarized_contrast = "higher"
 let g:solarized_termcolors=256
-" let g:solarized_termcolors=16
-" colorscheme solarized
 
-" Author:   Ethan Schoonover <es@ethanschoonover.com>
-" URL:      http://ethanschoonover.com/solarized
-"           (see this url for latest release & screenshots)
-" License:  OSI approved MIT license (see end of this file)
-" Created:  In the middle of the night
-" Modified: 2011 May 05
-"
-" Usage "{{{
-"
-" ---------------------------------------------------------------------
-" ABOUT:
-" ---------------------------------------------------------------------
-" Solarized is a carefully designed selective contrast colorscheme with dual
-" light and dark modes that runs in both GUI, 256 and 16 color modes.
-"
-" See the homepage above for screenshots and details.
-"
-" ---------------------------------------------------------------------
-" OPTIONS:
-" ---------------------------------------------------------------------
-" See the "solarized.txt" help file included with this colorscheme (in the 
-" "doc" subdirectory) for information on options, usage, the Toggle Background 
-" function and more. If you have already installed Solarized, this is available 
-" from the Solarized menu and command line as ":help solarized"
-"
-" ---------------------------------------------------------------------
-" INSTALLATION:
-" ---------------------------------------------------------------------
-" Two options for installation: manual or pathogen
-"
-" MANUAL INSTALLATION OPTION:
-" ---------------------------------------------------------------------
-"
-" 1.  Download the solarized distribution (available on the homepage above)
-"     and unarchive the file.
-" 2.  Move `solarized.vim` to your `.vim/colors` directory.
-" 3.  Move each of the files in each subdirectories to the corresponding .vim
-"     subdirectory (e.g. autoload/togglebg.vim goes into your .vim/autoload 
-"     directory as .vim/autoload/togglebg.vim).
-"
-" RECOMMENDED PATHOGEN INSTALLATION OPTION:
-" ---------------------------------------------------------------------
-"
-" 1.  Download and install Tim Pope's Pathogen from:
-"     https://github.com/tpope/vim-pathogen
-"
-" 2.  Next, move or clone the `vim-colors-solarized` directory so that it is
-"     a subdirectory of the `.vim/bundle` directory.
-"
-"     a. **clone with git:**
-"
-"       $ cd ~/.vim/bundle
-"       $ git clone git://github.com/altercation/vim-colors-solarized.git
-"
-"     b. **or move manually into the pathogen bundle directory:**
-"         In the parent directory of vim-colors-solarized:
-"
-"         $ mv vim-colors-solarized ~/.vim/bundle/
-"
-" MODIFY VIMRC:
-"
-" After either Option 1 or Option 2 above, put the following two lines in your
-" .vimrc:
-"
-"     syntax enable
-"     set background=dark
-"     colorscheme solarized
-"
-" or, for the light background mode of Solarized:
-"
-"     syntax enable
-"     set background=light
-"     colorscheme solarized
-"
-" I like to have a different background in GUI and terminal modes, so I can use
-" the following if-then. However, I find vim's background autodetection to be
-" pretty good and, at least with MacVim, I can leave this background value
-" assignment out entirely and get the same results.
-"
-"     if has('gui_running')
-"       set background=light
-"     else
-"       set background=dark
-"     endif
-"
-" See the Solarized homepage at http://ethanschoonover.com/solarized for
-" screenshots which will help you select either the light or dark background.
-"
-" ---------------------------------------------------------------------
-" COLOR VALUES
-" ---------------------------------------------------------------------
-" Download palettes and files from: http://ethanschoonover.com/solarized
-"
-" L\*a\*b values are canonical (White D65, Reference D50), other values are
-" matched in sRGB space.
-"
-" SOLARIZED HEX     16/8 TERMCOL  XTERM/HEX   L*A*B      sRGB        HSB
-" --------- ------- ---- -------  ----------- ---------- ----------- -----------
-" base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
-" base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
-" base01    #586e75 10/7 brgreen  240 #4e4e4e 45 -07 -07  88 110 117 194  25  46
-" base00    #657b83 11/7 bryellow 241 #585858 50 -07 -07 101 123 131 195  23  51
-" base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
-" base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
-" base2     #eee8d5  7/7 white    254 #d7d7af 92 -00  10 238 232 213  44  11  93
-" base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
-" yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
-" orange    #cb4b16  9/3 brred    166 #d75f00 50  50  55 203  75  22  18  89  80
-" red       #dc322f  1/1 red      160 #d70000 50  65  45 220  50  47   1  79  86
-" magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
-" violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
-" blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
-" cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
-" green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
-"
-" ---------------------------------------------------------------------
-" COLORSCHEME HACKING
-" ---------------------------------------------------------------------
-"
-" Useful commands for testing colorschemes:
-" :source $VIMRUNTIME/syntax/hitest.vim
-" :help highlight-groups
-" :help cterm-colors
-" :help group-name
-"
-" Useful links for developing colorschemes:
-" http://www.vim.org/scripts/script.php?script_id=2937
-" http://vimcasts.org/episodes/creating-colorschemes-for-vim/
-" http://www.frexx.de/xterm-256-notes/"
-"
-" }}}
-" Environment Specific Overrides "{{{
-" Allow or disallow certain features based on current terminal emulator or 
-" environment.
+let s:terminal_italic=1 " TODO: could refactor to not require this at all
 
-" Terminals that support italics
-let s:terms_italic=[
-            \"rxvt",
-            \"gnome-terminal"
-            \]
-" For reference only, terminals are known to be incomptible.
-" Terminals that are in neither list need to be tested.
-let s:terms_noitalic=[
-            \"iTerm.app",
-            \"Apple_Terminal"
-            \]
-if has("gui_running")
-    let s:terminal_italic=1 " TODO: could refactor to not require this at all
-else
-    let s:terminal_italic=0 " terminals will be guilty until proven compatible
-    for term in s:terms_italic
-        if $TERM_PROGRAM =~ term
-            let s:terminal_italic=1
-        endif
-    endfor
-endif
-
-" }}}
-" Default option values"{{{
-" ---------------------------------------------------------------------
-" s:options_list is used to autogenerate a list of all non-default options 
-" using "call SolarizedOptions()" or with the "Generate .vimrc commands" 
-" Solarized menu option. See the "Menus" section below for the function itself.
 let s:options_list=[
             \'" this block of commands has been autogenerated by solarized.vim and',
             \'" includes the current, non-default Solarized option values.',
@@ -645,18 +479,8 @@ exe "hi! Todo"           .s:fmt_bold   .s:fg_magenta.s:bg_none
 "}}}
 " Extended highlighting "{{{
 " ---------------------------------------------------------------------
-if      (g:solarized_visibility=="high")
-    exe "hi! SpecialKey" .s:fmt_revr   .s:fg_red    .s:bg_none
-    exe "hi! NonText"    .s:fmt_bold   .s:fg_red    .s:bg_none
-elseif  (g:solarized_visibility=="low")
-    exe "hi! SpecialKey" .s:fmt_bold   .s:fg_base02 .s:bg_none
-    exe "hi! NonText"    .s:fmt_bold   .s:fg_base02 .s:bg_none
-else
-    exe "hi! SpecialKey" .s:fmt_bold   .s:fg_base00 .s:bg_base02
-    exe "hi! NonText"    .s:fmt_bold   .s:fg_base00 .s:bg_none
-endif
-exe "hi! StatusLine"     .s:fmt_none   .s:fg_base1  .s:bg_base02 .s:fmt_revbb
-exe "hi! StatusLineNC"   .s:fmt_none   .s:fg_base00 .s:bg_base02 .s:fmt_revbb
+ exe "hi! SpecialKey" .s:fmt_bold   .s:fg_base00 .s:bg_base02
+ exe "hi! NonText"    .s:fmt_bold   .s:fg_base00 .s:bg_none
 exe "hi! Visual"         .s:fmt_none   .s:fg_base01 .s:bg_base03 .s:fmt_revbb
 exe "hi! Directory"      .s:fmt_none   .s:fg_blue   .s:bg_none
 exe "hi! ErrorMsg"       .s:fmt_revr   .s:fg_red    .s:bg_none
@@ -666,11 +490,6 @@ exe "hi! MoreMsg"        .s:fmt_none   .s:fg_blue   .s:bg_none
 exe "hi! ModeMsg"        .s:fmt_none   .s:fg_blue   .s:bg_none
 exe "hi! LineNr"         .s:fmt_none   .s:fg_base01 .s:bg_base02
 exe "hi! Question"       .s:fmt_bold   .s:fg_cyan   .s:bg_none
-if ( has("gui_running") || &t_Co > 8 )
-    exe "hi! VertSplit"  .s:fmt_none   .s:fg_base00 .s:bg_base00
-else
-    exe "hi! VertSplit"  .s:fmt_revbb  .s:fg_base00 .s:bg_base02
-endif
 exe "hi! Title"          .s:fmt_bold   .s:fg_orange .s:bg_none
 exe "hi! VisualNOS"      .s:fmt_stnd   .s:fg_none   .s:bg_base02 .s:fmt_revbb
 exe "hi! WarningMsg"     .s:fmt_bold   .s:fg_red    .s:bg_none
@@ -718,7 +537,6 @@ exe "hi! CursorLine"     .s:fmt_uopt   .s:fg_none   .s:bg_base02  .s:sp_base1
 exe "hi! ColorColumn"    .s:fmt_none   .s:fg_none   .s:bg_base02
 exe "hi! Cursor"         .s:fmt_none   .s:fg_base03 .s:bg_base0
 hi! link lCursor Cursor
-exe "hi! MatchParen"     .s:fmt_bold   .s:fg_yellow    .s:bg_base01
 
 "}}}
 " vim syntax highlighting "{{{
@@ -1276,89 +1094,11 @@ endfunction
 
 autocmd ColorScheme * if g:colors_name != "solarized" | silent! aunmenu Solarized | else | call SolarizedMenu() | endif
 
-"}}}
-" License "{{{
-" ---------------------------------------------------------------------
-"
-" Copyright (c) 2011 Ethan Schoonover
-"
-" Permission is hereby granted, free of charge, to any person obtaining a copy
-" of this software and associated documentation files (the "Software"), to deal
-" in the Software without restriction, including without limitation the rights
-" to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-" copies of the Software, and to permit persons to whom the Software is
-" furnished to do so, subject to the following conditions:
-"
-" The above copyright notice and this permission notice shall be included in
-" all copies or substantial portions of the Software.
-"
-" THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-" IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-" FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-" AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-" LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-" OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-" THE SOFTWARE.
-"
-" vim:foldmethod=marker:foldlevel=0
-"}}}
-
-" highlight Normal ctermfg=grey ctermbg=NONE
-
-"drop text background color
-" highlight Normal ctermbg=NONE
-
-"black gutter for line numbers
-highlight clear LineNr
-" highlight LineNr ctermfg=grey ctermbg=black
-" highlight LineNr ctermfg=black 
-highlight LineNr ctermfg=238
-"highlight LineNr ctermbg=235
-highlight TabLine ctermbg=NONE
-highlight TabLineFill ctermbg=NONE
-
-
-
-" These are changes for solarized
-highlight MatchParen cterm=bold ctermbg=NONE
-
-" hi EasyMotionShade  ctermbg=none ctermfg=grey
-hi link EasyMotionShade  Comment
-hi EasyMotionTarget ctermbg=none ctermfg=red
-hi EasyMotionTarget2First ctermbg=none ctermfg=red
-hi EasyMotionTarget2Second ctermbg=none ctermfg=red
-
-hi EasyMotionIncSearch ctermbg=none ctermfg=red
-hi EasyMotionMoveHL ctermbg=none ctermfg=red
-" hi EasyMotionIncCursor ctermbg=none 
-
-" hi link EasyMotionShade  Comment
-" hi link EasyMotionTarget ErrorMsg
-" hi link EasyMotionTarget2First ErrorMsg
-" hi link EasyMotionTarget2Second ErrorMsg
-
-
-hi CursorLine ctermbg=235 guibg=#262626
-" hi CursorLine term=reverse ctermbg=235 guibg=#262626
-"hi CursorColumn cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
 
 " a little lighter than the default 241. wish there was an in between
 hi Comment ctermfg=242 " Name:     Solarized vim colorscheme
 
-
-
-set signcolumn=yes
-highlight clear SignColumn
 " highlight GitSignsAdd guibg=NONE
 " highlight GitSignsChange guibg=NONE
 " highlight GitSignsDelete guibg=NONE
-
-" sign define DiagnosticSignError text=⚠  texthl=DiagnosticSignError
-sign define DiagnosticSignError text=E  texthl=DiagnosticSignError
-sign define DiagnosticSignWarn text=W  texthl=DiagnosticSignWarn
-sign define DiagnosticSignInfo text=I  texthl=DiagnosticSignInfo
-sign define DiagnosticSignHint text=H  texthl=DiagnosticSignHint
-
-" highlight Sneak guifg=black guibg=#00C7DF ctermfg=black ctermbg=cyan
-" highlight SneakScope guifg=red guibg=yellow ctermfg=red ctermbg=yellow
 

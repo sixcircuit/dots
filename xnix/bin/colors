@@ -1,5 +1,16 @@
 #!/usr/bin/env node
 
+const _ = {};
+
+_.line = function(...str){
+   str.push("\n")
+   process.stdout.write(str.join(""));
+};
+
+_.out = function(...str){
+   process.stdout.write(str.join(""));
+};
+
 // SOLARIZED HEX     16/8 TERMCOL  XTERM/HEX   L*A*B      RGB         HSB
 // --------- ------- ---- -------  ----------- ---------- ----------- -----------
 // base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
@@ -38,6 +49,267 @@ const solarized = [
    { name: "green"  , hex: "859900", c16:  "2", c8: "2", term_name: "green"    , xterm:  "64", xterm_hex: "5f8700" }
 ];
 
+const hsl = function(h,s,l){ return({ h, s, l }); };
+
+const term_256_colors = [
+   // { code: 0, name: "Black (SYSTEM)", hex: "000000" },
+   // { code: 1, name: "Maroon (SYSTEM)", hex: "800000" },
+   // { code: 2, name: "Green (SYSTEM)", hex: "008000" },
+   // { code: 3, name: "Olive (SYSTEM)", hex: "808000" },
+   // { code: 4, name: "Navy (SYSTEM)", hex: "000080" },
+   // { code: 5, name: "Purple (SYSTEM)", hex: "800080" },
+   // { code: 6, name: "Teal (SYSTEM)", hex: "008080" },
+   // { code: 7, name: "Silver (SYSTEM)", hex: "c0c0c0" },
+   // { code: 8, name: "Grey (SYSTEM)", hex: "808080" },
+   // { code: 9, name: "Red (SYSTEM)", hex: "ff0000" },
+   // { code: 10, name: "Lime (SYSTEM)", hex: "00ff00" },
+   // { code: 11, name: "Yellow (SYSTEM)", hex: "ffff00" },
+   // { code: 12, name: "Blue (SYSTEM)", hex: "0000ff" },
+   // { code: 13, name: "Fuchsia (SYSTEM)", hex: "ff00ff" },
+   // { code: 14, name: "Aqua (SYSTEM)", hex: "00ffff" },
+   // { code: 15, name: "White (SYSTEM)", hex: "ffffff" },
+   { code: 16, name: "Grey0", hex: "000000" },
+   { code: 17, name: "NavyBlue", hex: "00005f" },
+   { code: 18, name: "DarkBlue", hex: "000087" },
+   { code: 19, name: "Blue3", hex: "0000af" },
+   { code: 20, name: "Blue3", hex: "0000d7" },
+   { code: 21, name: "Blue1", hex: "0000ff" },
+   { code: 22, name: "DarkGreen", hex: "005f00" },
+   { code: 23, name: "DeepSkyBlue4", hex: "005f5f" },
+   { code: 24, name: "DeepSkyBlue4", hex: "005f87" },
+   { code: 25, name: "DeepSkyBlue4", hex: "005faf" },
+   { code: 26, name: "DodgerBlue3", hex: "005fd7" },
+   { code: 27, name: "DodgerBlue2", hex: "005fff" },
+   { code: 28, name: "Green4", hex: "008700" },
+   { code: 29, name: "SpringGreen4", hex: "00875f" },
+   { code: 30, name: "Turquoise4", hex: "008787" },
+   { code: 31, name: "DeepSkyBlue3", hex: "0087af" },
+   { code: 32, name: "DeepSkyBlue3", hex: "0087d7" },
+   { code: 33, name: "DodgerBlue1", hex: "0087ff" },
+   { code: 34, name: "Green3", hex: "00af00" },
+   { code: 35, name: "SpringGreen3", hex: "00af5f" },
+   { code: 36, name: "DarkCyan", hex: "00af87" },
+   { code: 37, name: "LightSeaGreen", hex: "00afaf" },
+   { code: 38, name: "DeepSkyBlue2", hex: "00afd7" },
+   { code: 39, name: "DeepSkyBlue1", hex: "00afff" },
+   { code: 40, name: "Green3", hex: "00d700" },
+   { code: 41, name: "SpringGreen3", hex: "00d75f" },
+   { code: 42, name: "SpringGreen2", hex: "00d787" },
+   { code: 43, name: "Cyan3", hex: "00d7af" },
+   { code: 44, name: "DarkTurquoise", hex: "00d7d7" },
+   { code: 45, name: "Turquoise2", hex: "00d7ff" },
+   { code: 46, name: "Green1", hex: "00ff00" },
+   { code: 47, name: "SpringGreen2", hex: "00ff5f" },
+   { code: 48, name: "SpringGreen1", hex: "00ff87" },
+   { code: 49, name: "MediumSpringGreen", hex: "00ffaf" },
+   { code: 50, name: "Cyan2", hex: "00ffd7" },
+   { code: 51, name: "Cyan1", hex: "00ffff" },
+   { code: 52, name: "DarkRed", hex: "5f0000" },
+   { code: 53, name: "DeepPink4", hex: "5f005f" },
+   { code: 54, name: "Purple4", hex: "5f0087" },
+   { code: 55, name: "Purple4", hex: "5f00af" },
+   { code: 56, name: "Purple3", hex: "5f00d7" },
+   { code: 57, name: "BlueViolet", hex: "5f00ff" },
+   { code: 58, name: "Orange4", hex: "5f5f00" },
+   { code: 59, name: "Grey37", hex: "5f5f5f" },
+   { code: 60, name: "MediumPurple4", hex: "5f5f87" },
+   { code: 61, name: "SlateBlue3", hex: "5f5faf" },
+   { code: 62, name: "SlateBlue3", hex: "5f5fd7" },
+   { code: 63, name: "RoyalBlue1", hex: "5f5fff" },
+   { code: 64, name: "Chartreuse4", hex: "5f8700" },
+   { code: 65, name: "DarkSeaGreen4", hex: "5f875f" },
+   { code: 66, name: "PaleTurquoise4", hex: "5f8787" },
+   { code: 67, name: "SteelBlue", hex: "5f87af" },
+   { code: 68, name: "SteelBlue3", hex: "5f87d7" },
+   { code: 69, name: "CornflowerBlue", hex: "5f87ff" },
+   { code: 70, name: "Chartreuse3", hex: "5faf00" },
+   { code: 71, name: "DarkSeaGreen4", hex: "5faf5f" },
+   { code: 72, name: "CadetBlue", hex: "5faf87" },
+   { code: 73, name: "CadetBlue", hex: "5fafaf" },
+   { code: 74, name: "SkyBlue3", hex: "5fafd7" },
+   { code: 75, name: "SteelBlue1", hex: "5fafff" },
+   { code: 76, name: "Chartreuse3", hex: "5fd700" },
+   { code: 77, name: "PaleGreen3", hex: "5fd75f" },
+   { code: 78, name: "SeaGreen3", hex: "5fd787" },
+   { code: 79, name: "Aquamarine3", hex: "5fd7af" },
+   { code: 80, name: "MediumTurquoise", hex: "5fd7d7" },
+   { code: 81, name: "SteelBlue1", hex: "5fd7ff" },
+   { code: 82, name: "Chartreuse2", hex: "5fff00" },
+   { code: 83, name: "SeaGreen2", hex: "5fff5f" },
+   { code: 84, name: "SeaGreen1", hex: "5fff87" },
+   { code: 85, name: "SeaGreen1", hex: "5fffaf" },
+   { code: 86, name: "Aquamarine1", hex: "5fffd7" },
+   { code: 87, name: "DarkSlateGray2", hex: "5fffff" },
+   { code: 88, name: "DarkRed", hex: "870000" },
+   { code: 89, name: "DeepPink4", hex: "87005f" },
+   { code: 90, name: "DarkMagenta", hex: "870087" },
+   { code: 91, name: "DarkMagenta", hex: "8700af" },
+   { code: 92, name: "DarkViolet", hex: "8700d7" },
+   { code: 93, name: "Purple", hex: "8700ff" },
+   { code: 94, name: "Orange4", hex: "875f00" },
+   { code: 95, name: "LightPink4", hex: "875f5f" },
+   { code: 96, name: "Plum4", hex: "875f87" },
+   { code: 97, name: "MediumPurple3", hex: "875faf" },
+   { code: 98, name: "MediumPurple3", hex: "875fd7" },
+   { code: 99, name: "SlateBlue1", hex: "875fff" },
+   { code: 100, name: "Yellow4", hex: "878700" },
+   { code: 101, name: "Wheat4", hex: "87875f" },
+   { code: 102, name: "Grey53", hex: "878787" },
+   { code: 103, name: "LightSlateGrey", hex: "8787af" },
+   { code: 104, name: "MediumPurple", hex: "8787d7" },
+   { code: 105, name: "LightSlateBlue", hex: "8787ff" },
+   { code: 106, name: "Yellow4", hex: "87af00" },
+   { code: 107, name: "DarkOliveGreen3", hex: "87af5f" },
+   { code: 108, name: "DarkSeaGreen", hex: "87af87" },
+   { code: 109, name: "LightSkyBlue3", hex: "87afaf" },
+   { code: 110, name: "LightSkyBlue3", hex: "87afd7" },
+   { code: 111, name: "SkyBlue2", hex: "87afff" },
+   { code: 112, name: "Chartreuse2", hex: "87d700" },
+   { code: 113, name: "DarkOliveGreen3", hex: "87d75f" },
+   { code: 114, name: "PaleGreen3", hex: "87d787" },
+   { code: 115, name: "DarkSeaGreen3", hex: "87d7af" },
+   { code: 116, name: "DarkSlateGray3", hex: "87d7d7" },
+   { code: 117, name: "SkyBlue1", hex: "87d7ff" },
+   { code: 118, name: "Chartreuse1", hex: "87ff00" },
+   { code: 119, name: "LightGreen", hex: "87ff5f" },
+   { code: 120, name: "LightGreen", hex: "87ff87" },
+   { code: 121, name: "PaleGreen1", hex: "87ffaf" },
+   { code: 122, name: "Aquamarine1", hex: "87ffd7" },
+   { code: 123, name: "DarkSlateGray1", hex: "87ffff" },
+   { code: 124, name: "Red3", hex: "af0000" },
+   { code: 125, name: "DeepPink4", hex: "af005f" },
+   { code: 126, name: "MediumVioletRed", hex: "af0087" },
+   { code: 127, name: "Magenta3", hex: "af00af" },
+   { code: 128, name: "DarkViolet", hex: "af00d7" },
+   { code: 129, name: "Purple", hex: "af00ff" },
+   { code: 130, name: "DarkOrange3", hex: "af5f00" },
+   { code: 131, name: "IndianRed", hex: "af5f5f" },
+   { code: 132, name: "HotPink3", hex: "af5f87" },
+   { code: 133, name: "MediumOrchid3", hex: "af5faf" },
+   { code: 134, name: "MediumOrchid", hex: "af5fd7" },
+   { code: 135, name: "MediumPurple2", hex: "af5fff" },
+   { code: 136, name: "DarkGoldenrod", hex: "af8700" },
+   { code: 137, name: "LightSalmon3", hex: "af875f" },
+   { code: 138, name: "RosyBrown", hex: "af8787" },
+   { code: 139, name: "Grey63", hex: "af87af" },
+   { code: 140, name: "MediumPurple2", hex: "af87d7" },
+   { code: 141, name: "MediumPurple1", hex: "af87ff" },
+   { code: 142, name: "Gold3", hex: "afaf00" },
+   { code: 143, name: "DarkKhaki", hex: "afaf5f" },
+   { code: 144, name: "NavajoWhite3", hex: "afaf87" },
+   { code: 145, name: "Grey69", hex: "afafaf" },
+   { code: 146, name: "LightSteelBlue3", hex: "afafd7" },
+   { code: 147, name: "LightSteelBlue", hex: "afafff" },
+   { code: 148, name: "Yellow3", hex: "afd700" },
+   { code: 149, name: "DarkOliveGreen3", hex: "afd75f" },
+   { code: 150, name: "DarkSeaGreen3", hex: "afd787" },
+   { code: 151, name: "DarkSeaGreen2", hex: "afd7af" },
+   { code: 152, name: "LightCyan3", hex: "afd7d7" },
+   { code: 153, name: "LightSkyBlue1", hex: "afd7ff" },
+   { code: 154, name: "GreenYellow", hex: "afff00" },
+   { code: 155, name: "DarkOliveGreen2", hex: "afff5f" },
+   { code: 156, name: "PaleGreen1", hex: "afff87" },
+   { code: 157, name: "DarkSeaGreen2", hex: "afffaf" },
+   { code: 158, name: "DarkSeaGreen1", hex: "afffd7" },
+   { code: 159, name: "PaleTurquoise1", hex: "afffff" },
+   { code: 160, name: "Red3", hex: "d70000" },
+   { code: 161, name: "DeepPink3", hex: "d7005f" },
+   { code: 162, name: "DeepPink3", hex: "d70087" },
+   { code: 163, name: "Magenta3", hex: "d700af" },
+   { code: 164, name: "Magenta3", hex: "d700d7" },
+   { code: 165, name: "Magenta2", hex: "d700ff" },
+   { code: 166, name: "DarkOrange3", hex: "d75f00" },
+   { code: 167, name: "IndianRed", hex: "d75f5f" },
+   { code: 168, name: "HotPink3", hex: "d75f87" },
+   { code: 169, name: "HotPink2", hex: "d75faf" },
+   { code: 170, name: "Orchid", hex: "d75fd7" },
+   { code: 171, name: "MediumOrchid1", hex: "d75fff" },
+   { code: 172, name: "Orange3", hex: "d78700" },
+   { code: 173, name: "LightSalmon3", hex: "d7875f" },
+   { code: 174, name: "LightPink3", hex: "d78787" },
+   { code: 175, name: "Pink3", hex: "d787af" },
+   { code: 176, name: "Plum3", hex: "d787d7" },
+   { code: 177, name: "Violet", hex: "d787ff" },
+   { code: 178, name: "Gold3", hex: "d7af00" },
+   { code: 179, name: "LightGoldenrod3", hex: "d7af5f" },
+   { code: 180, name: "Tan", hex: "d7af87" },
+   { code: 181, name: "MistyRose3", hex: "d7afaf" },
+   { code: 182, name: "Thistle3", hex: "d7afd7" },
+   { code: 183, name: "Plum2", hex: "d7afff" },
+   { code: 184, name: "Yellow3", hex: "d7d700" },
+   { code: 185, name: "Khaki3", hex: "d7d75f" },
+   { code: 186, name: "LightGoldenrod2", hex: "d7d787" },
+   { code: 187, name: "LightYellow3", hex: "d7d7af" },
+   { code: 188, name: "Grey84", hex: "d7d7d7" },
+   { code: 189, name: "LightSteelBlue1", hex: "d7d7ff" },
+   { code: 190, name: "Yellow2", hex: "d7ff00" },
+   { code: 191, name: "DarkOliveGreen1", hex: "d7ff5f" },
+   { code: 192, name: "DarkOliveGreen1", hex: "d7ff87" },
+   { code: 193, name: "DarkSeaGreen1", hex: "d7ffaf" },
+   { code: 194, name: "Honeydew2", hex: "d7ffd7" },
+   { code: 195, name: "LightCyan1", hex: "d7ffff" },
+   { code: 196, name: "Red1", hex: "ff0000" },
+   { code: 197, name: "DeepPink2", hex: "ff005f" },
+   { code: 198, name: "DeepPink1", hex: "ff0087" },
+   { code: 199, name: "DeepPink1", hex: "ff00af" },
+   { code: 200, name: "Magenta2", hex: "ff00d7" },
+   { code: 201, name: "Magenta1", hex: "ff00ff" },
+   { code: 202, name: "OrangeRed1", hex: "ff5f00" },
+   { code: 203, name: "IndianRed1", hex: "ff5f5f" },
+   { code: 204, name: "IndianRed1", hex: "ff5f87" },
+   { code: 205, name: "HotPink", hex: "ff5faf" },
+   { code: 206, name: "HotPink", hex: "ff5fd7" },
+   { code: 207, name: "MediumOrchid1", hex: "ff5fff" },
+   { code: 208, name: "DarkOrange", hex: "ff8700" },
+   { code: 209, name: "Salmon1", hex: "ff875f" },
+   { code: 210, name: "LightCoral", hex: "ff8787" },
+   { code: 211, name: "PaleVioletRed1", hex: "ff87af" },
+   { code: 212, name: "Orchid2", hex: "ff87d7" },
+   { code: 213, name: "Orchid1", hex: "ff87ff" },
+   { code: 214, name: "Orange1", hex: "ffaf00" },
+   { code: 215, name: "SandyBrown", hex: "ffaf5f" },
+   { code: 216, name: "LightSalmon1", hex: "ffaf87" },
+   { code: 217, name: "LightPink1", hex: "ffafaf" },
+   { code: 218, name: "Pink1", hex: "ffafd7" },
+   { code: 219, name: "Plum1", hex: "ffafff" },
+   { code: 220, name: "Gold1", hex: "ffd700" },
+   { code: 221, name: "LightGoldenrod2", hex: "ffd75f" },
+   { code: 222, name: "LightGoldenrod2", hex: "ffd787" },
+   { code: 223, name: "NavajoWhite1", hex: "ffd7af" },
+   { code: 224, name: "MistyRose1", hex: "ffd7d7" },
+   { code: 225, name: "Thistle1", hex: "ffd7ff" },
+   { code: 226, name: "Yellow1", hex: "ffff00" },
+   { code: 227, name: "LightGoldenrod1", hex: "ffff5f" },
+   { code: 228, name: "Khaki1", hex: "ffff87" },
+   { code: 229, name: "Wheat1", hex: "ffffaf" },
+   { code: 230, name: "Cornsilk1", hex: "ffffd7" },
+   { code: 231, name: "Grey100", hex: "ffffff" },
+   { code: 232, name: "Grey3", hex: "080808" },
+   { code: 233, name: "Grey7", hex: "121212" },
+   { code: 234, name: "Grey11", hex: "1c1c1c" },
+   { code: 235, name: "Grey15", hex: "262626" },
+   { code: 236, name: "Grey19", hex: "303030" },
+   { code: 237, name: "Grey23", hex: "3a3a3a" },
+   { code: 238, name: "Grey27", hex: "444444" },
+   { code: 239, name: "Grey30", hex: "4e4e4e" },
+   { code: 240, name: "Grey35", hex: "585858" },
+   { code: 241, name: "Grey39", hex: "626262" },
+   { code: 242, name: "Grey42", hex: "6c6c6c" },
+   { code: 243, name: "Grey46", hex: "767676" },
+   { code: 244, name: "Grey50", hex: "808080" },
+   { code: 245, name: "Grey54", hex: "8a8a8a" },
+   { code: 246, name: "Grey58", hex: "949494" },
+   { code: 247, name: "Grey62", hex: "9e9e9e" },
+   { code: 248, name: "Grey66", hex: "a8a8a8" },
+   { code: 249, name: "Grey70", hex: "b2b2b2" },
+   { code: 250, name: "Grey74", hex: "bcbcbc" },
+   { code: 251, name: "Grey78", hex: "c6c6c6" },
+   { code: 252, name: "Grey82", hex: "d0d0d0" },
+   { code: 253, name: "Grey85", hex: "dadada" },
+   { code: 254, name: "Grey89", hex: "e4e4e4" },
+   { code: 255, name: "Grey93", hex: "eeeeee" }
+];
+
 function hex_to_rgb(hex, ary){
    const r = parseInt(hex.substr(0, 2), 16);
    const g = parseInt(hex.substr(2, 2), 16);
@@ -49,19 +321,129 @@ function hex_to_rgb(hex, ary){
    }
 }
 
-for(let i = 0; i < solarized.length; i++){
-   const item = solarized[i];
-   item.rgb = hex_to_rgb(item.hex, true);
+function add_color_info(colors, map){
+   for(let i = 0; i < colors.length; i++){
+      const color = colors[i];
+      if(color.xterm){ color.code = color.xterm; }
+      color.rgb = hex_to_rgb(color.hex);
+      color.hsl = rgb_to_hsl(color.rgb);
+
+      const { h, s, l } = color.hsl;
+      if(h === 0 && s !== 0){ color.hsl.h = 360; }
+
+      if(map){ map[color.code] = color; }
+   }
 }
- 
+
+function rgb_to_hsl({ r, g, b }){
+    r /= 255, g /= 255, b /= 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2;
+
+    if(max == min){
+        h = s = 0; // achromatic
+    }else{
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch(max){
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+
+    return({ h: Math.round(h * 360), s: Math.round(s*100), l: Math.round(l*100) });
+}
+
+const solarized_lookup = {};
+const term_256_lookup = {};
+
+add_color_info(solarized, solarized_lookup);
+add_color_info(term_256_colors, term_256_lookup);
+
+const xterm_small = [
+89, 90, 54, 18, 24, 30, 29, 28, 64, 100, 94, 88,
+125, 126, 127, 91, 55, 19, 25, 31, 37, 36, 35, 34, 70, 106, 142, 136, 130, 124,
+161, 162, 163, 164, 128, 92, 56, 20, 26, 32, 38, 44, 43, 42, 41, 40, 76, 112, 148, 184, 178, 172, 166, 160,
+197, 198, 199, 200, 201, 165, 129, 93, 57, 21, 27, 33, 39, 45, 51, 50, 49, 48, 47, 46, 82, 118, 154, 190, 226, 220, 214, 208, 202, 196,
+204, 205, 206, 207, 171, 135, 99, 63, 69, 75, 81, 87, 86, 85, 84, 83, 119, 155, 191, 227, 221, 215, 209, 203,
+168, 169, 170, 134, 98, 62, 68, 74, 80, 79, 78, 77, 113, 149, 185, 179, 173, 167,
+232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255,
+].map(function(c){ return(term_256_lookup[c]); });
+
+const user_colors = {
+   black: { l: 16, m: 16, h: 16 },
+   white: { l: 231, m: 231, h: 231 },
+   red: { l: 124, m: 160, h: 196 },
+   orange: { l: 130, m: 166, h: 202 },
+   yellow: { l: 136, m: 178, h: 220 },
+   green: { l: 28, m: 34, h: 40 },
+   blue: { l: 21, m: 27, h: 33 },
+   violet: { l: 55, m: 92, h: 134 },
+   magenta: { l: 125, m: 162, h: 199 },
+   gray: { 
+      ll: 235, l: 238, 
+      ml: 242, m: 246, mh: 248, 
+      h: 250, hh: 252 
+   },
+   b0: { l: 64, m: 28, h: 70, },
+   b1: { l: 65, m: 28, h: 71, },
+   b2: { l: 33, m: 39, h: 45, },
+   b3: { l: 61, m: 62, h: 63, },
+   beauty0: { l: 185, m: 172, h: 179, },
+   beauty2: { l: 0, m: 124, h: 0, },
+   beauty4: { l: 73, m: 167, h: 173, },
+   beauty5: { l: 168, m: 126, h: 0, },
+};
+
+const code_colors = {
+   gray: user_colors.gray,
+   black: user_colors.black,
+   white: user_colors.white,
+};
+
+
+([
+   { l: 88, m: 124, h: 160 },
+   { l: 0, m: 125, h: 0 },
+   { l: 0, m: 126, h: 127 },
+   { l: 0, m: 91, h: 92 },
+   { l: 0, m: 56, h: 0 },
+   { l: 61, m: 62, h: 63 },
+   // { l: 19, m: 20, h: 21, hh: 27 },
+   // { l: 25, m: 26, h: 27 },
+   { l: 0, m: 26, h: 27 },
+   { l: 0, m: 33, h: 0, hh: 39 },
+   { l: 0, m: 31, h: 0 },
+   { l: 0, m: 30, h: 0 },
+   { l: 0, m: 37, h: 0 },
+   { l: 0, m: 36, h: 0 },
+   { l: 0, m: 64, h: 70 },
+   { l: 0, m: 28, h: 34, hh: 35 },
+   // { l: 0, m: 0,  h: 36 },
+   { l: 0, m: 71, h: 0 },
+   { l: 0, m: 106, h: 0 },
+   { l: 130, m: 166, h: 0 },
+   { l: 0, m: 136, h: 142 },
+   { l: 0, m: 143, h: 0 },
+   { l: 0, m: 172, h: 0 },
+   { l: 0, m: 179, h: 0 },
+   { l: 0, m: 173, h: 0 },
+   { l: 0, m: 222, h: 0 },
+   { l: 0, m: 167, h: 0 },
+]).forEach(function(color, i){
+   // if(color.l === 0){ color.l = 0 }
+   // if(color.m === 0){ color.m = 235 }
+   // if(color.h === 0){ color.h = 236 }
+   code_colors[i] = color;
+});
+
 function padl(str, n){ 
+   str += "";
    return str.padStart(n, " ");
 }
 
-function out(...str){
-   str.push("\n")
-   process.stdout.write(str.join(""));
-}
 
 function color_16(fg, str, npad){
    if(fg > 15 || fg < 0){ throw("unkown color number. must be between 0 and 15. got: " + fg); }
@@ -71,8 +453,19 @@ function color_16(fg, str, npad){
    return(["\033[", `${fg}m`, padl(str, npad), "\033[0m"].join(""));
 }
 
-function color_256(fg, str, npad){
-   return(["\033[38;5;", `${fg}m`, padl(str, npad), "\033[0m"].join(""));
+function color_256(colors, str, npad){
+   if(Array.isArray(colors)){
+      let [fg, bg] = colors;
+      return([
+         "\033[38;5;", `${fg}m`, 
+         "\033[48;5;", `${bg}m`,
+         padl(str, npad), 
+         "\033[0m"
+      ].join(""));
+   }else{
+      let fg = colors;
+      return(["\033[38;5;", `${fg}m`, padl(str, npad), "\033[0m"].join(""));
+   }
 }
 
 function color_hex(fg_hex, str, npad){
@@ -87,7 +480,7 @@ function color_rgb(rgb, str, npad){
 
 function print_solarized(){
 
-   out(
+   _.line(
       padl("name", 7) , " ", 
       padl("16", 2), " ", 
       padl("256", 3), " ",
@@ -97,10 +490,10 @@ function print_solarized(){
 
    for(let i = 0; i < solarized.length; i++){
       const item = solarized[i];
-      out(
+      _.line(
          padl(item.name, 7) , " ", 
          color_16(item.c16-0, item.c16, 2), " ", 
-         color_256(item.xterm, item.xterm, 3), " ",
+         color_256(item.code, item.code, 3), " ",
          color_hex(item.xterm_hex, item.xterm_hex, 6), " ",
          color_hex(item.hex, item.hex, 6), " ",
          color_hex(item.hex, JSON.stringify(item.rgb), 6)
@@ -108,36 +501,488 @@ function print_solarized(){
    }
 }
 
-function print_color(rgb){
+function print_rgb_color(rgb){
    const { r, b, g } = rgb;
    let rgb_str = `[${r.toString().padStart(3)}, ${g.toString().padStart(3)}, ${b.toString().padStart(3)}]`
    let hex_str = `[${r.toString(16).padStart(2, "0")}, ${g.toString(16).padStart(2, "0")}, ${b.toString(16).padStart(2, "0")}]`
-   out(color_rgb(rgb, `rgb: ${rgb_str} hex: ${hex_str} text: lorem ipsum dolor`));
+   _.line(color_rgb(rgb, `rgb: ${rgb_str} hex: ${hex_str} text: lorem ipsum dolor`));
 
 }
 
-function print_colors(){
-   for(let i = 0; i < 16; i++){ out(color_16(i, i+"")); }
+function print_24_bit_colors(){
+   for(let i = 0; i < 16; i++){ _.line(color_16(i, i+"")); }
    const step = 16;
    for(let r = 0; r < 255; r += step){ 
       for(let g = 0; g < 255; g += step){ 
          for(let b = 0; b < 255; b += step){ 
-            print_color({ r, g, b });
+            print_rgb_color({ r, g, b });
          }
       }
    }
 }
 
+function array_str(a, pad_n){
+   const ret = [];
+   for(let i = 0; i < a.length; i++){
+      ret[i] = padl(a[i], pad_n);
+   }
+   return(`[${ret.join(", ")}]`);
+}
+
+function color_to_str({ color, hsl, wide, short, highlight }){
+
+   if(!color){
+      if(short){ return " ".repeat(9); }
+      else{ throw new Error("only know about placeholders for short values"); }
+   }
+
+   let c = padl(color.code, 3);
+
+   if(highlight[color.code]){ c = color_256(161, c); }
+
+   let _rgb = array_str([color.rgb.r, color.rgb.g, color.rgb.b], 3);
+   const _hsl = array_str([color.hsl.h, color.hsl.s, color.hsl.l], 3);
+
+   // if(short){ return(`${c} -> ` + color_256(color.code, JSON.stringify([color.hsl.s, color.hsl.l]))); }
+   if(short){ return(`${c}:` + color_256(color.code, padl(JSON.stringify([color.hsl.h]), 5))); }
+
+   if(!wide){ return([`code: ${c} `, color_256(color.code, `code: ${padl(color.code, 3)} rgb: ${_rgb} hsl: ${_hsl} hex: ${color.hex} text: lorem ipsum dolor`)].join(" ")); }
+
+   if(hsl){
+      return([`${c} ->`, color_256(color.code, `${_hsl}`)].join(" "));
+   }else{
+      return([`${c} ->`, color_256(color.code, `(hex: ${color.hex})`)].join(" "));
+   }
+}
+
+function _print_term256_colors({ colors, wide, columns, hsl, highlight }){
+   const skip = 0;
+
+   if(wide){
+      if(columns){
+         const columns = 6;
+         const effective_length = colors.length - skip; // Adjust for skipped colors
+         const rows = Math.ceil(effective_length / columns);
+
+         for (let row = 0; row < rows; row++) {
+            const line = [];
+            for (let col = 0; col < columns; col++) {
+               const index = row + col * rows + skip; // Adjust index to account for skipped colors
+               if (index < colors.length) {
+                  const color = colors[index];
+                  line.push(color_to_str({ color, highlight, hsl, wide }));
+               }
+            }
+            _.line(line.join(" "));
+         }
+      }else{
+         const cols = [];
+         let line = [];
+         for(let i = skip; i < colors.length; i++){ 
+            if((i % 6 === 0) && line.length){ _.line(line.join(" ")); line = []; }
+            const color = colors[i];
+            line.push(color_to_str({ color, highlight, hsl, wide }));
+         }
+         if(line.length){ _.line(line.join(" ")); }
+      }
+   }else{
+      for(let i = skip; i < colors.length; i++){ 
+         const color = colors[i];
+         _.line(color_to_str({ color, highlight, hsl, wide }));
+      }
+   }
+}
+
+function strip_color_codes(str){
+   const regex = /\x1b\[[0-9;]*m/g;
+   return str.replace(regex, '');
+}
+
+function print_columns(arr){
+   const max_rows = arr.reduce((max, col) => Math.max(max, col.length), 0);
+   // let pad = 9;
+   let pad =  strip_color_codes(arr[0][0] + "").length;
+
+   for (let row = 0; row < max_rows; row++) {
+      let row_str = '';
+      for (let col = 0; col < arr.length; col++) {
+         let val = arr[col][row];
+         val = (val || ' '.repeat(pad)) + "";
+         const diff = (pad - strip_color_codes(val).length);
+         if(diff > 0){ val = " ".repeat(diff) + val; }
+         row_str += (val + ' ');
+      }
+      _.line(row_str);
+   }
+}
+
+function convert_columns({ columns, highlight }){
+   for(let i = 0; i < columns.length; i++){
+      let column = columns[i];
+      for(let j = 0; j < column.length; j++){
+         if(typeof column[j] !== "string"){
+            column[j] = color_to_str({ color: column[j], highlight, hsl: true, wide: true, short: true });
+         }
+      }
+   }
+}
+
+function print_pallet_map({ colors, highlight, compressed }){
+   colors = colors.slice();
+
+   const hsl = true;
+   const wide = false;
+   const short = true;
+
+   highlight = highlight || {};
+
+   const sort = function(a, b){ 
+      const { h: ah, s: as, l: al } = a.hsl;
+      const { h: bh, s: bs, l: bl } = b.hsl;
+
+      if(ah === 0 && bh === 0){
+         return(al-bl);
+      }
+
+      if(al !== bl){ return(al-bl); }
+      if(as !== bs){ return(as-bs); }
+      if(ah !== bh){ return(ah-bh); }
+
+      return(0);
+   };
+
+   colors.sort(sort);
+
+
+   const grays = [];
+
+   let columns = [];
+   let column = null;
+   let last = null;
+   colors.forEach(function(color){
+      if(color.hsl.h === 0){ grays.push(color); return; }
+      if(!last || last.hsl.s !== color.hsl.s || last.hsl.l !== color.hsl.l){
+         column = {}
+         columns.push(column);
+      }
+      last = color;
+      column[color.hsl.h] = color;
+   });
+
+   const _cols = [];
+   const n_cols = columns.length;
+
+   for(let i = 0; i < n_cols; i++){ _cols.push([]); }
+
+   let col_n = 0;
+
+   for(let h = 1; h <= 360; h++){
+      let has_one = false;
+      let has_all = true;
+      let has_conflict = false;
+      for(let col = 0; col < n_cols; col++){
+         const color = columns[col][h];
+         if(color){
+            has_one = true;
+            if(_cols[col][col_n]){ 
+               has_conflict = true;
+            }
+         }
+         // _.line(`test: [${col}] hue: ${h}: `, color);
+         has_one = has_one || color;
+         has_all = has_all && has_one;
+      }
+
+      if(compressed){
+         if(has_all || has_conflict){
+            col_n++;
+            for(let col = 0; col < n_cols; col++){
+               _cols[col][col_n] = (columns[col][h] || null);
+            }
+         }else if(has_one){
+            for(let col = 0; col < n_cols; col++){
+               if(columns[col][h]){
+                  _cols[col][col_n] = (columns[col][h] || null);
+
+               }
+            }
+         }
+      }else{
+         if(has_one){
+            for(let col = 0; col < n_cols; col++){
+               _cols[col][col_n] = (columns[col][h] || null);
+            }
+            col_n++;
+         }
+      }
+   }
+
+   columns = _cols;
+
+   columns.push(grays);
+
+   convert_columns({ columns, highlight });
+
+   return print_columns(columns);
+}
+
+function print_pallet({ colors, highlight }){
+   colors = colors.slice();
+
+   const hsl = true;
+   const wide = false;
+   const short = true;
+
+   highlight = highlight || {};
+
+   const sort = function(a, b){ 
+      const { h: ah, s: as, l: al } = a.hsl;
+      const { h: bh, s: bs, l: bl } = b.hsl;
+
+      if(ah === 0 && bh === 0){
+         return(al-bl);
+      }
+
+      if(al !== bl){ return(al-bl); }
+      if(as !== bs){ return(as-bs); }
+      if(ah !== bh){ return(ah-bh); }
+
+      return(0);
+   };
+
+   colors.sort(sort);
+
+
+   const grays = [];
+
+   let columns = [];
+   let column = null;
+   let last = null;
+   colors.forEach(function(color){
+      if(color.hsl.h === 0){ grays.push(color); return; }
+      if(!last || last.hsl.s !== color.hsl.s || last.hsl.l !== color.hsl.l){
+         column = [];
+         columns.push(column);
+      }
+      last = color;
+      column.push(color);
+   });
+
+   columns.push(grays);
+
+   convert_columns({ columns, highlight });
+
+   return print_columns(columns);
+}
+
+function print_user_colors({ colors, highlight, lua }){
+
+   highlight = highlight || {};
+   const compact = true;
+
+   const lines = [];
+
+   const keys = Object.keys(colors);
+
+   const lorem = `lorem ipsum var const function(){ }`;
+
+   keys.forEach(function(name){
+      if(name === "gray"){ return; }
+      const color = colors[name];
+
+      if(lua){
+         lines.push([
+            `local `, name, "= {", "\n",
+            `   l = { ctermfg = ${color.l} }\n`,
+            `   m = { ctermfg = ${color.m} }\n`,
+            `   h = { ctermfg = ${color.h} }\n`,
+            `   bg = {\n` 
+            `      l = { ctermbg = ${color.l} }\n`,
+            `      m = { ctermbg = ${color.m} }\n`,
+            `      h = { ctermbg = ${color.h} }\n`,
+            `   }\n`,
+            "}"
+         ].join(""));
+      }else{
+         if(compact){
+            if(name === "black"){
+               lines.push([
+                  (name + ": ").padEnd(9, " "), "{ ", 
+                  color_256([color.l, colors.white.h], `l: [${padl(color.l, 3)}], `),
+                  color_256([color.m, colors.white.h], `m: [${padl(color.m, 3)}], `),
+                  color_256([color.h, colors.white.h], `h: [${padl(color.h, 3)}] `),
+                  "}"
+               ].join(""));
+            }else{
+               lines.push([
+                  (name + ": ").padEnd(9, " "), "{ ", 
+                  color_256(color.l, `l: [${padl(color.l, 3)}], `),
+                  color_256(color.m, `m: [${padl(color.m, 3)}], `),
+                  color_256(color.h, `h: [${padl(color.h, 3)}]${color.hh?", ":" "}`),
+                  color.hh ? color_256(color.hh, `hh: [${padl(color.hh, 3)}] `) : "",
+                  "}"
+               ].join(""));
+            }
+         }else{
+            lines.push([
+               name, ": {", "\n",
+               `   l (${padl(color.l, 3)}) `, color_256(color.l, lorem), "\n",
+               `   m (${padl(color.m, 3)}) `, color_256(color.m, lorem), "\n",
+               `   h (${padl(color.h, 3)}) `, color_256(color.h, lorem), "\n",
+               "}"
+            ].join(""));
+         }
+      }
+   });
+
+   const gray = colors.gray;
+
+   if(lua){
+      lines.push([
+         "local gray", " = {", "\n",
+         `   ll = { ctermfg = ${gray.ll} },\n`,
+         `   l  = { ctermfg = ${gray.l} },\n`,
+         `   ml = { ctermfg = ${gray.ml} },\n`,
+         `   m  = { ctermfg = ${gray.m} },\n`,
+         `   mh = { ctermfg = ${gray.mh} },\n`,
+         `   h  = { ctermfg = ${gray.h} },\n`,
+         `   hh = { ctermfg = ${gray.hh} },\n`,
+         `   bg = {\n`,
+         `      ll = { ctermbg = ${gray.ll} },\n`,
+         `      l  = { ctermbg = ${gray.l} },\n`,
+         `      ml = { ctermbg = ${gray.ml} },\n`,
+         `      m  = { ctermbg = ${gray.m} },\n`,
+         `      mh = { ctermbg = ${gray.mh} },\n`,
+         `      h  = { ctermbg = ${gray.h} },\n`,
+         `      hh = { ctermbg = ${gray.hh} },\n`,
+         `   }\n`,
+         "}"
+      ].join(""));
+   }else{
+      lines.push([
+         "gray", ": {", "\n",
+            `   ll (${padl(gray.ll, 3)}) `, color_256(gray.ll, lorem), "\n",
+            `   l  (${padl(gray.l, 3)}) `, color_256(gray.l, lorem), "\n",
+            `   ml (${padl(gray.ml, 3)}) `, color_256(gray.ml, lorem), "\n",
+            `   m  (${padl(gray.m, 3)}) `, color_256(gray.m, lorem), "\n",
+            `   mh (${padl(gray.mh, 3)}) `, color_256(gray.mh, lorem), "\n",
+            `   h  (${padl(gray.h, 3)}) `, color_256(gray.h, lorem), "\n",
+            `   hh (${padl(gray.hh, 3)}) `, color_256(gray.hh, lorem), "\n",
+            "}"
+      ].join(""));
+   }
+
+   _.out(lines.join("\n"));
+
+}
+
+function print_term256_colors({ colors, wide, highlight }){
+
+   colors = (colors || term_256_colors).slice();
+   highlight = highlight || {};
+
+   const score_val = function(color){
+      const { r, g, b } = color.rgb;
+      return(r + g + b);
+   };
+
+   const score_total_val = function(color){
+      const { r, g, b } = color.rgb;
+      return(score_rgb(r) + score_rgb(g) + score_rgb(b));
+   };
+
+   const score_rgb = function(c){
+      let score = 0;
+      const vals = [0x00, 0x5f, 0x87, 0xaf, 0xd7, 0xff];
+      for(let i = 0; i < vals.length; i++){
+         score += i;
+         if(c === vals[i]){ break; }
+      }
+      return(score);
+   }
+
+   const score_max_val = function(color){
+      const { r, g, b } = color.rgb;
+      const a = [r,g,b];
+      a.sort(function(a, b){ return(b-a); });
+      return(a[0] - (a[1] + a[2]));
+   };
+
+   const score_hsl = function(color){
+      const { h, s, l } = color.hsl;
+      return(h + s - l);
+   };
+
+   const score_color = function(color){ 
+      // return score_val(color);
+      // return score_max_val(color);
+      // return score_total_val(color);
+      return score_hsl(color);
+    };
+
+   // colors.sort(function(a, b){ return(score_color(b) - score_color(a)); });
+   // colors = colors.filter(function(a){ return(a.hsl.l === 50); });
+
+   colors.sort(function(a, b){ 
+      const { h: ah, s: as, l: al } = a.hsl;
+      const { h: bh, s: bs, l: bl } = b.hsl;
+
+      if(ah === 0 && as === 0){
+         if(bh === 0 && bs === 0){
+            return(al-bl);
+         }
+      }
+
+      // if(ah !== bh){ return(bh-ah); }
+      // if(as !== bs){ return(bs-as); }
+      // if(al !== bl){ return(bl-al); }
+
+      if(as !== bs){ return(bs-as); }
+      if(al !== bl){ return(al-bl); }
+      if(ah !== bh){ return(bh-ah); }
+
+      // return(ah-bh);
+      return(0);
+   });
+
+   const columns = [];
+   let column = [];
+   let last = null;
+   colors.forEach(function(color){
+      if(last){
+         if(last.hsl.h === 0 && color.hsl.h === 0 && last.hsl.s === 0 && color.hsl.s === 0){  
+
+         }else if(last.hsl.s !== color.hsl.s || last.hsl.l !== color.hsl.l){
+            column = [];
+            columns.push(column);
+         }
+      }
+      last = color;
+      column.push(color_to_str({ color, highlight, hsl, wide, short: true }));
+      // column.push(color_to_str({ color, highlight, hsl, wide }));
+   });
+
+   // console.log(JSON.stringify(columns, null, 3));
+
+   // return print_columns(columns.slice(0, 3));
+   return print_columns(columns);
+
+   return _print_term256_colors({ wide, columns: true, colors, hsl: true, highlight });
+}
+
 (function main(){
 
-   const opt = process.argv[2] || "";
-   // out("opt: ", opt);
+   const args = process.argv.slice(2);
+   const opt = args.shift();
+   // _.line("opt: ", opt);
+   // _.line("args: ", args);
 
    function print_help(){
-      out([
+      _.line([
          "<number or hex>", 
          "-s for solarized",
-         "-c for colors (default)", 
+         "-c for 24 bit colors", 
+         "-t for 256 term colors", 
          "-h for help",
       ].join("\n"));
    }
@@ -147,16 +992,38 @@ function print_colors(){
    }else if(opt === "-s"){
       return print_solarized();
    }else if(opt === "-c"){
-      return print_colors();
+      return print_24_bit_colors();
+   }else if(opt === "-t"){
+      return print_term256_colors({ wide: true, highlight: { [args[0]]: true } });
+   }else if(opt === "-ts"){
+      return print_term256_colors({ wide: true, highlight: solarized_lookup });
+   }else if(opt === "-tm"){
+      return print_pallet_map({ colors: term_256_colors });
+   }else if(opt === "-tmc"){
+      return print_pallet_map({ colors: term_256_colors, compressed: true });
+   }else if(opt === "-sm"){
+      return print_pallet({ colors: xterm_small });
+   }else if(opt === "-smp"){
+      return print_pallet_map({ colors: xterm_small, compressed: true, highlight: solarized_lookup });
+   }else if(opt === "-uc"){
+      if(args[0]){
+         return print_user_colors({ colors: user_colors, highlight: { [args[0]]: true } });
+      }else{
+         return print_user_colors({ colors: user_colors });
+      }
+   }else if(opt === "-cc"){
+      return print_user_colors({ colors: code_colors });
+   }else if(opt === "-cclua"){
+      return print_user_colors({ colors: code_colors, lua: true });
    }else{
       if(opt.length === 7){ 
          // #xxxxxx -> xxxxxx
          opt = opt.slice(1);
       }
       if(opt.length === 6){
-         out(print_color(hex_to_rgb(opt)));
+         _.line(print_rgb_color(hex_to_rgb(opt)));
       }else if(opt.length <= 3){
-         out(color_256(opt, `term_color: ${opt} text: lorem ipsum dolor`));
+         _.line(color_256(opt, `term_color: ${opt} text: lorem ipsum dolor`));
       }else{
          return print_help();
       }

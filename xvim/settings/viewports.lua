@@ -1,4 +1,7 @@
 
+vim.o.splitbelow = true
+vim.o.splitright = true
+
 -- TODO: refactor this.
 
 -- vim.api.nvim_create_autocmd({"BufLeave", "BufDelete"}, {
@@ -34,6 +37,7 @@ local function resize_window(win_index, size)
     vim.api.nvim_set_current_win(cur_win)
 end
 
+-- first split is math.ceil(columns * 0.29)
 local function layout_windows()
     local cur_win = vim.api.nvim_get_current_win()
     local cur_win_width = vim.api.nvim_win_get_width(cur_win)
@@ -128,8 +132,15 @@ vim.keymap.set('n', '\\', layout_windows, { silent = true })
 -- vim.keymap.set('n', '<C-p>', ':tabp<CR>', { silent = true })
 
 -- Tab navigation
-vim.keymap.set('n', '<C-h>', ':tabp<CR>', { silent = true })
-vim.keymap.set('n', '<C-l>', ':tabn<CR>', { silent = true })
-vim.keymap.set('n', '<C-p>', ':tabm -1<CR>', { silent = true })
-vim.keymap.set('n', '<C-t>', ':tabm +1<CR>', { silent = true })
+vim.keymap.set('n', '<C-h>', ':tabp<CR>')
+vim.keymap.set('n', '<C-l>', ':tabn<CR>')
+vim.keymap.set('n', '<C-p>', ':tabm -1<CR>')
+vim.keymap.set('n', '<C-t>', ':tabm +1<CR>')
+
+-- scroll the viewport faster with ctrl-j and ctrl-k
+vim.keymap.set('n', '<C-j>', '5<C-e>')
+vim.keymap.set('n', '<C-k>', '5<C-y>')
+
+-- navigate windows easily
+vim.keymap.set('', '<C-n>', '<C-w>w')
 

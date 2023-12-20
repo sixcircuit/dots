@@ -55,7 +55,7 @@ commandt.setup({
    -- order = "reverse"
    ignore_case = true,
    -- always_show_dot_files = true,
-   -- open = open,
+   open = open,
    scanners = {
       file = { max_files = max_files, },
       find = { max_files = max_files, },
@@ -75,8 +75,8 @@ commandt.setup({
          open = open
       },
       find = {
-         -- max_depth = 100,
          open = open,
+         -- max_depth = 100,
          command = function(directory)
             if vim.startswith(directory, './') then
                directory = directory:sub(3, -1)

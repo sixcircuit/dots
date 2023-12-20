@@ -3,13 +3,14 @@ require('nvim-treesitter.configs').setup({
   ensure_installed = "all",
   highlight = {
     enable = true,
+    disable = { perl },
     -- enable = false,
-    -- additional_vim_regex_highlighting = false,
+    additional_vim_regex_highlighting = false,
     -- additional_vim_regex_highlighting = true,
 
-    -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
+    -- or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
     -- disable = function(lang, buf)
-    --     local max_filesize = 100 * 1024 -- 100 KB
+    --     local max_filesize = 100 * 1024 -- 100 kb
     --     local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
     --     if ok and stats and stats.size > max_filesize then
     --         return true
@@ -44,11 +45,11 @@ local luasnip = require("luasnip")
 require("luasnip.loaders.from_snipmate").lazy_load({paths = "~/term/xvim/snippets"})
 
 local mapping = {
-   -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-   ['<CR>'] = cmp.mapping.confirm({ select = true }),
-   ['<C-e>'] = cmp.mapping.abort(),
-   ['<C-Space>'] = cmp.mapping.complete(),
-   ["<Tab>"] = cmp.mapping(function(fallback)
+   -- accept currently selected item. set `select` to `false` to only confirm explicitly selected items.
+   ['<cr>'] = cmp.mapping.confirm({ select = true }),
+   ['<c-e>'] = cmp.mapping.abort(),
+   ['<c-space>'] = cmp.mapping.complete(),
+   ["<tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
          if #cmp.get_entries() == 1 then
             cmp.confirm({ select = true })
@@ -56,7 +57,7 @@ local mapping = {
             cmp.select_next_item()
          end
          -- cmp.select_next_item()
-         -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable() 
+         -- you could replace the expand_or_jumpable() calls with expand_or_locally_jumpable() 
          -- that way you will only jump inside the snippet region
       elseif luasnip.expand_or_locally_jumpable() then
          luasnip.expand_or_jump()
@@ -157,6 +158,18 @@ local lspconfig = require 'lspconfig'
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
+lspconfig.tsserver.setup({
+   capabilities = capabilities,
+   -- on_attach = on_attach,
+   init_options = {
+      hostInfo = "neovim",
+      preferences = {
+         disableSuggestions = true,
+         --    -- documentFormatting = true
+      }
+   }
+})
+
 lspconfig.lua_ls.setup({
    capabilities = capabilities,
    -- on_attach = on_attach,
@@ -181,18 +194,6 @@ lspconfig.lua_ls.setup({
          -- Do not send telemetry data containing a randomized but unique identifier
          telemetry = { enable = false, },
       },
-   }
-})
-
-lspconfig.tsserver.setup({
-   capabilities = capabilities,
-   -- on_attach = on_attach,
-   init_options = {
-      hostInfo = "neovim",
-      preferences = {
-         disableSuggestions = true,
-         --    -- documentFormatting = true
-      }
    }
 })
 

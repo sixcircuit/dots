@@ -1,7 +1,74 @@
 
+-- this doesn't seem to work.
+-- vim.o.termguicolors = true
 
-local blue = { ctermfg = 33 }
-local orange = { 
+local red = {
+   l = { ctermfg = x },
+   m = { ctermfg = x },
+   h = { ctermfg = x },
+   bg = {
+      l = { ctermbg = x },
+      m = { ctermbg = x },
+      h = { ctermbg = x },
+   }
+}
+
+local orange = {
+   l = { ctermfg = x },
+   m = { ctermfg = x },
+   h = { ctermfg = x },
+   bg = {
+      l = { ctermbg = x },
+      m = { ctermbg = x },
+      h = { ctermbg = x },
+   }
+}
+
+local yellow = {
+   l = { ctermfg = x },
+   m = { ctermfg = x },
+   h = { ctermfg = x },
+   bg = {
+      l = { ctermbg = x },
+      m = { ctermbg = x },
+      h = { ctermbg = x },
+   }
+}
+
+local green = {
+   l = { ctermfg = x },
+   m = { ctermfg = x },
+   h = { ctermfg = x },
+   bg = {
+      l = { ctermbg = x },
+      m = { ctermbg = x },
+      h = { ctermbg = x },
+   }
+}
+
+local blue = {
+   l = { ctermfg = x },
+   m = { ctermfg = x },
+   h = { ctermfg = x },
+   bg = {
+      l = { ctermbg = x },
+      m = { ctermbg = x },
+      h = { ctermbg = x },
+   }
+}
+
+local violet = {
+   l = { ctermfg = x },
+   m = { ctermfg = x },
+   h = { ctermfg = x },
+   bg = {
+      l = { ctermbg = x },
+      m = { ctermbg = x },
+      h = { ctermbg = x },
+   }
+}
+
+local test_color = { 
    ctermfg = 166,
    bold = true, 
    italic = true, 
@@ -122,4 +189,30 @@ vim.api.nvim_create_autocmd("TextYankPost", {
         vim.highlight.on_yank({ higroup = "IncSearch", timeout = 200 })
     end,
 })
+
+-- black gutter for line numbers
+vim.api.nvim_set_hl(0, 'LineNr', { ctermfg = 238 })
+vim.api.nvim_set_hl(0, 'TabLine', { ctermfg = 245, ctermbg = "none", underline = true })
+vim.api.nvim_set_hl(0, 'TabLineFill', { ctermbg = "none", underline = true })
+
+-- these are changes for solarized
+vim.api.nvim_set_hl(0, 'MatchParen', { ctermfg=136, ctermbg = "none", bold = true })
+
+vim.api.nvim_set_hl(0, 'CursorLine', { ctermbg = 235 })
+
+-- vim.wo.cursorcolumn = true
+-- vim.api.nvim_set_hl(0, "CursorColumn", { ctermbg="darkred", ctermfg="white" })
+
+
+-- -- a little lighter than the default 241. wish there was an in between
+-- vim.api.nvim_set_hl(0, 'Comment', { ctermfg = 242 }) -- Name:     Solarized vim colorscheme
+
+vim.opt.signcolumn = 'yes'
+vim.api.nvim_set_hl(0, 'SignColumn', {})
+
+-- vim.fn.sign_define('DiagnosticSignError', { text = '⚠', texthl = 'DiagnosticSignError' })
+vim.fn.sign_define('DiagnosticSignError', { text = 'E', texthl = 'DiagnosticSignError' })
+vim.fn.sign_define('DiagnosticSignWarn', { text = 'W', texthl = 'DiagnosticSignWarn' })
+vim.fn.sign_define('DiagnosticSignInfo', { text = 'I', texthl = 'DiagnosticSignInfo' })
+vim.fn.sign_define('DiagnosticSignHint', { text = 'H', texthl = 'DiagnosticSignHint' })
 
