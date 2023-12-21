@@ -1,6 +1,24 @@
 
+-- js: 
+-- null, return, await, args, this.
+-- string single, double, ``
+-- prototype, defer?
+-- noise, null, undefined, typeof, true, false
+-- numbers, brackets, parents, object key
+-- comment TODO, HACK
+-- add keywords: self.
+-- single character
+-- template string, template var
+-- keywords should be in italics
+-- strings should be italic
+
+-- find markdown syntax setup
+
 -- this doesn't seem to work.
 -- vim.o.termguicolors = true
+
+
+-- TODO: write a function to do the colors, so you can easily support gui colors
 
 local red = {
    l = { ctermfg = x },
@@ -147,7 +165,8 @@ vim.api.nvim_set_hl(0, 'HopPreview', { link = 'IncSearch' })
 local black = 232
 local menu_bg = 234
 local select_bg = 233
-local menu_fg = 249
+-- local menu_fg = 249
+local menu_fg = 246  -- this keeps the autocomplete menu a little more chill
 local select_fg = 'white'
 -- 'white', 'darkblue'
 -- local menu_bg = 33
@@ -216,3 +235,19 @@ vim.fn.sign_define('DiagnosticSignWarn', { text = 'W', texthl = 'DiagnosticSignW
 vim.fn.sign_define('DiagnosticSignInfo', { text = 'I', texthl = 'DiagnosticSignInfo' })
 vim.fn.sign_define('DiagnosticSignHint', { text = 'H', texthl = 'DiagnosticSignHint' })
 
+local function disable_all_highlight_groups()
+   -- Retrieve list of all highlight groups
+   local highlight_groups = vim.api.nvim_get_hl(0, { link = true })
+
+   -- Iterate and disable each group
+   for group, info in pairs(highlight_groups) do
+      if not info.link then
+         vim.print(group)
+         vim.print(info)
+      end
+      -- vim.api.nvim_set_hl(0, group, { link = '' })
+   end
+end
+
+-- Call the function to disable all highlight groups
+-- disable_all_highlight_groups()

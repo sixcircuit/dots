@@ -38,56 +38,59 @@ local function resize_window(win_index, size)
 end
 
 -- first split is math.ceil(columns * 0.29)
-local function layout_windows()
-    local cur_win = vim.api.nvim_get_current_win()
-    local cur_win_width = vim.api.nvim_win_get_width(cur_win)
-    local all_cols = vim.o.columns
-    local panes = vim.fn.winnr('$')
+local function layout_windows(adjust_left)
+   if adjust_left == nil then
+      adjust_left = 0
+   end
+   local cur_win = vim.api.nvim_get_current_win()
+   local cur_win_width = vim.api.nvim_win_get_width(cur_win)
+   local all_cols = vim.o.columns
+   local panes = vim.fn.winnr('$')
 
-    local first_split_small = 50
-    local second_split_small = 85
+   local first_split_small = 50 + adjust_left
+   local second_split_small = 85
 
-    local first_split_big = 83  -- same as = on big screen (for 17 font size)
+   local first_split_big = 83 + adjust_left -- same as = on big screen (for 17 font size)
 
    -- local first_split_big = 93 " same as = on big screen (for 15 font size)
    -- local second_split_big = 100
 
    -- terminal windows - 10
 
-    if all_cols <= 250 then
-        if panes == 1 then
-            split_window()
-            switch_to_window(2)
-            resize_window(1, first_split_small)
+   if all_cols <= 250 then
+      if panes == 1 then
+         split_window()
+         switch_to_window(2)
+         resize_window(1, first_split_small)
 
-        elseif panes == 2 then
-            resize_window(1, first_split_small)
+      elseif panes == 2 then
+         resize_window(1, first_split_small)
 
-        elseif panes == 3 then
-            resize_window(1, first_split_small)
-            resize_window(2, second_split_small)
+      elseif panes == 3 then
+         resize_window(1, first_split_small)
+         resize_window(2, second_split_small)
 
-        else
-            vim.api.nvim_exec("wincmd =", false)
-        end
-    else  -- big screen
-        if panes == 1 then
-            split_window()
-            switch_to_window(2)
-            resize_window(1, first_split_big)
+      else
+         vim.api.nvim_exec("wincmd =", false)
+      end
+   else  -- big screen
+      if panes == 1 then
+         split_window()
+         switch_to_window(2)
+         resize_window(1, first_split_big)
 
-        elseif panes == 2 then
-            resize_window(1, first_split_big)
+      elseif panes == 2 then
+         resize_window(1, first_split_big)
 
-        elseif panes == 3 then
-            vim.api.nvim_exec("wincmd =", false)
+      elseif panes == 3 then
+         vim.api.nvim_exec("wincmd =", false)
          -- resize_window(1, first_split_big)
          -- resize_window(2, second_split_big)
 
-        else
-            vim.api.nvim_exec("wincmd =", false)
-        end
-    end
+      else
+         vim.api.nvim_exec("wincmd =", false)
+      end
+   end
 end
 
 -- TODO: i'd like this to be smart and rotate till i'm at a new file.

@@ -186,11 +186,17 @@ local function bg_color_for_mode(prefix, suffix)
       i = insert_ctermbg
    }
 
-  local current_mode = vim.api.nvim_get_mode().mode:sub(1, 1)
+   local current_mode = vim.api.nvim_get_mode().mode:sub(1, 1)
 
-  local mode = mode_map[current_mode] or current_mode
+   local mode = mode_map[current_mode] or current_mode
 
-  return color_map[mode]
+   local color = color_map[mode]
+
+   if color == nil then
+      return 0
+   else
+      return color
+   end
 
 end
 

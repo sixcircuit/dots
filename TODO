@@ -6,6 +6,9 @@
 = longterm
    - move tabline to lightline and get rid of tabline
    - maybe write your own tabout. tabout seems shitty
+   - hack support into command-t lua for:
+      . it doesn't show you the matches anymore.
+      - exe "hi! CommandTCharMatched" .s:fmt_bold .s:fg_orange .s:bg_none
 
 = vim
 
@@ -23,6 +26,11 @@
             - /colors/hop.lua
             - /colors/pounce.lua
          - drop old javascript highlighting
+      - add support for gui 24bit colors 
+         . should be easy, just pull the hex and use it.
+   = setup colorizer
+      - https://github.com/norcalli/nvim-colorizer.lua
+   = setup cspell
 
    = setup snippets
       - remove ultisnip

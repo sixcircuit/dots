@@ -2,13 +2,18 @@
 
 " Plug 'pangloss/vim-javascript'
 
+Plug 'inkarkat/vim-ingo-library'
+Plug 'inkarkat/vim-ShowTrailingWhitespace'
+
+" Plug 'itchyny/vim-cursorword'
+" let g:cursorword_delay=0
+
 Plug 'haya14busa/is.vim'
 Plug 'haya14busa/vim-asterisk'
+let g:asterisk#keeppos = 1
 
 Plug 'stevearc/oil.nvim'
 
-
-let g:asterisk#keeppos = 1
 
 " map *   <Plug>(asterisk-*)
 " map #   <Plug>(asterisk-#)
@@ -96,8 +101,6 @@ Plug 'itchyny/lightline.vim'
 Plug 'mkitt/tabline.vim'
 
 
-" Plug 'itchyny/vim-cursorword'
-
 let g:CommandTPreferredImplementation='lua'
 
 Plug 'wincent/command-t', { 'do': 'cd lua/wincent/commandt/lib && make' }
@@ -110,6 +113,14 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
+
+" none-ls needs plenery.nvim
+" Plug 'nvim-lua/plenary.nvim'
+" Plug 'nvimtools/none-ls.nvim'
+
+" cspell is annoying because it doesn't integrate with the nvim dictionary, so i moved back to native spell.
+" needs none-ls
+" Plug 'davidmh/cspell.nvim'
 
 " For vsnip users.
 " Plug 'hrsh7th/cmp-vsnip'

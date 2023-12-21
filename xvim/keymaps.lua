@@ -37,6 +37,19 @@ local function cnext_rollover() cmove_with_rollover("next") end
 
 local function cprev_rollover() cmove_with_rollover("prev") end
 
+local cmp_enabled = true
+local function toggle_autocomplete()
+   if cmp_enabled then
+      require("cmp").setup.buffer({ enabled = false })
+      cmp_enabled = false
+      print("autocomplete: disabled")
+   else
+      require("cmp").setup.buffer({ enabled = true })
+      cmp_enabled = true
+      print("autocomplete: enabled")
+   end
+end
+
 local function toggle_quickfix()
     local windows = vim.fn.getwininfo()
     local quickfix_open = false
@@ -76,6 +89,7 @@ vim.keymap.set({ "n", "i" }, '<C-q>', '<cmd>quitall<cr>')
 -- CommandT excludes no files, CommandTFind excludes some files. see the code in command-t.lua
 vim.keymap.set('n', '<leader>o', ':CommandTFind<cr>')
 vim.keymap.set('n', '<leader>l', ':CommandT<cr>')
+vim.keymap.set('n', '<leader>a', toggle_autocomplete)
 -- vim.keymap.set('n', '<leader>o', ':CommandTBuffer<cr>')
 
 local function fuzzy_search()
@@ -171,6 +185,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- vim.keymap.set('n', 'sh', jump_into_hover_window, opts)
     vim.keymap.set('n', 'crn', vim.lsp.buf.rename, opts)
+    vim.keymap.set({ 'n', 'v' }, 'ca', vim.lsp.buf.code_action, opts)
 
     -- can't use w slows down easymotions
     -- vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
@@ -181,7 +196,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- vim.keymap.set('n', 'gD', vim.lsp.buf.type_definition, opts)
     -- can't use "r" as first letter. slows swap
     -- can't use "c" as first letter. slows comment
-    -- vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
     -- vim.keymap.set('n', '<leader>f', function()
     --   vim.lsp.buf.format { async = true }
     -- end, opts)
