@@ -72,6 +72,7 @@ vim.keymap.set('n', '[f', cprev_rollover)
 vim.keymap.set('n', ']f', cnext_rollover)
 
 vim.keymap.set('n', 's', "<nop>")
+vim.keymap.set('n', 'ss', "s")
 vim.keymap.set('n', 's;', ":w<CR>")
 vim.keymap.set('n', 'sq', toggle_quickfix)
 vim.keymap.set('n', 'sp', cprev_rollover)

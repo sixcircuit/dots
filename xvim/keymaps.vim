@@ -44,21 +44,17 @@ nmap <leader>mb ysiW)
 noremap zz zz10<c-e>
 
 " insert dates, etc
-" unmap <leader> d 
+" unmap <leader> d
 nnoremap <leader>id "=strftime("%Y-%m-%d %H:%M")<CR>P
 nnoremap <leader>im "="= " . strftime("%Y-%m-%d %H:%M")<CR>P
 
 nnoremap <silent> <leader>fq :call FixQuotes()<CR>
 nnoremap <silent> <leader>fs :call FixTrailingWhitespace()<CR>
 
-nmap sw :call ToggleWhitespace()<CR>
 noremap <Leader>z :call ToggleWrap()<CR>
 noremap <Leader>tw :call ToggleWrap()<CR>
 nmap <Leader>tp :ToggleProse<CR>
 " nmap <silent> <Leader>tt :ToggleTypewriter<CR>
-
-" unmap s
-noremap ss s
 
 " i always want linewise
 noremap v V

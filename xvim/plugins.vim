@@ -2,9 +2,6 @@
 
 " Plug 'pangloss/vim-javascript'
 
-Plug 'inkarkat/vim-ingo-library'
-Plug 'inkarkat/vim-ShowTrailingWhitespace'
-
 " Plug 'itchyny/vim-cursorword'
 " let g:cursorword_delay=0
 
@@ -115,8 +112,8 @@ Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 
 " none-ls needs plenery.nvim
-" Plug 'nvim-lua/plenary.nvim'
-" Plug 'nvimtools/none-ls.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvimtools/none-ls.nvim'
 
 " cspell is annoying because it doesn't integrate with the nvim dictionary, so i moved back to native spell.
 " needs none-ls

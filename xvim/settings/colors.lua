@@ -148,7 +148,7 @@ vim.api.nvim_set_hl(0, '@keyword.function.javascript', { italic = true })
 
 -- hop highlights
 
-local red = 198
+local red = 160
 local yellow = 190
 local orange = 208
 local pink = 201
@@ -161,6 +161,11 @@ vim.api.nvim_set_hl(0, 'HopNextKey2', { fg = '#2b8db3', ctermfg = dark_teal })
 vim.api.nvim_set_hl(0, 'HopUnmatched', { fg = '#666666', sp = '#666666', ctermfg = 242 })
 vim.api.nvim_set_hl(0, 'HopCursor', { link = 'Cursor' })
 vim.api.nvim_set_hl(0, 'HopPreview', { link = 'IncSearch' })
+
+-- this is for trailing space and tabs. basically all listchars.
+vim.api.nvim_set_hl(0, 'NonText', { ctermfg = red })
+vim.api.nvim_set_hl(0, 'SpecialKey', { ctermfg = red })
+
 
 local black = 232
 local menu_bg = 234

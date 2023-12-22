@@ -210,105 +210,78 @@ vim.diagnostic.config({
    severity_sort = true,  -- Sorts diagnostics by severity
 })
 
--- cspell is annoying because it doesn't integrate with the neovim dictionary.
--- i just turned on @spell in treesitter for js strings and identifiers. and turned on camel in spelloptions
--- but i'm keeping this for posterity in case i'm missing something.
--- null_ls seems cool. don't know what i'm going to do with it though
 
---local null_ls = require("null-ls")
+local null_ls = require("null-ls")
 
---local cspell = require('cspell')
+local no_really = {
+    method = null_ls.methods.DIAGNOSTICS,
+    filetypes = {  },
+    generator = {
+        fn = function(params)
+            local diagnostics = {}
+            -- sources have access to a params object
+            -- containing info about the current file and editor state
+            for i, line in ipairs(params.content) do
+                local col, end_col = line:find("really")
+                if col and end_col then
+                    -- null-ls fills in undefined positions
+                    -- and converts source diagnostics into the required format
+                    table.insert(diagnostics, {
+                        row = i,
+                        col = col,
+                        end_col = end_col + 1,
+                        source = "no-really",
+                        message = "Don't use 'really!'",
+                        severity = vim.diagnostic.severity.WARN,
+                    })
+                end
+            end
+            return diagnostics
+        end,
+    },
+}
 
---local cspell_config = {
---  -- config_file_preferred_name = 'cspell.json',
+local gts = {
+   method = null_ls.methods.DIAGNOSTICS,
+   filetypes = {  },
+   generator = {
+      fn = function(params)
+         local diagnostics = {}
 
---  ----- A way to define your own logic to find the CSpell configuration file.
---  -----@params cwd The same current working directory defined in the source,
---  ----             defaulting to vim.loop.cwd()
---  -----@return string|nil The path of the json file
---  find_json = function(cwd)
---     return nil
---  end,
+         local hour = vim.fn.strftime('%H')
+         hour = tonumber(hour)
 
---  ---- Will find and read the cspell config file synchronously, as soon as the
---  ---- code actions generator gets called.
---  ----
---  ---- If you experience UI-blocking during the first run of this code action, try
---  ---- setting this option to false.
---  ---- See: https://github.com/davidmh/cspell.nvim/issues/25
---  --read_config_synchronously = true,
+         if hour > 8 and hour < 21 then 
+            return diagnostics
+         end
 
---  -----@param cspell string The contents of the CSpell config file
---  -----@return table
---  --decode_json = function(cspell_str)
---  --end,
+         for i, line in ipairs(params.content) do
+            table.insert(diagnostics, {
+               row = i,
+               col = 0,
+               end_col = #line,
+               source = "GO TO SLEEP",
+               message = "GO TO SLEEP!",
+               severity = vim.diagnostic.severity.ERROR,
+            })
+         end
 
---  -----@param cspell table A lua table with the CSpell config values
---  -----@return string
---  --encode_json = function(cspell_tbl)
---  --end,
+         return diagnostics
+      end,
+   },
+}
 
---  -----@param payload UseSuggestionSuccess
---  --on_use_suggestion = function(payload)
---  --    -- Includes:
---  --    payload.misspelled_word
---  --    payload.suggestion
---  --    payload.cspell_config_path
---  --    payload.generator_params
---  --end
+-- null_ls.register(gts)
+-- null_ls.register(no_really)
 
---  on_add_to_json = function(payload)
---      -- Includes:
---      -- payload.new_word
---      -- payload.cspell_config_path
---      -- payload.generator_params
+null_ls.setup({
+--    sources = {
+--       -- cspell.diagnostics.with({ config = cspell_config }),
+--       -- cspell.code_actions.with({ config = cspell_config }),
+--       -- null_ls.builtins.formatting.stylua,
+--       -- null_ls.builtins.diagnostics.eslint,
+--       -- null_ls.builtins.completion.spell,
+--       -- null_ls.diagnostics.completion.spell,
+--    }
+})
 
---      -- For example, you can format the cspell config file after you add a word
---      os.execute(
---          string.format(
---              "jq -S '.words |= sort' %s > %s.tmp && mv %s.tmp %s",
---              payload.cspell_config_path,
---              payload.cspell_config_path,
---              payload.cspell_config_path,
---              payload.cspell_config_path
---          )
---      )
---  end
-
---  -----@param payload AddToDictionarySuccess
---  --on_add_to_dictionary = function(payload)
---  --    -- Includes:
---  --    payload.new_word
---  --    payload.cspell_config_path
---  --    payload.generator_params
---  --    payload.dictionary_path
-
---  --    -- For example, you can sort the dictionary after adding a word
---  --    os.execute(
---  --        string.format(
---  --            "sort %s -o %s",
---  --            payload.dictionary_path,
---  --            payload.dictionary_path
---  --        )
---  --    )
---  --end
-
---  ----- DEPRECATED
---  ----- Callback after a successful execution of a code action.
---  -----@param cspell_config_file_path string|nil
---  -----@param params GeneratorParams
---  -----@param action_name 'use_suggestion'|'add_to_json'|'add_to_dictionary'
---  --on_success = function(cspell_config_file_path, params, action_name)
---  --end
---}
-
---null_ls.setup({
---   sources = {
---      -- cspell.diagnostics.with({ config = cspell_config }),
---      -- cspell.code_actions.with({ config = cspell_config }),
---      -- null_ls.builtins.formatting.stylua,
---      -- null_ls.builtins.diagnostics.eslint,
---      -- null_ls.builtins.completion.spell,
---      null_ls.diagnostics.completion.spell,
---   }
---})
