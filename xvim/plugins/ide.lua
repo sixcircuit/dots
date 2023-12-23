@@ -1,9 +1,11 @@
 
+if vim.g.no_fancy_highlighting ~= 1 then
+
 require('nvim-treesitter.configs').setup({
   ensure_installed = "all",
   highlight = {
     enable = true,
-    disable = { perl },
+    disable = { "perl" },
     -- enable = false,
     additional_vim_regex_highlighting = false,
     -- additional_vim_regex_highlighting = true,
@@ -285,3 +287,4 @@ null_ls.setup({
 --    }
 })
 
+end

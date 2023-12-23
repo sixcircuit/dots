@@ -1,6 +1,7 @@
 " must setup vim-plug before you get here. see .vimrc and .nvimrc
 
-" Plug 'pangloss/vim-javascript'
+" TODO: remove this when colorscheme is done.
+Plug 'sixcircuit/vim-javascript'
 
 " Plug 'itchyny/vim-cursorword'
 " let g:cursorword_delay=0
@@ -10,7 +11,6 @@ Plug 'haya14busa/vim-asterisk'
 let g:asterisk#keeppos = 1
 
 Plug 'stevearc/oil.nvim'
-
 
 " map *   <Plug>(asterisk-*)
 " map #   <Plug>(asterisk-#)
