@@ -14,10 +14,6 @@
 
    ! colors are coming along. keep working on it.
 
-   = fix showTrailingWhitespace 
-      - doesn't show up in both buffers if they're both on the same vsplit.
-      - at least not reliably. don't know what's going on.
-
    = finish colors
       - fix colors -- just strip out js and solarized stuff and make one big color.vim
       - basically redo the core bundle stuff. look for faster / better code highlighting
@@ -146,4 +142,9 @@ x vim
    x setup spelling
       . cspell sucks because it doesn't integrate with the native spelling dictionary
       - figured out how to setup native spelling support for treesitter
+
+   x fix showTrailingWhitespace 
+      / doesn't show up in both buffers if they're both on the same vsplit.
+      / at least not reliably. don't know what's going on.
+      x replaced it with listchars.
 

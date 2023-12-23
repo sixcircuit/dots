@@ -38,5 +38,4 @@ call SourceFile(s:root . "/keymaps.lua")
 " allow project specific settings -- needs to be at the end
 call SourceFile(s:root . "/localrc.vim")
 
-" autocmd CmdWinEnter * lua require('cmp').setup({enabled = false})
-" autocmd CmdWinLeave * lua require('cmp').setup({enabled = true})
+colorscheme kendrick

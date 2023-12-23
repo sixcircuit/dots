@@ -1,5 +1,49 @@
 
--- js: 
+-- If you think you have a color scheme that is good enough to be used by others,
+-- please check the following items:
+
+-- - Source the $VIMRUNTIME/colors/tools/check_colors.vim script to check for common mistakes.
+
+-- - Does it work in a color terminal as well as in the GUI? Is it consistent?
+
+-- x Is 'background' either used or appropriately set to "light" or "dark"?
+
+-- x Try setting 'hlsearch' and searching for a pattern, is the match easy to spot?
+
+-- - Split a window with ":split" and ":vsplit".  Are the status lines and vertical separators clearly visible?
+
+-- - In the GUI, is it easy to find the cursor, also in a file with lots of syntax highlighting?
+
+-- - In general, test your color scheme against as many filetypes, Vim features, environments, etc. as possible.
+
+-- - Do not use hard coded escape sequences, these will not work in other terminals.  Always use #RRGGBB for the GUI.
+
+-- - When targetting 256 colors terminals, prefer colors 16-255 to colors 0-15 for the same reason.
+
+-- / Typographic attributes (bold, italic, underline, reverse, etc.) are not universally supported.  Don't count on any of them.
+
+-- TODO: look into this function, is it good?
+
+-- local colors = {
+--    bg = '#282c34',
+--    fg = '#abb2bf',
+--    red = '#e06c75',
+--    green = '#98c379',
+--    blue = '#61afef',
+--    yellow = '#e5c07b'
+-- }
+
+-- local function set_highlight(group, color)
+--    local style = color.style and "gui=" .. color.style or "gui=NONE"
+--    local fg = color.fg and "guifg=" .. color.fg or "guifg=NONE"
+--    local bg = color.bg and "guibg=" .. color.bg or "guibg=NONE"
+--    vim.api.nvim_set_hl(0, group, { fg = color.fg, bg = color.bg, bold = color.bold, italic = color.italic })
+-- end
+
+-- set_highlight('Normal', { fg = colors.fg, bg = colors.bg })
+-- set_highlight('Comment', { fg = colors.blue, italic = true })
+
+-- js:
 -- null, return, await, args, this.
 -- string single, double, ``
 -- prototype, defer?
@@ -86,10 +130,10 @@ local violet = {
    }
 }
 
-local test_color = { 
+local test_color = {
    ctermfg = 166,
-   bold = true, 
-   italic = true, 
+   bold = true,
+   italic = true,
    -- cterm = { italic = true },
    -- standout = true,
    -- underline = true,
@@ -256,3 +300,23 @@ end
 
 -- Call the function to disable all highlight groups
 -- disable_all_highlight_groups()
+
+local function disable_lsp_and_treesitter()
+   -- Disabling LSP diagnostics
+   vim.diagnostic.disable()
+
+   -- Disabling LSP for the current buffer
+   local clients = vim.lsp.get_active_clients()
+   if clients then
+      for _, client in ipairs(clients) do
+         vim.lsp.buf_detach_client(0, client.id)
+      end
+   end
+
+   -- Disabling Tree-sitter highlighting
+   vim.cmd("TSBufDisable highlight")
+end
+
+-- disable_lsp_and_treesitter()
+
+vim.keymap.set('n', 'sz', disable_lsp_and_treesitter)

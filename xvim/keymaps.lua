@@ -71,6 +71,11 @@ end
 vim.keymap.set('n', '[f', cprev_rollover)
 vim.keymap.set('n', ']f', cnext_rollover)
 
+-- i always want linewise to start, but can switch to charwise with one more "v". 
+-- this is maybe my favorite remap ever.
+vim.keymap.set('n', 'v', "V")
+vim.keymap.set('n', 'vv', "v")
+
 vim.keymap.set('n', 's', "<nop>")
 vim.keymap.set('n', 'ss', "s")
 vim.keymap.set('n', 's;', ":w<CR>")

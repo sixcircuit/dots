@@ -1,8 +1,12 @@
 
-" 256 colors
-set t_Co=256
-
 set background=dark
+
+highlight clear
+if exists("syntax_on")
+  syntax reset
+endif
+
+let colors_name = "kendrick"
 
 let g:solarized_grayscale=1
 let g:solarized_bold=1
@@ -13,12 +17,6 @@ let g:solarized_termcolors=256
 let g:solarized_visibility="normal"
 let g:solarized_diffmode="normal"
 let s:terminal_italic=1 " TODO: could refactor to not require this at all
-
-hi clear
-if exists("syntax_on")
-  syntax reset
-endif
-let colors_name = "solarized"
 
 let s:vmode       = "cterm"
 let s:base03      = "234"
@@ -383,6 +381,7 @@ exe "hi! CommandTCharMatched" .s:fmt_bold .s:fg_orange .s:bg_none
 
 
 "}}}
+
 " Utility autocommand "{{{
 " ---------------------------------------------------------------------
 " In cases where Solarized is initialized inside a terminal vim session and 
@@ -403,9 +402,5 @@ exe "hi! CommandTCharMatched" .s:fmt_bold .s:fg_orange .s:bg_none
 autocmd GUIEnter * if (s:vmode != "gui") | exe "colorscheme " . g:colors_name | endif
 
 " a little lighter than the default 241. wish there was an in between
-hi Comment ctermfg=242 " Name:     Solarized vim colorscheme
-
-" highlight GitSignsAdd guibg=NONE
-" highlight GitSignsChange guibg=NONE
-" highlight GitSignsDelete guibg=NONE
+hi Comment ctermfg=242 
 

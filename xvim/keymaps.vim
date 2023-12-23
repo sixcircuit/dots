@@ -56,10 +56,6 @@ noremap <Leader>tw :call ToggleWrap()<CR>
 nmap <Leader>tp :ToggleProse<CR>
 " nmap <silent> <Leader>tt :ToggleTypewriter<CR>
 
-" i always want linewise
-noremap v V
-noremap V v
-
 nmap <leader>c gcc
 vmap <leader>c gc
 " map <leader>n :cnext<cr>
