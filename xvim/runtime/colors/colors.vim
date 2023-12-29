@@ -1,12 +1,4 @@
 
-set background=dark
-
-highlight clear
-if exists("syntax_on")
-  syntax reset
-endif
-
-let colors_name = "kendrick"
 
 let g:solarized_grayscale=1
 let g:solarized_bold=1
@@ -402,5 +394,5 @@ exe "hi! CommandTCharMatched" .s:fmt_bold .s:fg_orange .s:bg_none
 autocmd GUIEnter * if (s:vmode != "gui") | exe "colorscheme " . g:colors_name | endif
 
 " a little lighter than the default 241. wish there was an in between
-hi Comment ctermfg=242 
+" hi Comment ctermfg=242 
 

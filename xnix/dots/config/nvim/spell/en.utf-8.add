@@ -11,3 +11,7 @@ runtime
 treesitter
 json
 bashrc
+fs
+cmd
+cb
+dir

@@ -3,6 +3,8 @@
 " TODO: remove this when colorscheme is done.
 Plug 'sixcircuit/vim-javascript'
 
+Plug 'lukas-reineke/indent-blankline.nvim'
+
 " Plug 'itchyny/vim-cursorword'
 " let g:cursorword_delay=0
 

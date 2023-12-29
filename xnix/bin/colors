@@ -382,10 +382,15 @@ const user_colors = {
    blue: { l: 21, m: 27, h: 33 },
    violet: { l: 55, m: 92, h: 134 },
    magenta: { l: 125, m: 162, h: 199 },
-   gray: { 
-      ll: 235, l: 238, 
-      ml: 242, m: 246, mh: 248, 
-      h: 250, hh: 252 
+   // gray: {
+   //    ll: 235, l: 238,
+   //    ml: 242, m: 246, mh: 248,
+   //    h: 250, hh: 252
+   // },
+   gray: {
+      ll: 235, l: 237,
+      ml: 241, m: 245, mh: 247,
+      h: 249, hh: 251
    },
    b0: { l: 64, m: 28, h: 70, },
    b1: { l: 65, m: 28, h: 71, },
@@ -792,15 +797,10 @@ function print_user_colors({ colors, highlight, lua }){
 
       if(lua){
          lines.push([
-            `local `, name, "= {", "\n",
-            `   l = { ctermfg = ${color.l} }\n`,
-            `   m = { ctermfg = ${color.m} }\n`,
-            `   h = { ctermfg = ${color.h} }\n`,
-            `   bg = {\n` 
-            `      l = { ctermbg = ${color.l} }\n`,
-            `      m = { ctermbg = ${color.m} }\n`,
-            `      h = { ctermbg = ${color.h} }\n`,
-            `   }\n`,
+            `color.`, name, "= {", "\n",
+            `   l = { term = ${color.l} }\n`,
+            `   m = { term = ${color.m} }\n`,
+            `   h = { term = ${color.h} }\n`,
             "}"
          ].join(""));
       }else{
@@ -839,23 +839,14 @@ function print_user_colors({ colors, highlight, lua }){
 
    if(lua){
       lines.push([
-         "local gray", " = {", "\n",
-         `   ll = { ctermfg = ${gray.ll} },\n`,
-         `   l  = { ctermfg = ${gray.l} },\n`,
-         `   ml = { ctermfg = ${gray.ml} },\n`,
-         `   m  = { ctermfg = ${gray.m} },\n`,
-         `   mh = { ctermfg = ${gray.mh} },\n`,
-         `   h  = { ctermfg = ${gray.h} },\n`,
-         `   hh = { ctermfg = ${gray.hh} },\n`,
-         `   bg = {\n`,
-         `      ll = { ctermbg = ${gray.ll} },\n`,
-         `      l  = { ctermbg = ${gray.l} },\n`,
-         `      ml = { ctermbg = ${gray.ml} },\n`,
-         `      m  = { ctermbg = ${gray.m} },\n`,
-         `      mh = { ctermbg = ${gray.mh} },\n`,
-         `      h  = { ctermbg = ${gray.h} },\n`,
-         `      hh = { ctermbg = ${gray.hh} },\n`,
-         `   }\n`,
+         "color.gray", " = {", "\n",
+         `   ll = { term = ${gray.ll}, gui = "#${term_256_lookup[gray.ll].hex}" },\n`,
+         `   l  = { term = ${gray.l}, gui = "#${term_256_lookup[gray.l].hex}" },\n`,
+         `   ml = { term = ${gray.ml}, gui = "#${term_256_lookup[gray.ml].hex}" },\n`,
+         `   m  = { term = ${gray.m}, gui = "#${term_256_lookup[gray.m].hex}" },\n`,
+         `   mh = { term = ${gray.mh}, gui = "#${term_256_lookup[gray.mh].hex}" },\n`,
+         `   h  = { term = ${gray.h}, gui = "#${term_256_lookup[gray.h].hex}" },\n`,
+         `   hh = { term = ${gray.hh}, gui = "#${term_256_lookup[gray.hh].hex}" },\n`,
          "}"
       ].join(""));
    }else{

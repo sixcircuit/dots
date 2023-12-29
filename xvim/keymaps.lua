@@ -191,7 +191,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- vim.keymap.set('n', 'sh', jump_into_hover_window, opts)
     vim.keymap.set('n', 'crn', vim.lsp.buf.rename, opts)
-    vim.keymap.set({ 'n', 'v' }, 'ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set({ 'n', 'v' }, 'caa', vim.lsp.buf.code_action, opts)
 
     -- can't use w slows down easymotions
     -- vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)

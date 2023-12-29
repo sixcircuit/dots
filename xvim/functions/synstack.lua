@@ -43,7 +43,8 @@ local function syn_stack()
    local function make_hl_code(item)
 
       local c = {
-         'vim.api.nvim_set_hl(0, "', item.hl_group, '", { ',
+         -- 'vim.api.nvim_set_hl(0, "', item.hl_group, '", { ',
+         'hl("', item.hl_group, '", { ',
       }
       if(item.hl_link ~= item.hl_group) then
          table.insert(c, 'link = "' .. item.hl_link .. '", ')
@@ -54,7 +55,7 @@ local function syn_stack()
       if(item.hl.background ~= nil) then
          table.insert(c, 'ctermbg = ' .. item.hl.background .. ', ')
       end
- 
+
       -- table.insert(c, 'default = true ')
       table.insert(c, '})')
 
@@ -101,7 +102,7 @@ vim.keymap.set("n", "H", syn_stack)
 --       " echo n1 . "(" . n1Hi . ")" "->" n2 . "(" . n2Hi . ")"
 --       " echo "(" . n1Hi . ") -> (" . n2Hi . ")"
 --    endfor
---  
+--
 --    for i1 in synstack(line("."), col("."))
 --       let i2 = synIDtrans(i1)
 --       let n1 = synIDattr(i1, "name")
@@ -151,7 +152,7 @@ vim.keymap.set("n", "H", syn_stack)
 --       " echo n1 . "(" . n1Hi . ")" "->" n2 . "(" . n2Hi . ")"
 --       " echo "(" . n1Hi . ") -> (" . n2Hi . ")"
 --    endfor
---  
+--
 --    for i1 in synstack(line("."), col("."))
 --       let i2 = synIDtrans(i1)
 --       let n1 = synIDattr(i1, "name")

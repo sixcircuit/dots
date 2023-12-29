@@ -1,4 +1,129 @@
 
+local link = {}
+
+link.norm = { link = "Normal" }
+
+local color = {}
+
+color.gray = {
+   ll = { term = 235, gui = "#262626" },
+   l  = { term = 237, gui = "#3a3a3a" },
+   ml = { term = 241, gui = "#626262" },
+   m  = { term = 245, gui = "#8a8a8a" },
+   mh = { term = 247, gui = "#9e9e9e" },
+   h  = { term = 249, gui = "#b2b2b2" },
+   hh = { term = 251, gui = "#c6c6c6" },
+}
+
+color.bg = {
+   term = 16,
+   gui = "#000000"
+}
+
+color.fg = color.gray.mh
+
+color.gold = {
+   term = 136,
+   gui = "#af8700"
+}
+
+color.blue = {
+   term = 33,
+   gui = "#0087ff"
+}
+
+color.purple = {
+   term = 56,
+   gui = "#5f00d7"
+}
+
+color.cyan = {
+   term = 37,
+   gui = "#00afaf"
+}
+
+color.green = {
+   term = 64,
+   gui = "#5f8700"
+}
+
+color.orange = {
+   term = 166,
+   gui = "#d75f00"
+}
+
+color.red = {
+   term = 160,
+   gui = "#d70000"
+}
+
+color.yellow = {
+   term = 142,
+   gui = "#afaf00"
+}
+
+color.violet = {
+   term = 61,
+   gui = "#5f5faf"
+}
+
+-- color.violet = {
+--    term = 62,
+--    gui = "#5f5fd7"
+-- }
+
+
+local function hl(group, fg, bg, extra)
+   local opts = {}
+
+   if(fg and fg.link) then
+      opts.link = fg.link
+   else
+      if(fg ~= nil) then
+         if(fg.gui) then
+            opts.fg = fg.gui
+         end
+
+         if(fg.term) then
+            opts.ctermfg = fg.term
+         end
+
+         if(fg.default) then
+            opts.default = true
+         end
+
+         opts.bold = opts.bold or fg.bold
+         opts.italic = opts.italic or fg.italic
+      end
+
+      if(bg ~= nil) then
+         if(bg.gui) then
+            opts.bg = bg.gui
+         end
+
+         if(bg.term) then
+            opts.ctermbg = bg.term
+         end
+
+         opts.bold = opts.bold or bg.bold
+         opts.italic = opts.italic or bg.italic
+      end
+
+      if(extra ~= nil) then
+         opts.bold = opts.bold or extra.bold
+         opts.italic = opts.italic or extra.italic
+      end
+   end
+
+   -- local style = color.style and "gui=" .. color.style or "gui=NONE"
+   -- local fg = color.gui and "guifg=" .. fg.gui or "guifg=NONE"
+   -- local bg = color.bg and "guibg=" .. color.bg or "guibg=NONE"
+
+   vim.api.nvim_set_hl(0, group, opts)
+end
+
+hl("Normal", color.fg)
+
 -- If you think you have a color scheme that is good enough to be used by others,
 -- please check the following items:
 
@@ -33,12 +158,6 @@
 --    yellow = '#e5c07b'
 -- }
 
--- local function set_highlight(group, color)
---    local style = color.style and "gui=" .. color.style or "gui=NONE"
---    local fg = color.fg and "guifg=" .. color.fg or "guifg=NONE"
---    local bg = color.bg and "guibg=" .. color.bg or "guibg=NONE"
---    vim.api.nvim_set_hl(0, group, { fg = color.fg, bg = color.bg, bold = color.bold, italic = color.italic })
--- end
 
 -- set_highlight('Normal', { fg = colors.fg, bg = colors.bg })
 -- set_highlight('Comment', { fg = colors.blue, italic = true })
@@ -61,74 +180,102 @@
 -- this doesn't seem to work.
 -- vim.o.termguicolors = true
 
+-- local highlight = {
+--     "RainbowRed",
+--     "RainbowYellow",
+--     "RainbowBlue",
+--     "RainbowOrange",
+--     "RainbowGreen",
+--     "RainbowViolet",
+--     "RainbowCyan",
+-- }
 
--- TODO: write a function to do the colors, so you can easily support gui colors
+-- vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+-- vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+-- vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+-- vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+-- vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+-- vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+-- vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+-- vim.api.nvim_set_hl(0, "RainbowOrange", { ctermfg = color.orange.term })
+vim.api.nvim_set_hl(0, "Background", { ctermfg = 0 })
+vim.api.nvim_set_hl(0, "LightGray", { ctermfg = 240 })
 
-local red = {
-   l = { ctermfg = x },
-   m = { ctermfg = x },
-   h = { ctermfg = x },
-   bg = {
-      l = { ctermbg = x },
-      m = { ctermbg = x },
-      h = { ctermbg = x },
-   }
+local highlight = {
+    "RainbowRed",
+    "RainbowYellow",
+    "RainbowBlue",
+    "RainbowOrange",
+    "RainbowGreen",
+    "RainbowViolet",
+    "RainbowCyan",
 }
 
-local orange = {
-   l = { ctermfg = x },
-   m = { ctermfg = x },
-   h = { ctermfg = x },
-   bg = {
-      l = { ctermbg = x },
-      m = { ctermbg = x },
-      h = { ctermbg = x },
-   }
+-- local hooks = require "ibl.hooks"
+-- create the highlight groups in the highlight setup hook, so they are reset
+-- every time the colorscheme changes
+-- hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+    vim.api.nvim_set_hl(0, "RainbowRed", { ctermfg = color.red.term, fg = "#E06C75" })
+    vim.api.nvim_set_hl(0, "RainbowYellow", { ctermfg = color.purple.term,  fg = "#E5C07B" })
+    vim.api.nvim_set_hl(0, "RainbowBlue", { ctermfg = color.blue.term, fg = "#61AFEF" })
+    vim.api.nvim_set_hl(0, "RainbowOrange", { ctermfg = color.orange.term, fg = "#D19A66" })
+    vim.api.nvim_set_hl(0, "RainbowGreen", { ctermfg = color.green.term, fg = "#98C379" })
+    vim.api.nvim_set_hl(0, "RainbowViolet", { ctermfg = color.violet.term, fg = "#C678DD" })
+    vim.api.nvim_set_hl(0, "RainbowCyan", { ctermfg = color.cyan.term, fg = "#56B6C2" })
+-- end)
+
+require("ibl").setup {
+   debounce = -1,
+   indent = {
+      highlight = highlight
+   },
+   scope = {
+      enabled = true,
+      show_start = false,
+      -- highlight = { "RainbowOrange" }
+      highlight = { "LightGray", "RainbowOrange" }
+      -- highlight = highlight
+   },
 }
 
-local yellow = {
-   l = { ctermfg = x },
-   m = { ctermfg = x },
-   h = { ctermfg = x },
-   bg = {
-      l = { ctermbg = x },
-      m = { ctermbg = x },
-      h = { ctermbg = x },
-   }
-}
-
-local green = {
-   l = { ctermfg = x },
-   m = { ctermfg = x },
-   h = { ctermfg = x },
-   bg = {
-      l = { ctermbg = x },
-      m = { ctermbg = x },
-      h = { ctermbg = x },
-   }
-}
-
-local blue = {
-   l = { ctermfg = x },
-   m = { ctermfg = x },
-   h = { ctermfg = x },
-   bg = {
-      l = { ctermbg = x },
-      m = { ctermbg = x },
-      h = { ctermbg = x },
-   }
-}
-
-local violet = {
-   l = { ctermfg = x },
-   m = { ctermfg = x },
-   h = { ctermfg = x },
-   bg = {
-      l = { ctermbg = x },
-      m = { ctermbg = x },
-      h = { ctermbg = x },
-   }
-}
+-- require("ibl").setup({
+--    scope = { 
+--       enabled = true,
+--       show_start = false,
+--       -- highlight = { "RainbowOrange" }
+--       -- highlight = { "LightGray" }
+--       highlight = highlight
+--    },
+--    indent = {
+--       char = "┆",
+--       -- char = "▏",
+--       -- char = "▎",
+--       -- char = "▍",
+--       -- char = "▌",
+--       -- char = "▋",
+--       -- char = "▊",
+--       -- char = "▉",
+--       -- char = "█",
+--       -- char = "│",
+--       -- char = "┃",
+--       -- char = "╎",
+--       -- char = "╏",
+--       -- char = "┇",
+--       -- char = "┊",
+--       -- char = "┋",
+--       -- char = "║",
+--       -- char = "▕",
+--       -- char = "▐",
+--       -- highlight = { "Background", "Normal" }
+--       -- highlight = { "Background", "RainbowOrange" }
+--       highlight = { "Background" },
+--       -- highlight = highlight 
+--    },
+--    whitespace = {
+--       -- highlight = highlight,
+--       remove_blankline_trail = false,
+--    },
+-- })
 
 local test_color = {
    ctermfg = 166,
@@ -155,40 +302,27 @@ local test_color = {
 }
 
 
-local links = {
-  ['@lsp.type.namespace'] = '@namespace',
-  ['@lsp.type.type'] = '@type',
-  ['@lsp.type.class'] = '@type',
-  ['@lsp.type.enum'] = '@type',
-  ['@lsp.type.interface'] = '@type',
-  ['@lsp.type.struct'] = '@structure',
-  ['@lsp.type.parameter'] = '@parameter',
-  ['@lsp.type.variable'] = '@variable',
-  ['@lsp.type.property'] = '@property',
-  ['@lsp.type.enumMember'] = '@constant',
-  ['@lsp.type.function'] = '@function',
-  ['@lsp.type.method'] = '@method',
-  ['@lsp.type.macro'] = '@macro',
-  ['@lsp.type.decorator'] = '@function',
-}
+-- local links = {
+--   ['@lsp.type.namespace'] = '@namespace',
+--   ['@lsp.type.type'] = '@type',
+--   ['@lsp.type.class'] = '@type',
+--   ['@lsp.type.enum'] = '@type',
+--   ['@lsp.type.interface'] = '@type',
+--   ['@lsp.type.struct'] = '@structure',
+--   ['@lsp.type.parameter'] = '@parameter',
+--   ['@lsp.type.variable'] = '@variable',
+--   ['@lsp.type.property'] = '@property',
+--   ['@lsp.type.enumMember'] = '@constant',
+--   ['@lsp.type.function'] = '@function',
+--   ['@lsp.type.method'] = '@method',
+--   ['@lsp.type.macro'] = '@macro',
+--   ['@lsp.type.decorator'] = '@function',
+-- }
 
-for newgroup, oldgroup in pairs(links) do
-  vim.api.nvim_set_hl(0, newgroup, { link = oldgroup, default = true })
-end
+-- for newgroup, oldgroup in pairs(links) do
+--   vim.api.nvim_set_hl(0, newgroup, { link = oldgroup, default = true })
+-- end
 
--- vim.api.nvim_set_hl(0, '@lsp.type.parameter', { fg='Purple' })
--- vim.api.nvim_set_hl(0, '@variable.javascript', { ctermfg=61})
--- vim.api.nvim_set_hl(0, '@variable.javascript', blue)
--- vim.api.nvim_set_hl(0, '@variable.javascript', { ctermfg=125})
-
-vim.api.nvim_set_hl(0, '@keyword.javascript', { italic = true })
-vim.api.nvim_set_hl(0, '@conditional.javascript', { italic = true })
-vim.api.nvim_set_hl(0, '@function.javascript', { italic = true })
-vim.api.nvim_set_hl(0, '@keyword.function.javascript', { italic = true })
-
--- vim.api.nvim_set_hl(0, '@function', orange)
--- vim.api.nvim_set_hl(0, '@lsp.mod.local.javascript', orange)
--- vim.api.nvim_set_hl(0, '@function', blue)
 
 -- hop highlights
 
@@ -264,16 +398,20 @@ vim.api.nvim_set_hl(0, 'TabLine', { ctermfg = 245, ctermbg = "none", underline =
 vim.api.nvim_set_hl(0, 'TabLineFill', { ctermbg = "none", underline = true })
 
 -- these are changes for solarized
-vim.api.nvim_set_hl(0, 'MatchParen', { ctermfg=136, ctermbg = "none", bold = true })
+-- vim.api.nvim_set_hl(0, 'MatchParen', { ctermfg=136, ctermbg = "none", bold = true })
+-- hl('MatchParen', color.bg, color.red)
+-- hl('MatchParen', nil, color.red)
+-- hl('MatchParen', color.gold, { bold = true })
+hl('MatchParen', { term = 39 }, { bold = true })
+-- hl('MatchParen', color.yellow, { bold = true })
 
-vim.api.nvim_set_hl(0, 'CursorLine', { ctermbg = 235 })
+hl('CursorLine', nil, color.gray.ll)
 
 -- vim.wo.cursorcolumn = true
 -- vim.api.nvim_set_hl(0, "CursorColumn", { ctermbg="darkred", ctermfg="white" })
 
-
--- -- a little lighter than the default 241. wish there was an in between
--- vim.api.nvim_set_hl(0, 'Comment', { ctermfg = 242 }) -- Name:     Solarized vim colorscheme
+hl('Comment', color.gray.ml) -- is 241, maybe bump to 242 if it's too dark.
+-- hl('Comment', { term = 242 })
 
 vim.opt.signcolumn = 'yes'
 vim.api.nvim_set_hl(0, 'SignColumn', {})
@@ -301,3 +439,89 @@ end
 -- Call the function to disable all highlight groups
 -- disable_all_highlight_groups()
 
+hl("@property.javascript", link.norm)
+-- hl("@property.javascript", { link = "Normal", ctermfg = 247, default = true })
+
+hl("@property.javascript", {})
+hl("@lsp.type.property.javascript", {})
+-- hl('@lsp.type.property.javascript', { })
+-- hl('@lsp.type.variable.javascript', { })
+
+hl('Identifier', { link = 'Normal' })
+hl('@operator', { link = "Normal" })
+
+hl('Constant', color.gold)
+hl('Statement', color.blue)
+
+hl("@variable.builtin", color.blue, { bold = true })
+hl("@constant.builtin", color.cyan, { bold = true })
+
+-- hl('@keyword', color.fg, { italic = true })
+hl('@keyword', color.blue, { bold = true })
+
+hl('@boolean', color.cyan, { bold = true })
+
+-- hl('@object', color.gray.ll)
+-- hl('@array', color.gray.ll)
+
+hl('@object', color.orange)
+hl('@array', color.orange)
+
+-- hl('@keyword', color.cyan)
+
+-- hl('@keyword.prototype.javascript', color.gray.ml, { italic = true })
+-- hl("@keyword.function.javascript", color.green, { italic = true })
+
+hl('@keyword.prototype.javascript', color.gray.ml, {})
+-- hl("@keyword.function.javascript", color.green, {})
+
+hl("@keyword.await.javascript", color.orange, { bold = true })
+hl("@keyword.return", color.orange, { bold = true })
+hl("@return_statement", color.orange)
+
+hl("@punctuation.bracket", {})
+-- hl("@punctuation.bracket", color.green)
+-- hl("@punctuation.delimiter", color.gray.ml)
+-- hl("@punctuation.delimiter", { term = 241 })
+hl("@punctuation.delimiter", { term = 240 })
+
+hl("@template_string", color.purple)
+
+-- hl("@lsp.type.class", color.gray.mh)
+-- hl("@lsp.type.class", { link = "Normal" })
+hl("@lsp.type.class", { })
+-- hl("@function", color.blue)
+
+hl("@lsp.type.function", { })
+hl("@function.builtin", { })
+
+-- hl("@punctuation.bracket", color.green, { default = true })
+-- hl("@punctuation.delimiter", color.gray.ml)
+
+-- hl("@punctuation.bracket", { term = 240 }, { default = true })
+-- hl("@punctuation.delimiter", { term = 240 })
+
+hl("@keyword.function.javascript", { bold = true })
+hl("@function.body.javascript", {})
+-- hl("@function.body", color.purple)
+hl("@function_block", color.green)
+hl("@function.parameters.object_destructure", color.purple)
+hl("@function.parameters.array_destructure", color.purple)
+-- hl("@functionf", color.purple)
+hl("@if_block", color.violet)
+hl("@conditional", color.violet, { bold = true })
+-- hl("@conditional", {})
+
+-- hl("@function.call", color.blue)
+-- hl("@method.call", color.blue)
+
+-- hl("@call.arguments", color.blue)
+
+-- hl("@call.arguments", color.gray.m)
+hl("@call.arguments", { term = 245 })
+
+hl("@property.javascript", { link = "Normal" })
+hl("@variable.underscore", { term = 28 }, { bold = true })
+
+-- hl("@function", color.purple)
+-- hl("@function.call", color.blue)

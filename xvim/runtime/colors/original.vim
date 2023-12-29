@@ -238,15 +238,6 @@ call s:SetOption("hitrail",0)
 call s:SetOption("menu",1)
 
 "}}}
-" Colorscheme initialization "{{{
-" ---------------------------------------------------------------------
-hi clear
-if exists("syntax_on")
-  syntax reset
-endif
-let colors_name = "solarized"
-
-"}}}
 " GUI & CSApprox hexadecimal palettes"{{{
 " ---------------------------------------------------------------------
 "
