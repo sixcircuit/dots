@@ -430,13 +430,14 @@ const code_colors = {
    { l: 0, m: 71, h: 0 },
    { l: 0, m: 106, h: 0 },
    { l: 130, m: 166, h: 0 },
-   { l: 0, m: 136, h: 142 },
+   { l: 94, m: 136, h: 178 },
    { l: 0, m: 143, h: 0 },
    { l: 0, m: 172, h: 0 },
    { l: 0, m: 179, h: 0 },
    { l: 0, m: 173, h: 0 },
    { l: 0, m: 222, h: 0 },
    { l: 0, m: 167, h: 0 },
+   { l: 0, m: 142, h: 0 },
 ]).forEach(function(color, i){
    // if(color.l === 0){ color.l = 0 }
    // if(color.m === 0){ color.m = 235 }

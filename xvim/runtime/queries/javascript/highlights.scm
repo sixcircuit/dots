@@ -14,21 +14,23 @@
   "await"
 ] @keyword.await
 
-; [
-;   "_"
-; ] @keyword.underscore
+; (function_declaration
+;   name: (identifier) @function.name
+;   parameters: (formal_parameters (pattern) @function.parameters)
+;   body: (statement_block) @function.body)
 
-(function_declaration
-  name: (identifier) @function.name
-  parameters: (formal_parameters (pattern) @function.parameters)
-  body: (statement_block) @function.body)
+(object_pattern) @object_destructure
+(array_pattern) @array_destructure
 
-(object_pattern) @function.parameters.object_destructure
-(array_pattern) @function.parameters.array_destructure
-
-(if_statement) @if_block
 (function_declaration) @function_block
 (function) @function_block
+
+(if_statement) @if_statement @control_block
+(for_statement) @for_statement @control_block
+(while_statement) @while_statement @control_block
+(do_statement) @do_statement @control_block
+
+
 (arguments) @call.arguments
 (object) @object
 (array) @array

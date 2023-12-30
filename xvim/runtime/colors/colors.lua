@@ -1,4 +1,24 @@
 
+local function disable_all_highlight_groups()
+   -- Retrieve list of all highlight groups
+   local highlight_groups = vim.api.nvim_get_hl(0, { link = true })
+
+   -- Iterate and disable each group
+   for group, info in pairs(highlight_groups) do
+      if not info.link then
+         -- vim.print(group)
+         -- vim.print(info)
+      end
+      if not info.link then
+         vim.api.nvim_set_hl(0, group, {})
+      end
+      -- vim.api.nvim_set_hl(0, group, {})
+   end
+end
+
+-- disable_all_highlight_groups()
+
+
 local link = {}
 
 link.norm = { link = "Normal" }
@@ -6,6 +26,7 @@ link.norm = { link = "Normal" }
 local color = {}
 
 color.gray = {
+   lll = { term = 233, gui = "#121212" },
    ll = { term = 235, gui = "#262626" },
    l  = { term = 237, gui = "#3a3a3a" },
    ml = { term = 241, gui = "#626262" },
@@ -24,7 +45,15 @@ color.fg = color.gray.mh
 
 color.gold = {
    term = 136,
-   gui = "#af8700"
+   gui = "#af8700",
+   h = {
+      term = 178,
+      gui = "#d7af00"
+   },
+   l = {
+      term = 94,
+      -- gui = "#d7af00"
+   }
 }
 
 color.blue = {
@@ -44,17 +73,37 @@ color.cyan = {
 
 color.green = {
    term = 64,
-   gui = "#5f8700"
+   gui = "#5f8700",
+   h = {
+      term = 28,
+      gui = "#00af00"
+   }
+   -- hh = {
+   --    term = 34,
+   --    gui = "#00af00"
+   -- }
+   -- hh = {
+   --    term = 35,
+   --    gui = "#00af5f"
+   -- }
 }
 
 color.orange = {
    term = 166,
-   gui = "#d75f00"
+   gui = "#d75f00",
+   l = {
+      term = 130,
+      gui = "#af5f00"
+   }
 }
 
 color.red = {
-   term = 160,
-   gui = "#d70000"
+   term = 124,
+   gui = "#af0000",
+   h = {
+      term = 160,
+      gui = "#d70000"
+   }
 }
 
 color.yellow = {
@@ -62,16 +111,35 @@ color.yellow = {
    gui = "#afaf00"
 }
 
+color.magenta = {
+   term = 125,
+   gui = "#af005f"
+}
+
 color.violet = {
    term = 61,
    gui = "#5f5faf"
+   -- term = 62,
+   -- gui = "#5f5fd7"
 }
 
--- color.violet = {
---    term = 62,
---    gui = "#5f5fd7"
--- }
-
+local function _hl(opts, piece, key)
+   if(key ~= nil) then
+      if(piece.gui) then opts[key] = piece.gui end
+      if(piece.term) then opts["cterm" .. key] = piece.term end
+      if(piece.default) then opts.default = true end
+   end
+   opts.bold = opts.bold or piece.bold
+   opts.italic = opts.italic or piece.italic
+   opts.underline = opts.underline or piece.underline
+   opts.undercurl = opts.undercurl or piece.undercurl
+   opts.reverse = opts.reverse or piece.reverse
+   opts.standout = opts.standout or piece.standout
+   -- expect piece.sp to be a color with a gui attribute
+   if(piece.sp ~= nil and piece.sp.gui ~= nil) then
+      opts.sp = opts.sp or piece.sp.gui
+   end
+end
 
 local function hl(group, fg, bg, extra)
    local opts = {}
@@ -79,88 +147,150 @@ local function hl(group, fg, bg, extra)
    if(fg and fg.link) then
       opts.link = fg.link
    else
-      if(fg ~= nil) then
-         if(fg.gui) then
-            opts.fg = fg.gui
-         end
-
-         if(fg.term) then
-            opts.ctermfg = fg.term
-         end
-
-         if(fg.default) then
-            opts.default = true
-         end
-
-         opts.bold = opts.bold or fg.bold
-         opts.italic = opts.italic or fg.italic
-      end
-
-      if(bg ~= nil) then
-         if(bg.gui) then
-            opts.bg = bg.gui
-         end
-
-         if(bg.term) then
-            opts.ctermbg = bg.term
-         end
-
-         opts.bold = opts.bold or bg.bold
-         opts.italic = opts.italic or bg.italic
-      end
-
-      if(extra ~= nil) then
-         opts.bold = opts.bold or extra.bold
-         opts.italic = opts.italic or extra.italic
-      end
+      if(fg ~= nil) then _hl(opts, fg, "fg") end
+      if(bg ~= nil) then _hl(opts, bg, "bg") end
+      if(extra ~= nil) then _hl(opts, extra) end
    end
-
-   -- local style = color.style and "gui=" .. color.style or "gui=NONE"
-   -- local fg = color.gui and "guifg=" .. fg.gui or "guifg=NONE"
-   -- local bg = color.bg and "guibg=" .. color.bg or "guibg=NONE"
 
    vim.api.nvim_set_hl(0, group, opts)
 end
 
-hl("Normal", color.fg)
 
--- If you think you have a color scheme that is good enough to be used by others,
--- please check the following items:
-
--- - Source the $VIMRUNTIME/colors/tools/check_colors.vim script to check for common mistakes.
-
--- - Does it work in a color terminal as well as in the GUI? Is it consistent?
-
--- x Is 'background' either used or appropriately set to "light" or "dark"?
-
--- x Try setting 'hlsearch' and searching for a pattern, is the match easy to spot?
-
--- - Split a window with ":split" and ":vsplit".  Are the status lines and vertical separators clearly visible?
-
--- - In the GUI, is it easy to find the cursor, also in a file with lots of syntax highlighting?
-
--- - In general, test your color scheme against as many filetypes, Vim features, environments, etc. as possible.
-
--- - Do not use hard coded escape sequences, these will not work in other terminals.  Always use #RRGGBB for the GUI.
-
--- - When targetting 256 colors terminals, prefer colors 16-255 to colors 0-15 for the same reason.
-
--- / Typographic attributes (bold, italic, underline, reverse, etc.) are not universally supported.  Don't count on any of them.
-
--- TODO: look into this function, is it good?
-
--- local colors = {
---    bg = '#282c34',
---    fg = '#abb2bf',
---    red = '#e06c75',
---    green = '#98c379',
---    blue = '#61afef',
---    yellow = '#e5c07b'
--- }
+-- this doesn't seem to work.
+-- vim.o.termguicolors = true
 
 
--- set_highlight('Normal', { fg = colors.fg, bg = colors.bg })
--- set_highlight('Comment', { fg = colors.blue, italic = true })
+vim.api.nvim_create_autocmd("TextYankPost", {
+    group = vim.api.nvim_create_augroup("highlight_yank", { clear = true }),
+    pattern = "*",
+    callback = function()
+        vim.highlight.on_yank({ higroup = "HighlightYank", timeout = 200 })
+        -- vim.highlight.on_yank({ higroup = "IncSearch", timeout = 200 })
+        -- vim.highlight.on_yank({ higroup = "Search", timeout = 200 })
+    end,
+})
+
+-- set fill char to non-breaking space (it's there between the ' '', it's not a normal space)
+-- since we set the statusbar colors the same below it'll add ^^^ to the status line because it doesn't know anything about lightline
+vim.opt.fillchars = { stl = ' ' }
+
+-- menu highlights
+
+local ui = {}
+
+ui.dark = {
+   term = 234,
+   gui = "#1c1c1c"
+}
+
+ui.light = color.fg
+
+hl("FloatBorder", ui.light, ui.dark)
+hl("FloatTitle", ui.light, ui.dark)
+hl("Pmenu", ui.light, ui.dark)
+hl("PmenuSel", ui.dark, ui.light)
+hl("PmenuSbar", ui.dark, ui.light)
+hl("PmenuThumb", ui.dark, ui.light)
+
+hl("VertSplit", ui.dark, ui.dark)
+hl("StatusLine", ui.dark, ui.dark)
+hl("StatusLineNC", ui.dark, ui.dark)
+
+-- line numbers and tab lines
+hl("TabLine", ui.light, ui.dark)
+hl("TabLineFill", ui.dark, { underline = true })
+hl("TabLineSel", ui.yellow, ui.yellow)
+
+-- hl("TabLine", color.gray.ml, { underline = true })
+-- hl("TabLineFill", color.gray.m, { underline = true })
+-- hl("TabLineSel", color.gray.m, color.gray.ll, { underline = true })
+-- hl("TabLineSel", color.bg, color.gray.m)
+
+hl("LineNr", color.gray.l)
+hl("CursorLine", nil, color.gray.ll)
+hl("CursorLineNR", color.gray.ml, color.gray.ll)
+
+-- vim.wo.cursorcolumn = true
+-- hl("CursorColumn", { ctermbg="darkred", ctermfg="white" })
+
+hl("Cursor", color.bg, color.fg)
+hl("lCursor", { link = "Cursor" })
+
+
+hl("DiffAdd", color.green)
+hl("DiffChange", color.gold)
+hl("DiffDelete", color.red)
+hl("DiffText", color.blue)
+
+
+-- TODO: setup undercurl
+hl("SpellBad", { undercurl = true, sp = color.red })
+hl("SpellCap", { undercurl = true, sp = color.violet })
+hl("SpellRare", { undercurl = true, sp = color.cyan })
+hl("SpellLocal", { undercurl = true, sp = color.gold })
+
+-- don't know about these
+
+hl("VisualNOS", color.fg)
+hl("WarningMsg", color.red, { bold = true })
+hl("WildMenu", color.fg)
+hl("Folded", color.fg, { underline = true, bold = true })
+hl("FoldColumn", color.fg)
+
+hl("Conceal", color.blue)
+
+-- diagnostic signs
+
+local sign_col_bg = color.bg
+-- local sign_col_bg = color.gray.lll
+
+vim.opt.signcolumn = "yes"
+hl("SignColumn", {})
+
+hl("SignColumn", nil, sign_col_bg)
+hl("DiagnosticError", color.red, sign_col_bg)
+hl("DiagnosticWarn", color.gold, sign_col_bg)
+hl("DiagnosticInfo", color.gold, sign_col_bg)
+hl("DiagnosticHint", color.gold, sign_col_bg)
+
+vim.fn.sign_define("DiagnosticSignError", { text = "E", texthl = "DiagnosticSignError" })
+vim.fn.sign_define("DiagnosticSignWarn",  { text = "W", texthl = "DiagnosticSignWarn" })
+vim.fn.sign_define("DiagnosticSignInfo",  { text = "I", texthl = "DiagnosticSignInfo" })
+vim.fn.sign_define("DiagnosticSignHint",  { text = "H", texthl = "DiagnosticSignHint" })
+
+-- hop highlights
+
+hl("HopNextKey", color.gold.h, { bold = true })
+hl("HopNextKey1", color.gold.h, { bold = true })
+hl("HopNextKey2", color.red, { bold = true })
+hl("HopUnmatched", color.gray.l) -- 242
+hl("HopCursor", { link = "Cursor" })
+hl("HopPreview", { link = "IncSearch" })
+
+
+-- scope highlighting
+
+hl("ScopeHighlight_Default", color.gray.l)
+hl("ScopeHighlight_Selected", color.gray.ml)
+hl("IblWhitespace", color.bg)
+
+require("ibl").setup({
+   debounce = -1,
+   scope = {
+      enabled = true,
+      show_start = false,
+      highlight = { "ScopeHighlight_Selected" },
+   },
+   indent = {
+      highlight = { "ScopeHighlight_Default" },
+      char = "┆",
+      -- char = "▏",
+      -- char = "▎",
+      -- char = "▍",
+   },
+})
+
+-- code highlighting
 
 -- js:
 -- null, return, await, args, this.
@@ -177,302 +307,76 @@ hl("Normal", color.fg)
 
 -- find markdown syntax setup
 
--- this doesn't seem to work.
--- vim.o.termguicolors = true
-
--- local highlight = {
---     "RainbowRed",
---     "RainbowYellow",
---     "RainbowBlue",
---     "RainbowOrange",
---     "RainbowGreen",
---     "RainbowViolet",
---     "RainbowCyan",
--- }
-
--- vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
--- vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
--- vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
--- vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
--- vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
--- vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
--- vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
--- vim.api.nvim_set_hl(0, "RainbowOrange", { ctermfg = color.orange.term })
-vim.api.nvim_set_hl(0, "Background", { ctermfg = 0 })
-vim.api.nvim_set_hl(0, "LightGray", { ctermfg = 240 })
-
-local highlight = {
-    "RainbowRed",
-    "RainbowYellow",
-    "RainbowBlue",
-    "RainbowOrange",
-    "RainbowGreen",
-    "RainbowViolet",
-    "RainbowCyan",
-}
-
--- local hooks = require "ibl.hooks"
--- create the highlight groups in the highlight setup hook, so they are reset
--- every time the colorscheme changes
--- hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
-    vim.api.nvim_set_hl(0, "RainbowRed", { ctermfg = color.red.term, fg = "#E06C75" })
-    vim.api.nvim_set_hl(0, "RainbowYellow", { ctermfg = color.purple.term,  fg = "#E5C07B" })
-    vim.api.nvim_set_hl(0, "RainbowBlue", { ctermfg = color.blue.term, fg = "#61AFEF" })
-    vim.api.nvim_set_hl(0, "RainbowOrange", { ctermfg = color.orange.term, fg = "#D19A66" })
-    vim.api.nvim_set_hl(0, "RainbowGreen", { ctermfg = color.green.term, fg = "#98C379" })
-    vim.api.nvim_set_hl(0, "RainbowViolet", { ctermfg = color.violet.term, fg = "#C678DD" })
-    vim.api.nvim_set_hl(0, "RainbowCyan", { ctermfg = color.cyan.term, fg = "#56B6C2" })
--- end)
-
-require("ibl").setup {
-   debounce = -1,
-   indent = {
-      highlight = highlight
-   },
-   scope = {
-      enabled = true,
-      show_start = false,
-      -- highlight = { "RainbowOrange" }
-      highlight = { "LightGray", "RainbowOrange" }
-      -- highlight = highlight
-   },
-}
-
--- require("ibl").setup({
---    scope = { 
---       enabled = true,
---       show_start = false,
---       -- highlight = { "RainbowOrange" }
---       -- highlight = { "LightGray" }
---       highlight = highlight
---    },
---    indent = {
---       char = "┆",
---       -- char = "▏",
---       -- char = "▎",
---       -- char = "▍",
---       -- char = "▌",
---       -- char = "▋",
---       -- char = "▊",
---       -- char = "▉",
---       -- char = "█",
---       -- char = "│",
---       -- char = "┃",
---       -- char = "╎",
---       -- char = "╏",
---       -- char = "┇",
---       -- char = "┊",
---       -- char = "┋",
---       -- char = "║",
---       -- char = "▕",
---       -- char = "▐",
---       -- highlight = { "Background", "Normal" }
---       -- highlight = { "Background", "RainbowOrange" }
---       highlight = { "Background" },
---       -- highlight = highlight 
---    },
---    whitespace = {
---       -- highlight = highlight,
---       remove_blankline_trail = false,
---    },
--- })
-
-local test_color = {
-   ctermfg = 166,
-   bold = true,
-   italic = true,
-   -- cterm = { italic = true },
-   -- standout = true,
-   -- underline = true,
-   -- undercurl = true,
-   -- underdouble = true,
-   -- blend = 50 , -- integer between 0 and 100
-   -- blend = 0 , -- integer between 0 and 100
-   -- underdotted = true,
-   -- underdashed = true,
-   -- strikethrough = true,
-   -- reverse = true,
-   -- nocombine = true,
-   -- link = "some_hl_group" -- name of another highlight group to link to, see :hi-link.
-   -- default = true
-   -- ctermfg = Sets foreground of cterm color ctermfg
-   -- ctermbg = Sets background of cterm color ctermbg
-   -- cterm = cterm attribute map, like highlight-args. If not set, cterm attributes will match those from the attribute map documented above.
-   -- force = if true force update the highlight group when it exists.
-}
-
-
--- local links = {
---   ['@lsp.type.namespace'] = '@namespace',
---   ['@lsp.type.type'] = '@type',
---   ['@lsp.type.class'] = '@type',
---   ['@lsp.type.enum'] = '@type',
---   ['@lsp.type.interface'] = '@type',
---   ['@lsp.type.struct'] = '@structure',
---   ['@lsp.type.parameter'] = '@parameter',
---   ['@lsp.type.variable'] = '@variable',
---   ['@lsp.type.property'] = '@property',
---   ['@lsp.type.enumMember'] = '@constant',
---   ['@lsp.type.function'] = '@function',
---   ['@lsp.type.method'] = '@method',
---   ['@lsp.type.macro'] = '@macro',
---   ['@lsp.type.decorator'] = '@function',
--- }
-
--- for newgroup, oldgroup in pairs(links) do
---   vim.api.nvim_set_hl(0, newgroup, { link = oldgroup, default = true })
--- end
-
-
--- hop highlights
-
-local red = 160
-local yellow = 190
-local orange = 208
-local pink = 201
-local teal = 45
-local dark_teal = 33
-
-vim.api.nvim_set_hl(0, 'HopNextKey', { fg = '#ff007c', bold = true, ctermfg = yellow, cterm = { bold = true } })
-vim.api.nvim_set_hl(0, 'HopNextKey1', { fg = '#00dfff', bold = true, ctermfg = red, cterm = { bold = true } })
-vim.api.nvim_set_hl(0, 'HopNextKey2', { fg = '#2b8db3', ctermfg = dark_teal })
-vim.api.nvim_set_hl(0, 'HopUnmatched', { fg = '#666666', sp = '#666666', ctermfg = 242 })
-vim.api.nvim_set_hl(0, 'HopCursor', { link = 'Cursor' })
-vim.api.nvim_set_hl(0, 'HopPreview', { link = 'IncSearch' })
-
 -- this is for trailing space and tabs. basically all listchars.
-vim.api.nvim_set_hl(0, 'NonText', { ctermfg = red })
-vim.api.nvim_set_hl(0, 'SpecialKey', { ctermfg = red })
+hl("NonText", color.red)
+hl("SpecialKey", color.red)
 
-
-local black = 232
-local menu_bg = 234
-local select_bg = 233
--- local menu_fg = 249
-local menu_fg = 246  -- this keeps the autocomplete menu a little more chill
-local select_fg = 'white'
--- 'white', 'darkblue'
--- local menu_bg = 33
--- local menu_fg = 254
-local fg_orange = 1
-local border_bg = black
-local border_fg = 241
-local title_fg = 244
-
--- Setting highlights
-vim.api.nvim_set_hl(0, "FloatBorder", { ctermbg = menu_bg, ctermfg = menu_fg })
-vim.api.nvim_set_hl(0, "FloatTitle", { ctermbg = menu_bg, ctermfg = menu_fg })
-vim.api.nvim_set_hl(0, "Pmenu", { ctermbg = menu_bg, ctermfg = menu_fg })
-vim.api.nvim_set_hl(0, "PmenuSel", { ctermbg = menu_fg, ctermfg = menu_bg })
--- vim.api.nvim_set_hl(0, "PmenuKind", { ctermbg = bg_color, ctermfg = fg_orange })
--- vim.api.nvim_set_hl(0, "PmenuKindSel", { ctermbg = bg_color, ctermfg = fg_orange })
--- vim.api.nvim_set_hl(0, "PmenuExtra", { ctermbg = bg_color, ctermfg = fg_orange })
--- vim.api.nvim_set_hl(0, "PmenuExtraSel", { ctermbg = bg_color, ctermfg = fg_orange })
--- vim.api.nvim_set_hl(0, "PmenuSbar", { ctermbg = bg_color, ctermfg = fg_orange })
--- vim.api.nvim_set_hl(0, "PmenuThumb", { ctermbg = bg_color, ctermfg = fg_orange })
-
-
-local vertsplit_fg = 236;
-
--- set fill char to non-breaking space (it's there between the ' '', it's not a normal space) 
--- since we set the statusbar colors the same below it'll add ^^^ to the status line because it doesn't know anything about lightline
-vim.opt.fillchars = { stl = ' ' }
-
-vim.api.nvim_set_hl(0, 'VertSplit', { ctermfg = vertsplit_fg, ctermbg = vertsplit_fg })
-vim.api.nvim_set_hl(0, 'StatusLine', { ctermfg = vertsplit_fg, ctermbg = vertsplit_fg })
-vim.api.nvim_set_hl(0, 'StatusLineNC', { ctermfg = vertsplit_fg, ctermbg = vertsplit_fg })
-
-local yank_group = vim.api.nvim_create_augroup("highlight_yank", { clear = true })
-
-vim.api.nvim_create_autocmd("TextYankPost", {
-    group = yank_group,
-    pattern = "*",
-    callback = function()
-        vim.highlight.on_yank({ higroup = "IncSearch", timeout = 200 })
-    end,
-})
-
--- black gutter for line numbers
-vim.api.nvim_set_hl(0, 'LineNr', { ctermfg = 238 })
-vim.api.nvim_set_hl(0, 'TabLine', { ctermfg = 245, ctermbg = "none", underline = true })
-vim.api.nvim_set_hl(0, 'TabLineFill', { ctermbg = "none", underline = true })
-
--- these are changes for solarized
--- vim.api.nvim_set_hl(0, 'MatchParen', { ctermfg=136, ctermbg = "none", bold = true })
--- hl('MatchParen', color.bg, color.red)
--- hl('MatchParen', nil, color.red)
--- hl('MatchParen', color.gold, { bold = true })
-hl('MatchParen', { term = 39 }, { bold = true })
--- hl('MatchParen', color.yellow, { bold = true })
-
-hl('CursorLine', nil, color.gray.ll)
-
--- vim.wo.cursorcolumn = true
--- vim.api.nvim_set_hl(0, "CursorColumn", { ctermbg="darkred", ctermfg="white" })
-
-hl('Comment', color.gray.ml) -- is 241, maybe bump to 242 if it's too dark.
+hl("Normal", color.fg)
+hl("Comment", color.gray.ml) -- is 241, maybe bump to 242 if it's too dark.
 -- hl('Comment', { term = 242 })
+hl("Identifier", { link = "Normal" })
+hl("PreProc", color.orange)
+hl("Type", color.gold, { bold = true })
 
-vim.opt.signcolumn = 'yes'
-vim.api.nvim_set_hl(0, 'SignColumn', {})
+hl("Constant", color.gold)
+-- hl("Statement", color.blue)
+hl("Special", color.red)
 
--- vim.fn.sign_define('DiagnosticSignError', { text = '⚠', texthl = 'DiagnosticSignError' })
-vim.fn.sign_define('DiagnosticSignError', { text = 'E', texthl = 'DiagnosticSignError' })
-vim.fn.sign_define('DiagnosticSignWarn', { text = 'W', texthl = 'DiagnosticSignWarn' })
-vim.fn.sign_define('DiagnosticSignInfo', { text = 'I', texthl = 'DiagnosticSignInfo' })
-vim.fn.sign_define('DiagnosticSignHint', { text = 'H', texthl = 'DiagnosticSignHint' })
+hl("Underlined", color.violet)
+hl("Ignore", color.fg, color.bg)
+hl("Error", color.red, { bold = true })
 
-local function disable_all_highlight_groups()
-   -- Retrieve list of all highlight groups
-   local highlight_groups = vim.api.nvim_get_hl(0, { link = true })
+hl("MoreMsg", color.blue)
+hl("ModeMsg", color.blue)
+hl("Question", color.cyan, { bold = true })
+hl("Title", color.orange, { bold = true })
+hl("VisualNOS", color.orange, { bold = true })
 
-   -- Iterate and disable each group
-   for group, info in pairs(highlight_groups) do
-      if not info.link then
-         vim.print(group)
-         vim.print(info)
-      end
-      -- vim.api.nvim_set_hl(0, group, { link = '' })
-   end
-end
+local vis_color = color.gold
+-- local vis_color = color.orange.l
 
--- Call the function to disable all highlight groups
--- disable_all_highlight_groups()
+-- hl("Visual", color.bg, vis_color)
+-- hl("Visual", color.bg, color.violet)
+hl("Visual", color.bg, color.gray.ml)
+hl("HighlightYank", color.bg, vis_color)
+hl("Search", color.bg, vis_color)
+hl("IncSearch", color.bg, vis_color)
 
-hl("@property.javascript", link.norm)
--- hl("@property.javascript", { link = "Normal", ctermfg = 247, default = true })
+hl("MatchParen", color.gold, { bold = true })
 
-hl("@property.javascript", {})
-hl("@lsp.type.property.javascript", {})
--- hl('@lsp.type.property.javascript', { })
--- hl('@lsp.type.variable.javascript', { })
+hl("Todo", color.magenta, { bold = true })
 
-hl('Identifier', { link = 'Normal' })
-hl('@operator', { link = "Normal" })
+hl("Directory", color.gold, { bold = true })
+hl("ErrorMsg", color.bg, color.red)
 
-hl('Constant', color.gold)
-hl('Statement', color.blue)
 
+hl("@property", color.fg, { default = true })
+hl("@lsp.type.property", {})
+
+-- hl("@operator", color.fg, { bold = true })
+
+
+hl("@operator", { link = "Normal" })
 hl("@variable.builtin", color.blue, { bold = true })
 hl("@constant.builtin", color.cyan, { bold = true })
 
--- hl('@keyword', color.fg, { italic = true })
+-- hl("@keyword", color.fg, { italic = true })
 hl('@keyword', color.blue, { bold = true })
 
 hl('@boolean', color.cyan, { bold = true })
 
--- hl('@object', color.gray.ll)
--- hl('@array', color.gray.ll)
+-- hl("@object", color.gray.ll)
+-- hl("@array", color.gray.ll)
 
-hl('@object', color.orange)
-hl('@array', color.orange)
+hl("@object", color.orange)
+hl("@array", color.orange)
 
--- hl('@keyword', color.cyan)
+-- hl("@keyword", color.cyan)
 
--- hl('@keyword.prototype.javascript', color.gray.ml, { italic = true })
+-- hl("@keyword.prototype.javascript", color.gray.ml, { italic = true })
 -- hl("@keyword.function.javascript", color.green, { italic = true })
 
-hl('@keyword.prototype.javascript', color.gray.ml, {})
+hl("@keyword.prototype.javascript", color.gray.ml, { bold = false })
 -- hl("@keyword.function.javascript", color.green, {})
 
 hl("@keyword.await.javascript", color.orange, { bold = true })
@@ -492,6 +396,7 @@ hl("@template_string", color.purple)
 hl("@lsp.type.class", { })
 -- hl("@function", color.blue)
 
+hl("@lsp.type.comment", { })
 hl("@lsp.type.function", { })
 hl("@function.builtin", { })
 
@@ -505,12 +410,19 @@ hl("@keyword.function.javascript", { bold = true })
 hl("@function.body.javascript", {})
 -- hl("@function.body", color.purple)
 hl("@function_block", color.green)
-hl("@function.parameters.object_destructure", color.purple)
-hl("@function.parameters.array_destructure", color.purple)
+
+
+hl("@object_destructure", color.purple)
+hl("@array_destructure", color.purple)
+
 -- hl("@functionf", color.purple)
-hl("@if_block", color.violet)
-hl("@conditional", color.violet, { bold = true })
--- hl("@conditional", {})
+-- hl("@if_block", color.violet)
+-- hl("@conditional", color.violet, { bold = true })
+
+hl("@conditional", {})
+hl("@repeat", {})
+
+hl("@control_block", color.violet)
 
 -- hl("@function.call", color.blue)
 -- hl("@method.call", color.blue)
@@ -520,8 +432,53 @@ hl("@conditional", color.violet, { bold = true })
 -- hl("@call.arguments", color.gray.m)
 hl("@call.arguments", { term = 245 })
 
-hl("@property.javascript", { link = "Normal" })
 hl("@variable.underscore", { term = 28 }, { bold = true })
+
+hl("@tag.html", link.norm)
+hl("@tag.delimiter", color.gray.ml)
 
 -- hl("@function", color.purple)
 -- hl("@function.call", color.blue)
+
+
+-- ((tag
+--   (name) @text.todo @nospell
+--   ("(" @punctuation.bracket (user) @constant ")" @punctuation.bracket)?
+--   ":" @punctuation.delimiter)
+--   (#any-of? @text.todo "TODO" "WIP"))
+
+-- ("text" @text.todo @nospell
+--  (#any-of? @text.todo "TODO" "WIP"))
+
+-- ((tag
+--   (name) @text.note @nospell
+--   ("(" @punctuation.bracket (user) @constant ")" @punctuation.bracket)?
+--   ":" @punctuation.delimiter)
+--   (#any-of? @text.note "NOTE" "XXX" "INFO" "DOCS" "PERF" "TEST"))
+
+-- ("text" @text.note @nospell
+--  (#any-of? @text.note "NOTE" "XXX" "INFO" "DOCS" "PERF" "TEST"))
+
+-- ((tag
+--   (name) @text.warning @nospell
+--   ("(" @punctuation.bracket (user) @constant ")" @punctuation.bracket)?
+--   ":" @punctuation.delimiter)
+--   (#any-of? @text.warning "HACK" "WARNING" "WARN" "FIX"))
+
+-- ("text" @text.warning @nospell
+--  (#any-of? @text.warning "HACK" "WARNING" "WARN" "FIX"))
+
+-- ((tag
+--   (name) @text.danger @nospell
+--   ("(" @punctuation.bracket (user) @constant ")" @punctuation.bracket)?
+--   ":" @punctuation.delimiter)
+--   (#any-of? @text.danger "FIXME" "BUG" "ERROR"))
+
+-- ("text" @text.danger @nospell
+--  (#any-of? @text.danger "FIXME" "BUG" "ERROR"))
+
+-- ; Issue number (#123)
+-- ("text" @number
+--  (#lua-match? @number "^#[0-9]+$"))
+
+-- ((uri) @text.uri @nospell)
