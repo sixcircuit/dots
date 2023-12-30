@@ -7,28 +7,76 @@
   property: (property_identifier) @keyword.prototype
   (#eq? @keyword.prototype "prototype")))
 
-(template_string) @template_string
-(return_statement) @return_statement
+(template_string) @string.template
+
+((template_substitution ["${" "}"] @string.template.substitution) @none)
+
+[
+  (this)
+] @keyword.this
 
 [
   "await"
 ] @keyword.await
+
+[
+  "async"
+] @keyword.async
+
+((identifier) @variable.self
+  (#eq? @variable.self "self")
+)
+
+((variable_declarator
+  name: (identifier) @variable.declaration.self.error)
+  (#eq? @variable.declaration.self.error "self")
+)
+
+((variable_declarator
+  name: (identifier) @variable.declaration.self.this
+  value: (this))
+  (#eq? @variable.declaration.self.this "self")
+)
 
 ; (function_declaration
 ;   name: (identifier) @function.name
 ;   parameters: (formal_parameters (pattern) @function.parameters)
 ;   body: (statement_block) @function.body)
 
-(object_pattern) @object_destructure
-(array_pattern) @array_destructure
+(object_pattern) @object.destructure
+(array_pattern) @array.destructure
 
-(function_declaration) @function_block
-(function) @function_block
+; seems like a bug in the treesitter queries
+(variable_declarator
+  name: (object_pattern
+    (shorthand_property_identifier_pattern) @variable))
 
-(if_statement) @if_statement @control_block
-(for_statement) @for_statement @control_block
-(while_statement) @while_statement @control_block
-(do_statement) @do_statement @control_block
+
+(function_declaration) @function.block
+(function) @function.block
+
+(if_statement) @control.if @control.block
+(for_statement) @control.for @control.block
+(while_statement) @control.while @control.block
+(do_statement) @control.do @control.block
+
+(parenthesized_expression) @parenthesis.block
+
+; (template_substitution
+;  (parenthesized_expression) @parenthesis.block)
+
+(if_statement
+ condition: (parenthesized_expression) @control.condition)
+
+(while_statement
+ condition: (parenthesized_expression) @control.condition)
+
+(do_statement
+ condition: (parenthesized_expression) @control.condition)
+
+(return_statement) @return.block
+(return_statement
+   (parenthesized_expression) @return.block)
 
 
 (arguments) @call.arguments
@@ -38,6 +86,12 @@
 ((identifier) @variable.underscore
  (#any-of? @variable.underscore
            "_"))
+
+((string) @preproc
+  (#eq? @preproc "\'use strict\'"))
+
+((string) @preproc
+  (#eq? @preproc "\"use strict\""))
 
 ;; Types
 
@@ -235,8 +289,7 @@
 
 ;(hash_bang_line) @preproc
 
-;((string_fragment) @preproc
-; (#eq? @preproc "use strict"))
+
 
 ;(string) @string
 ;(template_string) @string

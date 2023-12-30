@@ -50,15 +50,19 @@ color.gold = {
       term = 178,
       gui = "#d7af00"
    },
-   l = {
-      term = 94,
-      -- gui = "#d7af00"
-   }
+   -- l = { hideous. don't use it.
+   --    term = 94,
+   --    gui = "#875f00"
+   -- }
 }
 
 color.blue = {
    term = 33,
-   gui = "#0087ff"
+   gui = "#0087ff",
+   l = {
+      term = 31,
+      gui = "#0087af"
+   }
 }
 
 color.purple = {
@@ -68,8 +72,14 @@ color.purple = {
 
 color.cyan = {
    term = 37,
-   gui = "#00afaf"
+   gui = "#00afaf",
+   l = {
+      term = 30,
+      gui = "#008787"
+   }
 }
+-- color.cyan = color.cyan.l
+-- color.cyan.l = color.cyan
 
 color.green = {
    term = 64,
@@ -103,6 +113,10 @@ color.red = {
    h = {
       term = 160,
       gui = "#d70000"
+   },
+   l = {
+      term = 88,
+      gui = "#870000"
    }
 }
 
@@ -116,6 +130,11 @@ color.magenta = {
    gui = "#af005f"
 }
 
+color.pink = {
+   term = 126,
+   gui = "#af0087"
+}
+
 color.violet = {
    term = 61,
    gui = "#5f5faf"
@@ -127,17 +146,17 @@ local function _hl(opts, piece, key)
    if(key ~= nil) then
       if(piece.gui) then opts[key] = piece.gui end
       if(piece.term) then opts["cterm" .. key] = piece.term end
-      if(piece.default) then opts.default = true end
    end
-   opts.bold = opts.bold or piece.bold
-   opts.italic = opts.italic or piece.italic
-   opts.underline = opts.underline or piece.underline
-   opts.undercurl = opts.undercurl or piece.undercurl
-   opts.reverse = opts.reverse or piece.reverse
-   opts.standout = opts.standout or piece.standout
+   if(piece.default ~= nil) then opts.default = piece.default end
+   if(piece.bold ~= nil) then opts.bold = piece.bold end
+   if(piece.italic ~= nil) then opts.italic = piece.italic end
+   if(piece.underline ~= nil) then opts.underline = piece.underline end
+   if(piece.undercurl ~= nil) then opts.undercurl = piece.undercurl end
+   if(piece.reverse ~= nil) then opts.reverse = piece.reverse end
+   if(piece.standout ~= nil) then opts.standout = piece.standout end
    -- expect piece.sp to be a color with a gui attribute
    if(piece.sp ~= nil and piece.sp.gui ~= nil) then
-      opts.sp = opts.sp or piece.sp.gui
+      opts.sp = piece.sp.gui
    end
 end
 
@@ -197,14 +216,17 @@ hl("StatusLine", ui.dark, ui.dark)
 hl("StatusLineNC", ui.dark, ui.dark)
 
 -- line numbers and tab lines
-hl("TabLine", ui.light, ui.dark)
-hl("TabLineFill", ui.dark, { underline = true })
-hl("TabLineSel", ui.yellow, ui.yellow)
+-- hl("TabLine", ui.light, ui.dark, { underline = false })
+-- hl("TabLineFill", ui.dark, { underline = true })
+-- hl("TabLineSel", ui.dark, color.magenta, { underline = false })
 
--- hl("TabLine", color.gray.ml, { underline = true })
--- hl("TabLineFill", color.gray.m, { underline = true })
--- hl("TabLineSel", color.gray.m, color.gray.ll, { underline = true })
--- hl("TabLineSel", color.bg, color.gray.m)
+hl("TabLine", color.gray.m, { underline = true })
+hl("TabLineFill", color.gray.m, { underline = true })
+hl("TabLineSel", color.gray.hh, color.gray.l, { underline = true })
+
+-- hl("TabLine", color.bg, color.green, { underline = false })
+-- hl("TabLineFill", color.green, color.green, { underline = false })
+-- hl("TabLineSel", color.bg, color.magenta, { underline = false })
 
 hl("LineNr", color.gray.l)
 hl("CursorLine", nil, color.gray.ll)
@@ -350,14 +372,25 @@ hl("Directory", color.gold, { bold = true })
 hl("ErrorMsg", color.bg, color.red)
 
 
-hl("@property", color.fg, { default = true })
 hl("@lsp.type.property", {})
+hl("@property", color.fg, { default = true })
 
 -- hl("@operator", color.fg, { bold = true })
 
+hl("@lsp.type.variable", {})
+-- hl("@lsp.type.parameter", {})
 
 hl("@operator", { link = "Normal" })
-hl("@variable.builtin", color.blue, { bold = true })
+
+hl("@keyword.this", color.blue, { italic = true })
+
+hl("@variable.self", color.blue, { italic = true })
+
+hl("@variable.declaration.self.this", color.blue, { italic = true })
+hl("@variable.declaration.self.error", color.magenta, { bold = true, italic = false })
+
+hl("@variable.underscore", color.gray.m, { bold = true })
+
 hl("@constant.builtin", color.cyan, { bold = true })
 
 -- hl("@keyword", color.fg, { italic = true })
@@ -365,11 +398,6 @@ hl('@keyword', color.blue, { bold = true })
 
 hl('@boolean', color.cyan, { bold = true })
 
--- hl("@object", color.gray.ll)
--- hl("@array", color.gray.ll)
-
-hl("@object", color.orange)
-hl("@array", color.orange)
 
 -- hl("@keyword", color.cyan)
 
@@ -379,22 +407,34 @@ hl("@array", color.orange)
 hl("@keyword.prototype.javascript", color.gray.ml, { bold = false })
 -- hl("@keyword.function.javascript", color.green, {})
 
-hl("@keyword.await.javascript", color.orange, { bold = true })
-hl("@keyword.return", color.orange, { bold = true })
-hl("@return_statement", color.orange)
+hl("@keyword.coroutine", {})
+hl("@keyword.async", color.green, { bold = true })
+hl("@keyword.await", color.orange.l, { bold = true })
+hl("@keyword.return", color.orange.l, { bold = true })
+hl("@return.block", color.orange.l)
 
 hl("@punctuation.bracket", {})
--- hl("@punctuation.bracket", color.green)
--- hl("@punctuation.delimiter", color.gray.ml)
--- hl("@punctuation.delimiter", { term = 241 })
-hl("@punctuation.delimiter", { term = 240 })
+hl("@punctuation.delimiter", { term = 240, gui = "#585858" })
 
-hl("@template_string", color.purple)
+hl("@parenthesis.block", color.gray.m, { default = true })
+
+hl("@string.template", color.gold)
+-- hl("@string.template.substitution", color.red)
+hl("@string.template.substitution", color.red.l)
+-- hl("@string.template.substitution", color.magenta)
+-- hl("@string.template.substitution", color.orange.l)
 
 -- hl("@lsp.type.class", color.gray.mh)
 -- hl("@lsp.type.class", { link = "Normal" })
+-- hl("@constructor", color.green.h)
+
+hl("@constructor", { })
 hl("@lsp.type.class", { })
--- hl("@function", color.blue)
+-- TODO: improve these classes below. could be great.
+-- local class_fg = { bold = false, italic = true }
+-- hl("@lsp.type.class", color.gray.m, class_fg)
+-- hl("@constructor", color.gray.m, class_fg)
+-- hl("@method", color.gray.mh, { bold = true })
 
 hl("@lsp.type.comment", { })
 hl("@lsp.type.function", { })
@@ -406,33 +446,46 @@ hl("@function.builtin", { })
 -- hl("@punctuation.bracket", { term = 240 }, { default = true })
 -- hl("@punctuation.delimiter", { term = 240 })
 
-hl("@keyword.function.javascript", { bold = true })
-hl("@function.body.javascript", {})
--- hl("@function.body", color.purple)
-hl("@function_block", color.green)
+hl("@keyword.function", { bold = true })
+hl("@function.body", {})
+hl("@function.block", color.green)
+
+-- hl("@object", color.gray.ll)
+-- hl("@array", color.gray.ll)
+
+-- hl("@object", color.orange)
+-- hl("@array", color.orange)
+
+hl("@object", color.gray.m)
+hl("@array", color.gray.m)
+
+hl("@object.destructure", color.pink)
+hl("@array.destructure", color.pink)
+
+hl("@object.destructure", color.blue)
+hl("@array.destructure", color.blue)
 
 
-hl("@object_destructure", color.purple)
-hl("@array_destructure", color.purple)
+-- hl("@object.destructure", { term = 74 })
+-- hl("@array.destructure", { term = 74 })
 
--- hl("@functionf", color.purple)
--- hl("@if_block", color.violet)
--- hl("@conditional", color.violet, { bold = true })
+-- hl("@object.destructure", color.magenta)
+-- hl("@array.destructure", color.magenta)
 
-hl("@conditional", {})
-hl("@repeat", {})
+hl("@repeat", { bold = true })
+hl("@conditional", { bold = true })
 
-hl("@control_block", color.violet)
+hl("@control.block", color.violet)
+hl("@control.condition", color.violet)
+
 
 -- hl("@function.call", color.blue)
 -- hl("@method.call", color.blue)
 
 -- hl("@call.arguments", color.blue)
 
--- hl("@call.arguments", color.gray.m)
-hl("@call.arguments", { term = 245 })
+hl("@call.arguments", color.gray.m)
 
-hl("@variable.underscore", { term = 28 }, { bold = true })
 
 hl("@tag.html", link.norm)
 hl("@tag.delimiter", color.gray.ml)
