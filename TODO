@@ -9,29 +9,14 @@
    - hack support into command-t lua for:
       . it doesn't show you the matches anymore.
       - exe "hi! CommandTCharMatched" .s:fmt_bold .s:fg_orange .s:bg_none
+   - look into these other options for moving and selecting tree sitter nodes / objects
+      . https://www.reddit.com/r/neovim/comments/r10llx/the_most_amazing_builtin_feature_nobody_ever/?share_id=oWRt1U8TO-CXlmQ-JF4rk&utm_content=1&utm_medium=android_app&utm_name=androidcss&utm_source=share&utm_term=1
 
 = vim
 
-   ! colors are coming along. keep working on it.
-
-   = finish colors
-      - fix colors -- just strip out js and solarized stuff and make one big color.vim
-      - basically redo the core bundle stuff. look for faster / better code highlighting
-      - write scripts to copy groups
-         - syntax, tree sitter, lsp
-      - strip out solarized
-      - just put everything in colors.vim / colors.lua
-         - maybe break it out into a directory
-            - import common everywhere.
-            - /colors/common.lua
-            - /colors/javascript.lua
-            - /colors/hop.lua
-            - /colors/pounce.lua
-         - drop old javascript highlighting
-      - add support for gui 24bit colors 
-         . should be easy, just pull the hex and use it.
-   = setup colorizer
-      - https://github.com/norcalli/nvim-colorizer.lua
+   - write some code with new colors.
+   - remove old references to colors (original.vim)
+   - move new colors to kendrick.lua
 
    = setup snippets
       - remove ultisnip
@@ -48,6 +33,9 @@
    - do a lockfile! (https://shyr.io/blog/vim-plugin-lockfile)
 
 = setup tux
+   - support splitting / adjusting windows (basically call the tmux adjust windows script)
+   - to set tab title to the project name
+     - echo -ne "\e]1;this is the title\a"
    - create a tux init . <name> which will add this directory to the tux. 
       - rewrite tux with new dry. should take like 2 hours.
       - name the tmux window! 
@@ -55,6 +43,9 @@
    - use paths as the tmux name - and have aliases
       - support tux move Projects/dry/dry-wip/dry-underscore projects/dry/baseline
       - support tux move du projects/dry/baseline
+
+   = setup zsh completion for tux
+      . setup code is in a chatgpt session
 
    = alias this stuff
       - fzf tux init
@@ -65,7 +56,7 @@
    - finish fixing the zsh config and (maybe) the bash config. i don't know if it's short circuited
    - change the name of the master branch to main
 
-= /dropbox/system and 
+= /dropbox/system
    - figure this out. copy plat and term and local
    - clean up and remove /dropbox/system.old
 
@@ -147,4 +138,25 @@ x vim
       / doesn't show up in both buffers if they're both on the same vsplit.
       / at least not reliably. don't know what's going on.
       x replaced it with listchars.
+
+   x finish colors
+      x fix colors -- just strip out js and solarized stuff and make one big color.vim
+      x basically redo the core bundle stuff. look for faster / better code highlighting
+      x write scripts to copy groups
+         x syntax, tree sitter, lsp
+      x strip out solarized
+      x just put everything in colors.vim / colors.lua
+         / maybe break it out into a directory
+            - import common everywhere.
+            - /colors/common.lua
+            - /colors/javascript.lua
+            - /colors/hop.lua
+            - /colors/pounce.lua
+         x drop old javascript highlighting
+      x add support for gui 24bit colors
+         . should be easy, just pull the hex and use it.
+   x setup colorizer
+      x https://github.com/norcalli/nvim-colorizer.lua
+
+   x colors are coming along. keep working on it.
 

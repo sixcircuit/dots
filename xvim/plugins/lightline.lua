@@ -168,22 +168,16 @@ local function has_diagnostics()
    return #diagnostics > 0
 end
 
-local function get_ctermbg_of_highlight_group(hl_group)
-   local hl = vim.api.nvim_get_hl(0, { name = hl_group }) -- true for RGB values
-   local ctermbg = hl.ctermbg or nil  -- The 'background' key corresponds to 'ctermbg'
-   return ctermbg
-end
-
-local function bg_color_for_mode(prefix, suffix)
+local function color_for_mode(prefix, suffix)
 
    local mode_map = { V = 'n', ['\22'] = 'n', s = 'n', v = 'n', ['\19'] = 'n', c = 'n', R = 'n' }
 
-   local insert_ctermbg = get_ctermbg_of_highlight_group(prefix .. '_insert_' .. suffix)
-   local normal_ctermbg = get_ctermbg_of_highlight_group(prefix .. '_normal_' .. suffix)
+   local insert_hl = vim.api.nvim_get_hl(0, { name = prefix .. '_insert_' .. suffix })
+   local normal_hl = vim.api.nvim_get_hl(0, { name = prefix .. '_normal_' .. suffix })
 
    local color_map = {
-      n = normal_ctermbg,
-      i = insert_ctermbg
+      n = normal_hl,
+      i = insert_hl
    }
 
    local current_mode = vim.api.nvim_get_mode().mode:sub(1, 1)
@@ -192,51 +186,52 @@ local function bg_color_for_mode(prefix, suffix)
 
    local color = color_map[mode]
 
-   if color == nil then
-      return 0
-   else
-      return color
-   end
+   return color
 
 end
 
-local function bg_color_for_indicator_char()
-   return bg_color_for_mode('LightlineLeft', "1")
+local function hl_for_indicator_char()
+   return color_for_mode('LightlineLeft', "1")
 end
 
-local indicator_char_fg_color = 196
+local color = {}
+
+color.red = {
+   term = 160,
+   gui = "#d70000",
+   h = {
+      term = 196,
+      gui = "#ff0000"
+   }
+}
+
+local indicator_char_fg_color = color.red.h
+
+local function set_indicator_hl(name)
+   local bg_color = hl_for_indicator_char()
+
+   vim.api.nvim_set_hl(0, name, {
+      fg = indicator_char_fg_color.gui,
+      bg = bg_color.bg,
+      ctermfg = indicator_char_fg_color.term,
+      ctermbg = bg_color.ctermbg,
+      bold = true,
+   })
+
+end
 
 function LightlineReadOnly()
-   local bg_color = bg_color_for_indicator_char()
-
-   -- set color for indicator chars
-   vim.api.nvim_command(string.format(
-      'hi LightlineReadOnlyColor ctermfg=%d ctermbg=%d guifg=#ff0000 term=bold cterm=bold',
-      indicator_char_fg_color, bg_color
-   ))
-
+   set_indicator_hl("LightlineReadOnlyColor")
    return vim.bo.readonly and "RO " or ""
 end
 
 function LightlineModified()
-   local bg_color = bg_color_for_indicator_char()
-
-   vim.api.nvim_command(string.format(
-      'hi LightlineModifiedColor ctermfg=%d ctermbg=%d guifg=#ff0000 term=bold cterm=bold',
-      indicator_char_fg_color, bg_color
-   ))
-
+   set_indicator_hl("LightlineModifiedColor")
    return vim.bo.modified and "• " or ""
 end
 
 function LightlineDiagnostics()
-   local bg_color = bg_color_for_indicator_char()
-
-   vim.api.nvim_command(string.format(
-      'hi LightlineDiagnosticsColor ctermfg=%d ctermbg=%d guifg=#ff0000 term=bold cterm=bold',
-      indicator_char_fg_color, bg_color
-   ))
-
+   set_indicator_hl("LightlineDiagnosticsColor")
    return has_diagnostics() and  "‼ " or ""
 end
 
@@ -388,16 +383,15 @@ LightlineClock = width_check(function()
 
    hour = tonumber(hour)
 
-   local bg_color = bg_color_for_mode('LightlineRight', "2")
-
-   local fg_red = 196
-   local fg_gray = 247
+   local line_color = color_for_mode('LightlineRight', "2")
+   local clock_color = line_color;
 
    if hour < 8 or hour > 21 then
-      vim.api.nvim_command('hi LightlineClockColor ctermfg=' .. fg_red .. ' ctermbg=' .. bg_color)
-   else
-      vim.api.nvim_command('hi LightlineClockColor ctermfg=' .. fg_gray .. ' ctermbg=' .. bg_color)
+      clock_color.fg = color.red.h.gui
+      clock_color.ctermfg = color.red.h.term
    end
+
+   vim.api.nvim_set_hl(0, "LightlineClockColor", clock_color)
 
    return (" " .. vim.fn.strftime('%H:%M') .. "  ")
    -- return (" " .. vim.fn.strftime('%H:%M:%S') .. "  ")

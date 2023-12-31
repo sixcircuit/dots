@@ -82,6 +82,7 @@
 (arguments) @call.arguments
 (object) @object
 (array) @array
+(subscript_expression) @punctuation.subscript
 
 ((identifier) @variable.underscore
  (#any-of? @variable.underscore

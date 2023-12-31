@@ -22,6 +22,7 @@ end
 local link = {}
 
 link.norm = { link = "Normal" }
+link.todo = { link = "Todo" }
 
 local color = {}
 
@@ -60,9 +61,13 @@ color.blue = {
    term = 33,
    gui = "#0087ff",
    l = {
-      term = 31,
-      gui = "#0087af"
-   }
+      term = 26,
+      gui = "#005fd7"
+   },
+   -- h = {
+   --    term = 27,
+   --    gui = "#005fff"
+   -- }
 }
 
 color.purple = {
@@ -175,10 +180,6 @@ local function hl(group, fg, bg, extra)
 end
 
 
--- this doesn't seem to work.
--- vim.o.termguicolors = true
-
-
 vim.api.nvim_create_autocmd("TextYankPost", {
     group = vim.api.nvim_create_augroup("highlight_yank", { clear = true }),
     pattern = "*",
@@ -242,7 +243,8 @@ hl("lCursor", { link = "Cursor" })
 hl("DiffAdd", color.green)
 hl("DiffChange", color.gold)
 hl("DiffDelete", color.red)
-hl("DiffText", color.blue)
+-- hl("DiffText", color.blue)
+hl("DiffText", color.cyan)
 
 
 -- TODO: setup undercurl
@@ -341,7 +343,7 @@ hl("PreProc", color.orange)
 hl("Type", color.gold, { bold = true })
 
 hl("Constant", color.gold)
--- hl("Statement", color.blue)
+hl("Statement", color.blue)
 hl("Special", color.red)
 
 hl("Underlined", color.violet)
@@ -372,26 +374,22 @@ hl("Directory", color.gold, { bold = true })
 hl("ErrorMsg", color.bg, color.red)
 
 
-hl("@lsp.type.property", {})
-hl("@property", color.fg, { default = true })
-
--- hl("@operator", color.fg, { bold = true })
-
-hl("@lsp.type.variable", {})
--- hl("@lsp.type.parameter", {})
-
 hl("@operator", { link = "Normal" })
 
-hl("@keyword.this", color.blue, { italic = true })
+hl("@keyword.this", color.blue, { bold = true })
+hl("@variable.self", color.blue, { bold = true })
 
-hl("@variable.self", color.blue, { italic = true })
-
-hl("@variable.declaration.self.this", color.blue, { italic = true })
-hl("@variable.declaration.self.error", color.magenta, { bold = true, italic = false })
+hl("@variable.declaration.self.this", color.blue, { bold = false, italic = false })
+hl("@variable.declaration.self.error", color.magenta, { bold = false, italic = false })
 
 hl("@variable.underscore", color.gray.m, { bold = true })
 
 hl("@constant.builtin", color.cyan, { bold = true })
+
+hl("@type", color.fg, { bold = false })
+hl("@type.builtin", color.gray.ml, { bold = false })
+hl("@variable.builtin", color.fg, { bold = false })
+hl("@constant", color.fg, { bold = false })
 
 -- hl("@keyword", color.fg, { italic = true })
 hl('@keyword', color.blue, { bold = true })
@@ -401,11 +399,7 @@ hl('@boolean', color.cyan, { bold = true })
 
 -- hl("@keyword", color.cyan)
 
--- hl("@keyword.prototype.javascript", color.gray.ml, { italic = true })
--- hl("@keyword.function.javascript", color.green, { italic = true })
-
 hl("@keyword.prototype.javascript", color.gray.ml, { bold = false })
--- hl("@keyword.function.javascript", color.green, {})
 
 hl("@keyword.coroutine", {})
 hl("@keyword.async", color.green, { bold = true })
@@ -419,22 +413,21 @@ hl("@punctuation.delimiter", { term = 240, gui = "#585858" })
 hl("@parenthesis.block", color.gray.m, { default = true })
 
 hl("@string.template", color.gold)
--- hl("@string.template.substitution", color.red)
 hl("@string.template.substitution", color.red.l)
--- hl("@string.template.substitution", color.magenta)
--- hl("@string.template.substitution", color.orange.l)
-
--- hl("@lsp.type.class", color.gray.mh)
--- hl("@lsp.type.class", { link = "Normal" })
--- hl("@constructor", color.green.h)
 
 hl("@constructor", { })
 hl("@lsp.type.class", { })
+
 -- TODO: improve these classes below. could be great.
--- local class_fg = { bold = false, italic = true }
--- hl("@lsp.type.class", color.gray.m, class_fg)
--- hl("@constructor", color.gray.m, class_fg)
+-- local class_color = color.cyan.m
+-- local class_fg = { bold = false, italic = false }
+-- hl("@lsp.type.class", class_color, class_fg)
+-- hl("@constructor", class_color, class_fg)
 -- hl("@method", color.gray.mh, { bold = true })
+-- hl("@method", { bold = true })
+
+-- hl("@method.call", { bold = true })
+-- hl("@function.call", { bold = true })
 
 hl("@lsp.type.comment", { })
 hl("@lsp.type.function", { })
@@ -450,33 +443,30 @@ hl("@keyword.function", { bold = true })
 hl("@function.body", {})
 hl("@function.block", color.green)
 
--- hl("@object", color.gray.ll)
--- hl("@array", color.gray.ll)
-
--- hl("@object", color.orange)
--- hl("@array", color.orange)
-
-hl("@object", color.gray.m)
-hl("@array", color.gray.m)
-
-hl("@object.destructure", color.pink)
-hl("@array.destructure", color.pink)
-
-hl("@object.destructure", color.blue)
-hl("@array.destructure", color.blue)
-
-
--- hl("@object.destructure", { term = 74 })
--- hl("@array.destructure", { term = 74 })
-
--- hl("@object.destructure", color.magenta)
--- hl("@array.destructure", color.magenta)
-
 hl("@repeat", { bold = true })
 hl("@conditional", { bold = true })
 
 hl("@control.block", color.violet)
 hl("@control.condition", color.violet)
+hl("@lsp.type.property", {})
+hl("@property", color.fg, { default = true })
+
+-- hl("@operator", color.fg, { bold = true })
+
+hl("@lsp.type.variable", {})
+hl("@lsp.type.parameter", color.fg, { bold = false })
+-- hl("@lsp.typemod.variable.declaration", { italic = true })
+
+hl("@object", color.gray.m)
+hl("@array", color.gray.m)
+
+hl("@punctuation.subscript", color.gray.m)
+
+hl("@object.destructure", color.blue, { italic = false })
+hl("@array.destructure", color.blue, { italic = false })
+
+-- hl("@variable", color.gray.mh, { italic = true })
+-- hl("@parameter", color.gray.mh, { italic = true })
 
 
 -- hl("@function.call", color.blue)
@@ -490,48 +480,9 @@ hl("@call.arguments", color.gray.m)
 hl("@tag.html", link.norm)
 hl("@tag.delimiter", color.gray.ml)
 
--- hl("@function", color.purple)
--- hl("@function.call", color.blue)
+hl("@text.todo", link.todo)
+hl("@text.note", link.todo)
+hl("@text.warning", link.todo)
+hl("@text.danger", link.todo)
+-- hl("@text.uri", link.todo)
 
-
--- ((tag
---   (name) @text.todo @nospell
---   ("(" @punctuation.bracket (user) @constant ")" @punctuation.bracket)?
---   ":" @punctuation.delimiter)
---   (#any-of? @text.todo "TODO" "WIP"))
-
--- ("text" @text.todo @nospell
---  (#any-of? @text.todo "TODO" "WIP"))
-
--- ((tag
---   (name) @text.note @nospell
---   ("(" @punctuation.bracket (user) @constant ")" @punctuation.bracket)?
---   ":" @punctuation.delimiter)
---   (#any-of? @text.note "NOTE" "XXX" "INFO" "DOCS" "PERF" "TEST"))
-
--- ("text" @text.note @nospell
---  (#any-of? @text.note "NOTE" "XXX" "INFO" "DOCS" "PERF" "TEST"))
-
--- ((tag
---   (name) @text.warning @nospell
---   ("(" @punctuation.bracket (user) @constant ")" @punctuation.bracket)?
---   ":" @punctuation.delimiter)
---   (#any-of? @text.warning "HACK" "WARNING" "WARN" "FIX"))
-
--- ("text" @text.warning @nospell
---  (#any-of? @text.warning "HACK" "WARNING" "WARN" "FIX"))
-
--- ((tag
---   (name) @text.danger @nospell
---   ("(" @punctuation.bracket (user) @constant ")" @punctuation.bracket)?
---   ":" @punctuation.delimiter)
---   (#any-of? @text.danger "FIXME" "BUG" "ERROR"))
-
--- ("text" @text.danger @nospell
---  (#any-of? @text.danger "FIXME" "BUG" "ERROR"))
-
--- ; Issue number (#123)
--- ("text" @number
---  (#lua-match? @number "^#[0-9]+$"))
-
--- ((uri) @text.uri @nospell)

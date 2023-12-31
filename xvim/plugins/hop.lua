@@ -93,72 +93,24 @@ vim.keymap.set('', 'myi\'', hop_yank_inside_f("'"))
 vim.keymap.set('', 'myi`', hop_yank_inside_f("`"))
 vim.keymap.set('', 'myi(', hop_yank_inside_f('('))
 
+local m_chars = {
+   '<', '>', '{', '}', '[', ']', '(', ')',
+   '"', '\'', '`',
+   ',', '.', ';', ':',
+   '|', '&', '-', '_',
+}
 
-vim.keymap.set('', 'm<', f_to_chars_f('<'))
-vim.keymap.set('', 'm>', f_to_chars_f('>'))
-vim.keymap.set('', 'm{', f_to_chars_f('{'))
-vim.keymap.set('', 'm}', f_to_chars_f('}'))
-vim.keymap.set('', 'm[', f_to_chars_f('['))
-vim.keymap.set('', 'm]', f_to_chars_f(']'))
-vim.keymap.set('', 'm(', f_to_chars_f('('))
-vim.keymap.set('', 'm)', f_to_chars_f(')'))
-vim.keymap.set('', 'm-', f_to_chars_f('-'))
-vim.keymap.set('', 'm_', f_to_chars_f('_'))
-vim.keymap.set('', 'm"', f_to_chars_f('"'))
-vim.keymap.set('', 'm\'', f_to_chars_f("'"))
-vim.keymap.set('', 'm`', f_to_chars_f("`"))
-vim.keymap.set('', 'm,', f_to_chars_f(","))
-vim.keymap.set('', 'm;', f_to_chars_f(";"))
-vim.keymap.set('', 'm|', f_to_chars_f("|"))
-vim.keymap.set('', 'm&', f_to_chars_f("&"))
-vim.keymap.set('', 'm:', f_to_chars_f(":"))
+for _, char in pairs(m_chars) do
+   vim.keymap.set('', "m"  .. char, f_to_chars_f(char))
+   vim.keymap.set('', 'mf' .. char, f_to_chars_f(char))
+   vim.keymap.set('', 'mt' .. char, t_to_chars_f(char))
+end
+
 -- vim.keymap.set('', 'm ', f_to_chars_f(" "))
 -- match all spaces that aren't at the start of a line
-vim.keymap.set('', 'm ', f_to_chars_f("\\S\\zs \\+", true))
-
-vim.keymap.set('', 'mf<', f_to_chars_f('<'))
-vim.keymap.set('', 'mf>', f_to_chars_f('>'))
-vim.keymap.set('', 'mf{', f_to_chars_f('{'))
-vim.keymap.set('', 'mf}', f_to_chars_f('}'))
-vim.keymap.set('', 'mf[', f_to_chars_f('['))
-vim.keymap.set('', 'mf]', f_to_chars_f(']'))
-vim.keymap.set('', 'mf(', f_to_chars_f('('))
-vim.keymap.set('', 'mf)', f_to_chars_f(')'))
-vim.keymap.set('', 'mf-', f_to_chars_f('-'))
-vim.keymap.set('', 'mf_', f_to_chars_f('_'))
-vim.keymap.set('', 'mf"', f_to_chars_f('"'))
-vim.keymap.set('', 'mf`', f_to_chars_f('`'))
-vim.keymap.set('', 'mf\'', f_to_chars_f("'"))
-vim.keymap.set('', 'mf,', f_to_chars_f(","))
-vim.keymap.set('', 'mf;', f_to_chars_f(";"))
-vim.keymap.set('', 'mf|', f_to_chars_f("|"))
-vim.keymap.set('', 'mf&', f_to_chars_f("&"))
-vim.keymap.set('', 'mf:', f_to_chars_f(":"))
--- vim.keymap.set('', 'mf ', f_to_chars_f(" "))
--- match all spaces that aren't at the start of a line
+vim.keymap.set('', 'm ',  f_to_chars_f("\\S\\zs \\+", true))
 vim.keymap.set('', 'mf ', f_to_chars_f("\\S\\zs \\+", true))
-
-vim.keymap.set('', 'mt<', t_to_chars_f('<'))
-vim.keymap.set('', 'mt>', t_to_chars_f('>'))
-vim.keymap.set('', 'mt{', t_to_chars_f('{'))
-vim.keymap.set('', 'mt}', t_to_chars_f('}'))
-vim.keymap.set('', 'mt[', t_to_chars_f('['))
-vim.keymap.set('', 'mt]', t_to_chars_f(']'))
-vim.keymap.set('', 'mt(', t_to_chars_f('('))
-vim.keymap.set('', 'mt)', t_to_chars_f(')'))
-vim.keymap.set('', 'mt-', t_to_chars_f('-'))
-vim.keymap.set('', 'mt_', t_to_chars_f('_'))
-vim.keymap.set('', 'mt"', t_to_chars_f('"'))
-vim.keymap.set('', 'mt`', t_to_chars_f('`'))
-vim.keymap.set('', 'mt\'', t_to_chars_f("'"))
-vim.keymap.set('', 'mt,', t_to_chars_f(","))
-vim.keymap.set('', 'mt;', t_to_chars_f(";"))
-vim.keymap.set('', 'mt|', t_to_chars_f("|"))
-vim.keymap.set('', 'mt&', t_to_chars_f("&"))
--- vim.keymap.set('', 'mt ', t_to_chars_f(" "))
--- match all spaces that aren't at the start of a line
 vim.keymap.set('', 'mt ', t_to_chars_f("\\S\\zs \\+", true))
-vim.keymap.set('', 'mt:', t_to_chars_f(":"))
 
 -- local hr = require('hop_repeat')
 -- hr.setup()

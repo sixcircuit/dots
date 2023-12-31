@@ -1,6 +1,8 @@
 
 let s:root = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 
+lua vim.o.termguicolors = true
+
 " let g:no_fancy_highlighting=1
 
 execute 'set runtimepath+=' . s:root . '/runtime'

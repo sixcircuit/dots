@@ -1,24 +1,35 @@
 
 if vim.g.no_fancy_highlighting ~= 1 then
 
+require('colorizer').setup()
+
 require('nvim-treesitter.configs').setup({
   ensure_installed = "all",
   highlight = {
-    enable = true,
-    disable = { "perl" },
-    -- enable = false,
-    additional_vim_regex_highlighting = false,
-    -- additional_vim_regex_highlighting = true,
+     enable = true,
+     disable = { "perl" },
+     -- enable = false,
+     additional_vim_regex_highlighting = false,
+     -- additional_vim_regex_highlighting = true,
 
-    -- or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
-    -- disable = function(lang, buf)
-    --     local max_filesize = 100 * 1024 -- 100 kb
-    --     local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-    --     if ok and stats and stats.size > max_filesize then
-    --         return true
-    --     end
-    -- end,
+     -- or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
+     -- disable = function(lang, buf)
+        --     local max_filesize = 100 * 1024 -- 100 kb
+        --     local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+        --     if ok and stats and stats.size > max_filesize then
+        --         return true
+        --     end
+        -- end,
   },
+  incremental_selection = {
+     enable = true,
+     keymaps = {
+        init_selection = '<CR>',
+        scope_incremental = '<CR>',
+        node_incremental = '<TAB>',
+        node_decremental = '<S-TAB>',
+     },
+  }
 })
 
 -- https://github.com/williamboman/mason-lspconfig.nvim

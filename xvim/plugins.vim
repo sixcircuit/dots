@@ -4,6 +4,7 @@
 Plug 'sixcircuit/vim-javascript'
 
 Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'norcalli/nvim-colorizer.lua'
 
 " Plug 'itchyny/vim-cursorword'
 " let g:cursorword_delay=0
@@ -55,7 +56,7 @@ Plug 'tpope/vim-fugitive'
 
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 
-" the autocmd is a hack that tricks delimitmate into not breaking command-t. 
+" the autocmd is a hack that tricks delimitmate into not breaking command-t.
 " if we don't do this it completely blows up when we use backspace in the
 " command-t completion window.
 Plug 'Raimondi/delimitMate'
@@ -87,8 +88,7 @@ Plug 'othree/html5.vim'
 Plug 'nathanaelkane/vim-indent-guides'
 
 " camel case, snake case
-Plug 'tpope/vim-abolish' 
-
+Plug 'tpope/vim-abolish'
 
 Plug 'thinca/vim-localrc'
 
