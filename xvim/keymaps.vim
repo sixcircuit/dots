@@ -49,7 +49,7 @@ nnoremap <leader>id "=strftime("%Y-%m-%d %H:%M")<CR>P
 nnoremap <leader>im "="= " . strftime("%Y-%m-%d %H:%M")<CR>P
 
 nnoremap <silent> <leader>fq :call FixQuotes()<CR>
-nnoremap <silent> <leader>fs :call FixTrailingWhitespace()<CR>
+nnoremap <silent> <leader>fw :call FixTrailingWhitespace()<CR>
 
 noremap <Leader>z :call ToggleWrap()<CR>
 noremap <Leader>tw :call ToggleWrap()<CR>
@@ -60,15 +60,6 @@ nmap <leader>c gcc
 vmap <leader>c gc
 " map <leader>n :cnext<cr>
 
-map <silent> <Leader>gl :call OpenURI()<CR>
-
-" google the word under the cursor
-nmap <silent> <leader>gg "gyiw:call GoogleSearch()<CR>
-nmap <silent> <leader>gi' "gyi':call GoogleSearch()<CR>
-nmap <silent> <leader>gi" "gyi":call GoogleSearch()<CR>
-
-" google the visual selection
-vmap <silent> <leader>gg "gy:call GoogleSearch()<CR>
 
 " move things to the bottom and come back up think: 'done'
 nnoremap <leader>d dapGpGmd<C-o><C-o>

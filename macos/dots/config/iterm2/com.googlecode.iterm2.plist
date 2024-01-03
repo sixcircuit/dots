@@ -1167,13 +1167,13 @@
 				<key>Alpha Component</key>
 				<real>1</real>
 				<key>Blue Component</key>
-				<real>0.4902801513671875</real>
+				<real>0.50196078431372548</real>
 				<key>Color Space</key>
 				<string>sRGB</string>
 				<key>Green Component</key>
-				<real>0.4902801513671875</real>
+				<real>0.50196078431372548</real>
 				<key>Red Component</key>
-				<real>0.4902801513671875</real>
+				<real>0.50196078431372548</real>
 			</dict>
 			<key>Cursor Guide Color</key>
 			<dict>

@@ -16,3 +16,9 @@ cmd
 cb
 dir
 undercurl
+stdout
+stderr
+init
+cmds
+str
+os

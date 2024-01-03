@@ -942,18 +942,18 @@ function print_term256_colors({ colors, wide, highlight }){
    let last = null;
    colors.forEach(function(color){
       if(last){
-         if(last.hsl.h === 0 && color.hsl.h === 0 && last.hsl.s === 0 && color.hsl.s === 0){  
+         if(last.hsl.h === 0 && color.hsl.h === 0 && last.hsl.s === 0 && color.hsl.s === 0){
 
          }else if(last.hsl.s !== color.hsl.s || last.hsl.l !== color.hsl.l){
-            column = [];
             columns.push(column);
+            column = [];
          }
       }
       last = color;
       column.push(color_to_str({ color, highlight, hsl, wide, short: true }));
       // column.push(color_to_str({ color, highlight, hsl, wide }));
    });
-
+   if(column.length){ columns.push(column); }
    // console.log(JSON.stringify(columns, null, 3));
 
    // return print_columns(columns.slice(0, 3));

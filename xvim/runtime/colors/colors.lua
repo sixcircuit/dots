@@ -42,6 +42,11 @@ color.bg = {
    gui = "#000000"
 }
 
+color.cursor = {
+   term = 244,
+   gui = "#808080"
+}
+
 color.fg = color.gray.mh
 
 color.gold = {
@@ -81,6 +86,14 @@ color.cyan = {
    l = {
       term = 30,
       gui = "#008787"
+   },
+   h = {
+      term = 43,
+      gui = "#00d7af"
+   },
+   hh = {
+      term = 51,
+      gui = "#00ffff"
    }
 }
 -- color.cyan = color.cyan.l
@@ -92,6 +105,14 @@ color.green = {
    h = {
       term = 28,
       gui = "#00af00"
+   },
+   l = {
+      term = 29,
+      gui = "#00875f",
+      -- term = 23,
+      -- gui = "#005f5f
+      -- term = 22,
+      -- gui = "#005f00"
    }
    -- hh = {
    --    term = 34,
@@ -127,7 +148,11 @@ color.red = {
 
 color.yellow = {
    term = 142,
-   gui = "#afaf00"
+   gui = "#afaf00",
+   l = {
+      term = 100,
+      gui = "#878700"
+   }
 }
 
 color.magenta = {
@@ -366,7 +391,9 @@ hl("HighlightYank", color.bg, vis_color)
 hl("Search", color.bg, vis_color)
 hl("IncSearch", color.bg, vis_color)
 
-hl("MatchParen", color.gold, { bold = true })
+-- hl("MatchParen", color.gold, { bold = true })
+-- hl("MatchParen", color.gray.hh, { bold = true })
+hl("MatchParen", color.cyan.h, { bold = true })
 
 hl("Todo", color.magenta, { bold = true })
 
@@ -374,10 +401,9 @@ hl("Directory", color.gold, { bold = true })
 hl("ErrorMsg", color.bg, color.red)
 
 
-hl("@operator", { link = "Normal" })
-
 hl("@keyword.this", color.blue, { bold = true })
 hl("@variable.self", color.blue, { bold = true })
+hl("@exception", color.blue, { bold = true })
 
 hl("@variable.declaration.self.this", color.blue, { bold = false, italic = false })
 hl("@variable.declaration.self.error", color.magenta, { bold = false, italic = false })
@@ -443,18 +469,35 @@ hl("@keyword.function", { bold = true })
 hl("@function.body", {})
 hl("@function.block", color.green)
 
-hl("@repeat", { bold = true })
+-- local loop_color = color.violet
+-- local loop_color = color.green.l
+-- local loop_color = color.cyan.l
+local loop_color = color.yellow.l
+
+hl("@repeat", loop_color, { bold = true })
+hl("@loop.block", loop_color)
+hl("@loop.condition", loop_color)
+
 hl("@conditional", { bold = true })
 
-hl("@control.block", color.violet)
-hl("@control.condition", color.violet)
+hl("@if.block", color.violet)
+hl("@if.condition", color.violet)
 hl("@lsp.type.property", {})
 hl("@property", color.fg, { default = true })
 
+-- hl("@operator", {})
+hl("@operator", { link = "Normal" })
 -- hl("@operator", color.fg, { bold = true })
 
 hl("@lsp.type.variable", {})
-hl("@lsp.type.parameter", color.fg, { bold = false })
+-- hl("@variable", {})
+-- hl("@variable", color.gray.mh, { italic = true })
+
+hl("@lsp.type.parameter", {})
+-- hl("@parameter", {})
+-- hl("@parameter", color.gray.mh, { italic = true })
+
+-- hl("@lsp.type.parameter", color.fg, { bold = false })
 -- hl("@lsp.typemod.variable.declaration", { italic = true })
 
 hl("@object", color.gray.m)
@@ -465,8 +508,6 @@ hl("@punctuation.subscript", color.gray.m)
 hl("@object.destructure", color.blue, { italic = false })
 hl("@array.destructure", color.blue, { italic = false })
 
--- hl("@variable", color.gray.mh, { italic = true })
--- hl("@parameter", color.gray.mh, { italic = true })
 
 
 -- hl("@function.call", color.blue)
@@ -476,6 +517,8 @@ hl("@array.destructure", color.blue, { italic = false })
 
 hl("@call.arguments", color.gray.m)
 
+hl("@arguments.rest_pattern", color.red.l)
+hl("@operator.spread_element", color.red.l)
 
 hl("@tag.html", link.norm)
 hl("@tag.delimiter", color.gray.ml)

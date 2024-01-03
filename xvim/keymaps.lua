@@ -110,6 +110,29 @@ vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory
 
 vim.keymap.set('', '/', "<nop>")
 
+vim.keymap.set('n', '<Leader>gl', function()
+  vim.cmd('call OpenURI()')
+end, { silent = true })
+
+vim.keymap.set('n', '<leader>gg', function()
+   vim.cmd('normal! "gyiw')
+   vim.cmd('call GoogleSearch()')
+end, { silent = true })
+
+vim.keymap.set('n', '<leader>gi\'', function()
+   vim.cmd('normal! "gyi\'')
+   vim.cmd('call GoogleSearch()')
+end, { silent = true })
+
+vim.keymap.set('n', '<leader>gi"', function()
+   vim.cmd('normal! "gyi"')
+   vim.cmd('call GoogleSearch()')
+end, { silent = true })
+
+vim.keymap.set('v', '<leader>gg', function()
+   vim.cmd('normal! "gy')
+   vim.cmd('call GoogleSearch()')
+end, { silent = true })
 
 -- this only works because i have <c-/> mapped to $ in carabiner
 vim.keymap.set({ 'n', 'v' }, '$', "/") -- <c-/>

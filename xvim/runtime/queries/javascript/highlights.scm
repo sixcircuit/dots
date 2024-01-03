@@ -27,6 +27,7 @@
   (#eq? @variable.self "self")
 )
 
+
 ((variable_declarator
   name: (identifier) @variable.declaration.self.error)
   (#eq? @variable.declaration.self.error "self")
@@ -55,10 +56,10 @@
 (function_declaration) @function.block
 (function) @function.block
 
-(if_statement) @control.if @control.block
-(for_statement) @control.for @control.block
-(while_statement) @control.while @control.block
-(do_statement) @control.do @control.block
+(if_statement) @control.if @control.block @if.block
+(for_statement) @control.for @control.block @loop.block
+(while_statement) @control.while @control.block @loop.block
+(do_statement) @control.do @control.block @loop.block
 
 (parenthesized_expression) @parenthesis.block
 
@@ -66,13 +67,13 @@
 ;  (parenthesized_expression) @parenthesis.block)
 
 (if_statement
- condition: (parenthesized_expression) @control.condition)
+ condition: (parenthesized_expression) @if.condition)
 
 (while_statement
- condition: (parenthesized_expression) @control.condition)
+ condition: (parenthesized_expression) @control.condition @loop.condition)
 
 (do_statement
- condition: (parenthesized_expression) @control.condition)
+ condition: (parenthesized_expression) @control.condition @loop.condition)
 
 (return_statement) @return.block
 (return_statement
@@ -93,6 +94,24 @@
 
 ((string) @preproc
   (#eq? @preproc "\"use strict\""))
+
+(rest_pattern) @arguments.rest_pattern
+(rest_pattern
+   (identifier) @arguments.rest_pattern
+)
+
+[
+ "..."
+] @arguments.rest_pattern
+
+[
+ "..."
+] @operator.spread_element
+
+(spread_element) @operator.spread_element
+(spread_element
+  (identifier) @operator.spread_element
+)
 
 ;; Types
 

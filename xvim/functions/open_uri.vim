@@ -46,9 +46,11 @@ function! OpenURI()
    let url = ExtractURI(line)
 
    if has("mac") == 1
+     " exec "!open '" . url . "'"
      call jobstart(["open", url], {"detach": v:true})
      " call jobstart(["open", url])
    elseif has("unix") == 1
+     " exec "!xdg-open '" . url . "'"
      call jobstart(["xdg-open", url], {"detach": v:true})
      " call jobstart(["xdg-open", url])
    else
@@ -80,4 +82,3 @@ endfunction
 " call ExtractURI("aaaa [HTTP://QQQ.ASDF.GOOGLE.COM?ASDFOM&=ASKDFJ=LKASJDF-I82734KLVSAD.COM]")
 " call ExtractURI("aaaa {HTTP://QQQ.ASDF.GOOGLE.COM?ASDFOM&=ASKDFJ=LKASJDF-I82734KLVSAD.COM}")
 
-command! OpenURI call OpenURI()
