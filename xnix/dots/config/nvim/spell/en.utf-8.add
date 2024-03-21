@@ -22,3 +22,4 @@ init
 cmds
 str
 os
+resize

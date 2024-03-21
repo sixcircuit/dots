@@ -70,7 +70,7 @@ local mapping = {
             cmp.select_next_item()
          end
          -- cmp.select_next_item()
-         -- you could replace the expand_or_jumpable() calls with expand_or_locally_jumpable() 
+         -- you could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
          -- that way you will only jump inside the snippet region
       elseif luasnip.expand_or_locally_jumpable() then
          luasnip.expand_or_jump()
@@ -163,6 +163,16 @@ cmp.setup.cmdline(':', {
       { name = 'cmdline' }
    }),
    mapping = cmp.mapping.preset.cmdline(),
+   formatting = {
+      format = function(entry, vim_item)
+         -- This function controls how completion items are displayed.
+         -- By not setting vim_item.kind (or setting it to nil), the itemkind won't be displayed.
+         vim_item.kind = nil
+
+         -- Return the modified item.
+         return vim_item
+      end
+   }
 })
 
 -- Set up lspconfig.
@@ -264,7 +274,7 @@ local gts = {
          local hour = vim.fn.strftime('%H')
          hour = tonumber(hour)
 
-         if hour > 8 and hour < 21 then 
+         if hour > 8 and hour < 21 then
             return diagnostics
          end
 

@@ -11,17 +11,17 @@ first_split_big=82 # split position with 3 even splits on the big screen
 if [ $col_count -lt 250 ]; then
 
    if [ $panes -eq 1 ]; then
-      tmux split-window -h 
-      # tmux split-window -h 
+      tmux split-window -h
+      # tmux split-window -h
       tmux select-pane -t 1
       tmux resize-pane -t 0 -x $first_split_small
-      # tmux resize-pane -t 1 -x $second_split_small 
+      # tmux resize-pane -t 1 -x $second_split_small
 
    elif [ $panes -eq 2 ]; then
       tmux resize-pane -t 0 -x $first_split_small
 
    elif [ $panes -eq 3 ]; then
-      tmux resize-pane -t 0 -x $first_split_small \; resize-pane -t 1 -x $second_split_small 
+      tmux resize-pane -t 0 -x $first_split_small \; resize-pane -t 1 -x $second_split_small
 
    else
       tmux select-layout even-horizontal
@@ -31,10 +31,10 @@ if [ $col_count -lt 250 ]; then
 else # big screen
 
    if [ $panes -eq 1 ]; then
-      tmux split-window -h 
+      tmux split-window -h
       tmux select-pane -t 1
-      # tmux resize-pane -t 0 -x $first_split_big 
-      tmux split-window -h 
+      # tmux resize-pane -t 0 -x $first_split_big
+      tmux split-window -h
       tmux select-layout even-horizontal
 
    elif [ $panes -eq 2 ]; then
@@ -50,7 +50,7 @@ fi
 
 
 # bind \ split-window -h \; resize-pane -t 0 -x 80 \; split-window -h \; select-pane -t 1
-# bind \ if-shell "iftmux display-message -p '#{window_panes}'" display-message -p "hello" \;\\ 
+# bind \ if-shell "iftmux display-message -p '#{window_panes}'" display-message -p "hello" \;\\
    # display-message -p "world"\;
    # split-window -h \; resize-pane -t 0 -x 80 \; split-window -h \; select-pane -t 1
 

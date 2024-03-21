@@ -45,5 +45,9 @@ function cd(){
 alias c='cd'
 
 
+if [[ -n $TMUX_WAIT_FOR ]]; then
+   tmux wait-for -S $TMUX_WAIT_FOR
+fi
+
 # zprof # profile startup time
 

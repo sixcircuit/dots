@@ -13,17 +13,7 @@
       . https://www.reddit.com/r/neovim/comments/r10llx/the_most_amazing_builtin_feature_nobody_ever/?share_id=oWRt1U8TO-CXlmQ-JF4rk&utm_content=1&utm_medium=android_app&utm_name=androidcss&utm_source=share&utm_term=1
 
 = setup tux
-   - support splitting / adjusting windows (basically call the tmux adjust windows script)
-   - to set tab title to the project name
-     - echo -ne "\e]1;this is the title\a"
-   - create a tux init . <name> which will add this directory to the tux. 
-      - rewrite tux with new dry. should take like 2 hours.
-      - name the tmux window! 
-      - tux init picks the abbreviation. is there a programmatic way to do that? ask chat gpt about the algorithm. it also saves the state. tux save in a tmux session saves the config. https://superuser.com/questions/440015/restore-tmux-session-after-reboot
-   - do tux tab <name> to start it in a new iterm tab.
-   - use paths as the tmux name - and have aliases
-      - support tux move Projects/dry/dry-wip/dry-underscore projects/dry/baseline
-      - support tux move du projects/dry/baseline
+   - run through tux todos.
 
    = setup zsh completion for tux
       . setup code is in a chatgpt session

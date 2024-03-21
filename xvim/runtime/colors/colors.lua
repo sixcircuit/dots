@@ -27,6 +27,7 @@ link.todo = { link = "Todo" }
 local color = {}
 
 color.gray = {
+   llll = { term = 232, gui = "#080808" },
    lll = { term = 233, gui = "#121212" },
    ll = { term = 235, gui = "#262626" },
    l  = { term = 237, gui = "#3a3a3a" },
@@ -237,9 +238,15 @@ hl("PmenuSel", ui.dark, ui.light)
 hl("PmenuSbar", ui.dark, ui.light)
 hl("PmenuThumb", ui.dark, ui.light)
 
+-- completion item in completion menu
+hl("CmpItemKind", { link = "Pmenu" })
+-- hl("CmpItemKindFunction", color.green)
+-- hl("CmpItemKindMethod", color.green)
+
 hl("VertSplit", ui.dark, ui.dark)
 hl("StatusLine", ui.dark, ui.dark)
 hl("StatusLineNC", ui.dark, ui.dark)
+
 
 -- line numbers and tab lines
 -- hl("TabLine", ui.light, ui.dark, { underline = false })
@@ -255,6 +262,8 @@ hl("TabLineSel", color.gray.hh, color.gray.l, { underline = true })
 -- hl("TabLineSel", color.bg, color.magenta, { underline = false })
 
 hl("LineNr", color.gray.l)
+hl("EndOfBuffer", color.gray.l)
+-- hl("EndOfBuffer", color.gray.ll, color.gray.llll)
 hl("CursorLine", nil, color.gray.ll)
 hl("CursorLineNR", color.gray.ml, color.gray.ll)
 
@@ -325,6 +334,9 @@ hl("IblWhitespace", color.bg)
 
 require("ibl").setup({
    debounce = -1,
+   exclude = {
+      filetypes = { "text" }
+   },
    scope = {
       enabled = true,
       show_start = false,
@@ -359,6 +371,7 @@ require("ibl").setup({
 -- this is for trailing space and tabs. basically all listchars.
 hl("NonText", color.red)
 hl("SpecialKey", color.red)
+hl("Whitespace", color.red)
 
 hl("Normal", color.fg)
 hl("Comment", color.gray.ml) -- is 241, maybe bump to 242 if it's too dark.
@@ -478,12 +491,13 @@ hl("@repeat", loop_color, { bold = true })
 hl("@loop.block", loop_color)
 hl("@loop.condition", loop_color)
 
-hl("@conditional", { bold = true })
+hl("@conditional", color.violet, { bold = true })
 
 hl("@if.block", color.violet)
 hl("@if.condition", color.violet)
 hl("@lsp.type.property", {})
 hl("@property", color.fg, { default = true })
+hl("@label.json", color.fg, { default = true })
 
 -- hl("@operator", {})
 hl("@operator", { link = "Normal" })
@@ -499,6 +513,7 @@ hl("@lsp.type.parameter", {})
 
 -- hl("@lsp.type.parameter", color.fg, { bold = false })
 -- hl("@lsp.typemod.variable.declaration", { italic = true })
+hl("@lsp.type.namespace.javascript", {});
 
 hl("@object", color.gray.m)
 hl("@array", color.gray.m)
