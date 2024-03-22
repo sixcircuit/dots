@@ -119,6 +119,7 @@ SPACESHIP_HOST_SHOW="always"
 SPACESHIP_HOST_PREFIX="%F{$host_at_color}@%f" # the @ in there is what we print
 SPACESHIP_HOST_SUFFIX=" "
 SPACESHIP_HOST_COLOR=$host_color
+SPACESHIP_HOST_COLOR_SSH=$host_color
 
 SPACESHIP_GIT_PREFIX="%F{$git_color}(%f" # the paren in there is what we print
 SPACESHIP_GIT_SUFFIX="%F{$git_color}) %f" # the paren + space in there is what we print
