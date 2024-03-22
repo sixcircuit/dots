@@ -25,11 +25,11 @@ spaceship_host() {
     local host_color host
 
     # Determination of what color should be used
-    if [[ -n $SSH_CONNECTION ]]; then
-      host_color=$SPACESHIP_HOST_COLOR_SSH
-    else
+    # if [[ -n $SSH_CONNECTION ]]; then
+      # host_color=$SPACESHIP_HOST_COLOR_SSH
+    # else
       host_color=$SPACESHIP_HOST_COLOR
-    fi
+    # fi
 
     if [[ $SPACESHIP_HOST_SHOW_FULL == true ]]; then
       host="%M"
