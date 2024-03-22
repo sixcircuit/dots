@@ -17,6 +17,11 @@ this setup no longer supports vim. i've standardized on neovim. vim support stop
 
 = any platform
 
+   = add ~/.prompt with three lines
+      - first line is a number [16, 255] inclusive the 256 term color you want to use for the user color in the prompt.
+      - second line is a number [16, 255] inclusive the 256 term color you want to use for the host color in the prompt.
+      - third line is a number [16, 255] inclusive the 256 term color you want to use for the "@" character color between the user and host in the prompt.
+
    = install fzf
       - git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
       - ~/.fzf/install
@@ -34,7 +39,7 @@ this setup no longer supports vim. i've standardized on neovim. vim support stop
          - run :MUndoShow in neovim
          - run :checkhealth in neovim
 
-   = install nvm 
+   = install nvm
       - install nvm without touching the existing dotfiles. example here (update the version number):
       - PROFILE=/dev/null bash -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash'
 
@@ -71,7 +76,7 @@ this setup no longer supports vim. i've standardized on neovim. vim support stop
       - copy files into the dropbox folder (that it created)
       - restart sync (it should index, instead of uploading or downloading files)
       - if you fuck this up, it'll create a bazillon conflicted copies so watch it for a little bit after you restart it.
-   
+
    = setup key repeats - these are the right values
    ```
       defaults read -g KeyRepeat
@@ -88,7 +93,7 @@ this setup no longer supports vim. i've standardized on neovim. vim support stop
    = local brew install
       `mkdir homebrew && curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C homebrew`
 
-   = local rvm install with 
+   = local rvm install with
       `brew install ruby@2.6`
       `rvm mount ~/.homebrew/Cellar/ruby@2.6/2.6.9 -n ruby-2.6.9`
       `rvm alias create default ext-ruby-2.6.9`

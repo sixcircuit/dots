@@ -48,6 +48,7 @@ local darkest=238
 local git_color=$darkest
 local user_color=200 # bright pink
 local host_color=200 # bright pink
+local host_at_color=47 # bright green
 local exit_code_color=$darkest
 
 local gold=214 # gold
@@ -60,15 +61,16 @@ local light_blue=33 # light blue
 
 local char_color=$light_blue
 
-
-
 local prompt_color_file="$HOME/.prompt"
+
 if [ -f $prompt_color_file ]; then
-   user_color=$(sed "1q;d" $prompt_color_file)
-   host_color=$(sed "2q;d" $prompt_color_file)
+   local _user_color=$(sed "1q;d" $prompt_color_file)
+   local _host_color=$(sed "2q;d" $prompt_color_file)
+   local _host_at_color=$(sed "3q;d" $prompt_color_file)
    re='^[0-9]+$'
-   if ! [[ $user_color =~ $re ]] || (( user_color < 0 || user_color > 255 )); then user_color=200; fi
-   if ! [[ $host_color =~ $re ]] || (( host_color < 0 || host_color > 255 )); then host_color=200; fi
+   if [[ $_user_color =~ $re ]] || (( _user_color >= 16 && _user_color <= 255 )); then user_color=$_user_color; fi
+   if [[ $_host_color =~ $re ]] || (( _host_color >= 16 && _host_color <= 255 )); then host_color=$_host_color; fi
+   if [[ $_host_at_color =~ $re ]] || (( _host_at_color >= 16 && _host_at_color <= 255 )); then host_at_color=$_host_at_color; fi
 fi
 
 # SPACESHIP_CHAR_COLORS=( $gold $red $green $orange $purple $dark_blue $light_blue )
@@ -114,7 +116,7 @@ SPACESHIP_USER_SUFFIX=""
 SPACESHIP_USER_COLOR=$user_color
 
 SPACESHIP_HOST_SHOW="always"
-SPACESHIP_HOST_PREFIX="%F{$host_color}@%f" # the @ in there is what we print
+SPACESHIP_HOST_PREFIX="%F{$host_at_color}@%f" # the @ in there is what we print
 SPACESHIP_HOST_SUFFIX=" "
 SPACESHIP_HOST_COLOR=$host_color
 
