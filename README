@@ -1,5 +1,9 @@
 
 = todo
+   - install dependencies in the install script
+      - do this for ubuntu
+         - apt: gcc, g++, pip,
+         - fzf
    - do this in install script
       - clone sixcircuit/spaceship-prompt into xnix/shell/zsh/spaceship-prompt
       ? maybe just do a static include here. it never changes.
@@ -27,11 +31,8 @@ this setup no longer supports vim. i've standardized on neovim. vim support stop
 
    = install fzf
       - git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-      - ~/.fzf/install
+      - ~/.fzf/install --bin
 
-   = install monego font
-      - install regular and italic
-      - don't install bold. it's too bold. iterm (or macos) bolds the regular font just enough. maybe one day fontforge a real bold version but for now it's good enough.
 
    = install neovim
       - install nvim into ~/plat/nvim and link the bin into ~/plat/bin/nvim
@@ -46,6 +47,15 @@ this setup no longer supports vim. i've standardized on neovim. vim support stop
    = install nvm
       - install nvm without touching the existing dotfiles. example here (update the version number):
       - PROFILE=/dev/null bash -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash'
+      - nvm install -lts
+      - nvm alias default <new-version>
+         - if you automate this, don't parse "ls" use this:
+         for f in "$HOME/.nvm/versions/node/*" do
+             [ -e "$f" ] || [ -L "$f" ] || continue
+             // do something.
+             echo "$f"
+         done
+
 
    = setup colorterm env variable
       . https://github.com/termstandard/colors
@@ -55,6 +65,10 @@ this setup no longer supports vim. i've standardized on neovim. vim support stop
       . the env_keep list in /etc/sudoers.
 
 = macos
+
+   = install monego font
+      - install regular and italic
+      - don't install bold. it's too bold. iterm (or macos) bolds the regular font just enough. maybe one day fontforge a real bold version but for now it's good enough.
 
    = keyboard shortcuts
       ! turn off all the regular keyboard shortcuts in macos settings

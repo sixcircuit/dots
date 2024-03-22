@@ -2,7 +2,7 @@ shell=$1
 
 export NVM_DIR=~/.nvm
 
-load_nvm() {
+load_nvm(){
    unset -f nvm node npm npx > /dev/null 2>&1
    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
 }
@@ -24,12 +24,12 @@ lazy_load_nvim(){
    done
 }
 
-fast_load_nvm() {
+fast_load_nvm(){
 
    alias_path="$NVM_DIR/alias/default"
 
    if ! [ -f "$alias_path" ]; then
-      echo "warning: error fast loading nvm. missing file: \"$alias_path\" you need to set \"nvm alias default <some_version>\". falling back to slow version." 
+      echo "warning: error fast loading nvm. missing file: \"$alias_path\" you need to set \"nvm alias default <some_version>\". falling back to slow version."
       load_nvm;
       return
    fi
@@ -37,7 +37,7 @@ fast_load_nvm() {
    alias_version=$(<$alias_path)
 
    if [ -z "$alias_version" ]; then
-      echo "warning: error fast loading nvm. bad version: \"$alias_version\". you need to set \nvm alias default <some_version>\". falling back to slow version." 
+      echo "warning: error fast loading nvm. bad version: \"$alias_version\". you need to set \nvm alias default <some_version>\". falling back to slow version."
       load_nvm;
       return
    fi
@@ -47,7 +47,7 @@ fast_load_nvm() {
    bin_path="$NVM_DIR/versions/node/$alias_version/bin"
 
    if ! [ -d "$bin_path" ]; then
-      echo "warning: error fast loading nvm. missing directory (bin path): \"$bin_path\" you need to set \"nvm alias default <some_version>\". falling back to slow version." 
+      echo "warning: error fast loading nvm. missing directory (bin path): \"$bin_path\" you need to set \"nvm alias default <some_version>\". falling back to slow version."
       load_nvm;
       return
    fi
@@ -60,7 +60,7 @@ fast_load_nvm() {
 # for bash, load direct, it doesn't seem to like the zsh code
 
 if [[ "$shell" == "bash" ]]; then
-   load_nvim;
+   load_nvm;
 else
    fast_load_nvm;
    # lazy_load_nvim;

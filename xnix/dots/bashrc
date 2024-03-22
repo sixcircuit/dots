@@ -1,4 +1,11 @@
 
+# failure() {
+#   local lineno=$1
+#   local msg=$2
+#   echo "Failed at $lineno: $msg"
+# }
+# trap 'failure ${LINENO} "$BASH_COMMAND"' ERR
+
 source ~/term/shell.sh bash
 
 export IGNOREEOF=1000

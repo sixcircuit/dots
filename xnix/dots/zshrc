@@ -1,5 +1,15 @@
 # zmodload zsh/zprof # profile startup time
 
+# failure() {
+#   local lineno=$1
+#   local msg=$2
+#   echo "Failed at $lineno: $msg"
+# }
+
+# # In Zsh, $funcstack[2] can be used to get the command that caused the error
+# # and $LINENO is an array where the first element holds the line number.
+# trap 'failure $LINENO[1] "$funcstack[2]"' ERR
+
 # fallback prompt
 export PS1="[%n@%m %~] "
 
