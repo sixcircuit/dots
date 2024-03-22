@@ -37,8 +37,8 @@ SPACESHIP_PROMPT_ORDER=(
   # jobs          # Background jobs indicator
 )
 
-SPACESHIP_RPROMPT_ORDER=( 
-  # time 
+SPACESHIP_RPROMPT_ORDER=(
+  # time
   # exit_code     # Exit code section
 )
 
@@ -46,8 +46,8 @@ local foreground=245
 local darker=236
 local darkest=238
 local git_color=$darkest
-local user_color=$darkest
-local host_color=$darkest
+local user_color=200 # bright pink
+local host_color=200 # bright pink
 local exit_code_color=$darkest
 
 local gold=214 # gold
@@ -59,6 +59,17 @@ local dark_blue=21 # dark blue
 local light_blue=33 # light blue
 
 local char_color=$light_blue
+
+
+
+local prompt_color_file="$HOME/.prompt"
+if [ -f $prompt_color_file ]; then
+   user_color=$(sed "1q;d" $prompt_color_file)
+   host_color=$(sed "2q;d" $prompt_color_file)
+   re='^[0-9]+$'
+   if ! [[ $user_color =~ $re ]] || (( user_color < 0 || user_color > 255 )); then user_color=200; fi
+   if ! [[ $host_color =~ $re ]] || (( host_color < 0 || host_color > 255 )); then host_color=200; fi
+fi
 
 # SPACESHIP_CHAR_COLORS=( $gold $red $green $orange $purple $dark_blue $light_blue )
 
@@ -81,7 +92,7 @@ SPACESHIP_EXEC_TIME_ELAPSED=1
 # SPACESHIP_TIME_FORMAT="%D{%H:%M:%S}"
 
 
-# TODO: turn these into times, and compare them you can't go past 
+# TODO: turn these into times, and compare them you can't go past
 # https://unix.stackexchange.com/questions/84381/how-to-compare-two-dates-in-a-shell
 # also, these only work crossing the midnight boundary like they do.
 # with the two trigger hours gte 23 and the start hour gte 1
@@ -134,7 +145,7 @@ SPACESHIP_DIR_PREFIX="\n%F{$foreground}[%f" # the paren in there is what we prin
 SPACESHIP_DIR_SUFFIX="%F{$foreground}]%f" # the paren + space in there is what we print
 SPACESHIP_DIR_TRUNC=0
 SPACESHIP_DIR_TRUNC_REPO="false"
-SPACESHIP_DIR_COLOR=$foreground 
+SPACESHIP_DIR_COLOR=$foreground
 SPACESHIP_DIR_LOCK_SYMBOL=""
 
 
@@ -142,11 +153,11 @@ SPACESHIP_DIR_LOCK_SYMBOL=""
 # TRAPALRM(){ zle reset-prompt }
 # TMOUT=1
 
-# TRAPALRM(){ 
+# TRAPALRM(){
 #    # tput sc; tput cuu 3; tput cr; date +%H:%M:%S; tput rc
-#    # 
+#    #
 #    # echo "here";
-#    # zle reset-prompt 
+#    # zle reset-prompt
 # }
 # TMOUT=1
 
