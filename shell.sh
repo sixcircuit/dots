@@ -30,3 +30,4 @@ cd "$restore_working_dir"
 if [ -f ~/.motd ]; then
    source ~/.motd
 fi
+

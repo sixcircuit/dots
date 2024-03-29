@@ -1,11 +1,13 @@
 shell=$1
 plat=$2
 
+# alias s='source $HOME/.zshrc'
 alias x='exit'
-alias s='source $HOME/.zshrc'
-alias t='tree'
 alias v='vim'
 alias vd='vimdiff'
+alias t='\tux'
+alias tt='tree'
+alias tux='echo "USE Ctrl+O to open sessions."'
 
 alias wget='curl -L -O'
 
@@ -14,7 +16,7 @@ alias fs='fstats'
 alias rmr='rm -rf'
 
 alias rcp='rsync -ah --progress'
- 
+
 ## cd, because typing the backslash is A LOT of work!!
 alias ..='cd ../'
 alias ...='cd ../../'

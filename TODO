@@ -12,16 +12,6 @@
    - look into these other options for moving and selecting tree sitter nodes / objects
       . https://www.reddit.com/r/neovim/comments/r10llx/the_most_amazing_builtin_feature_nobody_ever/?share_id=oWRt1U8TO-CXlmQ-JF4rk&utm_content=1&utm_medium=android_app&utm_name=androidcss&utm_source=share&utm_term=1
 
-= setup tux
-   - run through tux todos.
-
-   = setup zsh completion for tux
-      . setup code is in a chatgpt session
-
-   = alias this stuff
-      - fzf tux init
-      - fzf tux ls (can you show a description but only search and pull out the first string?)
-
 = vim
 
    - write some code with new colors.
@@ -39,7 +29,7 @@
       - try ctrl+space completion instead of tab?
       - turn off complete for plain text files? like notes? it's weird.
       / turn off complete for vim command line ":"
-   
+
    - do a lockfile! (https://shyr.io/blog/vim-plugin-lockfile)
 
 = shell
@@ -54,14 +44,14 @@
 
 = done
 
-   x setup fzf 
-      x fix up the keybinding code in your own files. 
+   x setup fzf
+      x fix up the keybinding code in your own files.
 
    x fix ls
       / move to eza
          x nope! coreutils ls is the best.
       x alias everything
-      x fix colors 
+      x fix colors
          x especially weird background color
       x drop lscolors
       x fix ls_colors
@@ -76,7 +66,7 @@ x vim
 
    x https://github.com/haya14busa/vim-asterisk (set z star as default)
 
-   x Do this too. See if you like it. Turn it on for z star. 
+   x Do this too. See if you like it. Turn it on for z star.
       x https://github.com/haya14busa/is.vim
 
    x https://github.com/haya14busa/vim-operator-flashy
@@ -89,7 +79,7 @@ x vim
 
    x fuzzy find
       x https://github.com/ggvgc/vim-fuzzysearch
-      x https://vi.stackexchange.com/questions/14465/fuzzy-find-within-buffer 
+      x https://vi.stackexchange.com/questions/14465/fuzzy-find-within-buffer
       x incsearch plugin is no longer necessary. It's in main vim/nvim. Just use this one and drop the other two
 
    x maybe this, i feel like it would be slow for very large buffers. so maybe skip it. https://github.com/osyo-manga/vim-anzu (don't need it, built into neovim)
@@ -97,7 +87,7 @@ x vim
    x replace easymotion
       x remove easymotion
       x remove easymotion files
-      x setup hop 
+      x setup hop
          x setup commands
             x setup paste anywhere command
             x setup command to delete inside and paste something
@@ -125,7 +115,7 @@ x vim
       . cspell sucks because it doesn't integrate with the native spelling dictionary
       - figured out how to setup native spelling support for treesitter
 
-   x fix showTrailingWhitespace 
+   x fix showTrailingWhitespace
       / doesn't show up in both buffers if they're both on the same vsplit.
       / at least not reliably. don't know what's going on.
       x replaced it with listchars.
@@ -150,4 +140,14 @@ x vim
       x https://github.com/norcalli/nvim-colorizer.lua
 
    x colors are coming along. keep working on it.
+
+x setup tux
+   x run through tux todos.
+
+   x setup zsh completion for tux
+      x setup code is in a chatgpt session
+
+   x alias this stuff
+      / fzf tux init
+      / fzf tux ls (can you show a description but only search and pull out the first string?)
 

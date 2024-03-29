@@ -71,7 +71,7 @@ end
 vim.keymap.set('n', '[f', cprev_rollover)
 vim.keymap.set('n', ']f', cnext_rollover)
 
--- i always want linewise to start, but can switch to charwise with one more "v". 
+-- i always want linewise to start, but can switch to charwise with one more "v".
 -- this is maybe my favorite remap ever.
 vim.keymap.set('n', 'v', "V")
 vim.keymap.set('n', 'vv', "v")
@@ -94,7 +94,9 @@ vim.keymap.set({ "n", "i" }, '<C-q>', '<cmd>quitall<cr>')
 
 -- CommandT excludes no files, CommandTFind excludes some files. see the code in command-t.lua
 vim.keymap.set('n', '<leader>o', ':CommandTFind<cr>')
-vim.keymap.set('n', '<leader>l', ':CommandT<cr>')
+vim.keymap.set('n', '<leader>lo', ':CommandT<cr>')
+vim.keymap.set('n', '<leader>ll', ':CommandT<cr>')
+vim.keymap.set('n', '<leader>lb', ':CommandTBuffer<cr>')
 vim.keymap.set('n', '<leader>a', toggle_autocomplete)
 -- vim.keymap.set('n', '<leader>o', ':CommandTBuffer<cr>')
 

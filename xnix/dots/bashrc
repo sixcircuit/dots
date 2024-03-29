@@ -24,3 +24,8 @@ fi
 
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+if [[ -n $TMUX_WAIT_FOR ]]; then
+   tmux wait-for -S $TMUX_WAIT_FOR
+fi
+

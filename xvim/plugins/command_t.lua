@@ -64,10 +64,10 @@ commandt.setup({
    },
    mappings = {
       i = {
-         ['<C-r>'] = 'open_split',
+         ['<C-o>'] = 'open_split',
       },
       n = {
-         ['<C-r>'] = 'open_split',
+         ['<C-o>'] = 'open_split',
       },
    },
    finders = {
@@ -111,7 +111,7 @@ commandt.setup({
             end
 
             command = command .. ' -type f -print0 2> /dev/null'
-            -- command = command .. ' -type f -print0' 
+            -- command = command .. ' -type f -print0'
 
             -- local head = "head"
 

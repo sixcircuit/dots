@@ -6,7 +6,7 @@
 bindkey -v
 
 # fix for tmux, but fzf handles it now
-# bindkey '^r' history-incremental-search-backward 
+# bindkey '^r' history-incremental-search-backward
 
 # Search based on what you typed in already (same thing as ^r)
 # bindkey -M vicmd "/" history-incremental-search-backward
@@ -42,6 +42,7 @@ dateclear() { clear -x; date; zle reset-prompt; }
 zle -N dateclear
 bindkey '^l' dateclear
 
+bindkey -s '^O' 't fzf^M'
 
 # bindkey '^L' clear -x && ls
 # zle     -N              clear_and_ls
@@ -64,8 +65,8 @@ bindkey '\e[4~' end-of-line
 # bindkey -M viins ' ' magic-space
 
 setopt ignoreeof
-# ctrl-d() { zle -M "zsh: use 'exit' to exit."; return 1 } 
-ctrl-d() { return 1 } 
+# ctrl-d() { zle -M "zsh: use 'exit' to exit."; return 1 }
+ctrl-d() { return 1 }
 zle -N ctrl-d
 bindkey '^D' ctrl-d
 

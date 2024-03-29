@@ -45,22 +45,31 @@ def addSlash(path):
 def main():
 
     if len(sys.argv) == 1:
-        print('usage: fsync { push | pull } [--force]')
+        print('usage: fsync { push | pull } [--force] [--nodelete]')
         exit()
 
     command = sys.argv[1].lower()
+    print(sys.argv)
+
+    if command != "push" and command != "pull":
+        print('must supply a "push" or "pull command.')
+        print('usage: fsync { push | pull } [--force] [--nodelete]')
+        exit()
+
     config = getConfig()
 
     force = False
+    noDelete = False
 
     if len(sys.argv) > 2:
         force = (sys.argv[2].lower() == "--force")
+        noDelete = (sys.argv[2].lower() == "--nodelete")
 
     confirmed = False
 
     if not force:
         print('doing dry run')
-        runProcess(getRsyncCommand(command, config, True)).wait()
+        runProcess(getRsyncCommand(command, config, True, noDelete)).wait()
 
         if command == 'push':
             confirmed = confirm("You will replace all remote host data with your data. Are you absolutely sure you want to do this?")
@@ -69,18 +78,25 @@ def main():
     else:
         confirmed = True
 
-    if confirmed: 
+    if confirmed:
         print('doing live run')
-        runProcess(getRsyncCommand(command, config, False)).wait()
-    
+        runProcess(getRsyncCommand(command, config, False, noDelete)).wait()
 
-def getRsyncCommand(command, config, dryRun):
-    
-    rsyncCommand = ['rsync', '--verbose', '--progress', '--stats', '--compress', '--recursive', '--backup', '--backup-dir=rsyncBackup~', '--exclude', 'rsyncBackup~', '--links', '--delete', '--times', '--omit-dir-times']
-    
+
+def getRsyncCommand(command, config, dryRun, noDelete):
+
+    rsyncCommand = ['rsync', '--verbose', '--progress', '--stats', '--compress', '--recursive', '--backup', '--backup-dir=rsyncBackup~', '--exclude', 'rsyncBackup~', '--links', '--times', '--omit-dir-times', '-e', 'ssh']
+
     if dryRun:
         rsyncCommand.append('--dry-run')
-    
+
+    if not noDelete:
+        rsyncCommand.append('--delete')
+
+    if config["to_linux"] == True:
+        print("converting char sets.")
+        rsyncCommand.append('--iconv=utf-8-mac,utf-8')
+
     exclude = config['exclude']
 
     if command == 'push':
@@ -90,7 +106,7 @@ def getRsyncCommand(command, config, dryRun):
 
     for folder in exclude:
         rsyncCommand.append('--exclude')
-        rsyncCommand.append(folder) 
+        rsyncCommand.append(folder)
 
     if command == 'push':
         rsyncCommand.append(config["local"])
@@ -101,7 +117,7 @@ def getRsyncCommand(command, config, dryRun):
 
 
     return(rsyncCommand)
-    
+
 
 def runProcess(psData, filePathToPipe = ''):
 
@@ -111,11 +127,11 @@ def runProcess(psData, filePathToPipe = ''):
             ps = subprocess.Popen(psData, shell=False, stdout=fileToPipe, stderr=fileToPipe)
         else:
             ps = subprocess.Popen(psData, shell=False)
-        
+
         return(ps)
 
     except OSError as e:
-        print("There was a problem starting the rsync process. Error: " + e.msg)        
+        print("There was a problem starting the rsync process. Error: " + e.msg)
         exit()
 
 
@@ -128,7 +144,7 @@ def confirm(prompt=None, resp=False):
         prompt = '%s (%s/%s): ' % (prompt, 'Y', 'n')
     else:
         prompt = '%s (%s/%s): ' % (prompt, 'N', 'y')
-        
+
     while True:
         ans = input(prompt)
         if not ans:

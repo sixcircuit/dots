@@ -1,9 +1,0 @@
-#!/bin/bash
-
-vagrant ssh 
-
-if [ $? -ne 0 ]; then
-   vagrant up 
-   vagrant ssh
-fi
-

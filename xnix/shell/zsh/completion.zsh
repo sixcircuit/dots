@@ -2,7 +2,7 @@
 shell=$1
 plat=$2
 
-# the "slow" way? this was slow but now it's not. 
+# the "slow" way? this was slow but now it's not.
 # don't know what the deal is.
 autoload -Uz compinit
 compinit
@@ -10,10 +10,11 @@ compinit
 # https://github.com/Aloxaf/fzf-tab/wiki/Configuration
 
 if [[ -f $HOME/plat/fzf-tab/fzf-tab.plugin.zsh ]]; then
-   source $HOME/plat/fzf-tab/fzf-tab.plugin.zsh  
+   source $HOME/plat/fzf-tab/fzf-tab.plugin.zsh
 else
    echo "missing $HOME/plat/fzf-tab/fzf-tab.plugin.zsh you should clone fzf-tab into ~/plat/fzf-tab from here: https://github.com/Aloxaf/fzf-tab"
 fi
+
 
 # for startup speed, only check zcompdump once a day, this seems unnecessary now.
 # if [[ "$plat" == "macos" ]]; then
@@ -60,6 +61,7 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 # zstyle ':fzf-tab:complete:cd:*' disabled-on any
 zstyle ':fzf-tab:complete:cd:*' accept-line enter
+# zstyle ':fzf-tab:complete:tux:*' accept-line enter
 # zstyle ':fzf-tab:*' accept-line enter
 
 
@@ -67,7 +69,7 @@ zstyle ':fzf-tab:complete:cd:*' accept-line enter
 zstyle ':fzf-tab:*' switch-group ',' '.'
 
 
-# COMPLETION 
+# COMPLETION
 # FOR SPEED
 zstyle ':completion:*' accept-exact '*(N)'
 zstyle ':completion:*' use-cache on
@@ -76,6 +78,38 @@ zstyle ':completion:*' cache-path ~/.zsh/cache
 
 # Don't prompt for a huge list, page it!
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+
+_tux_completion() {
+   local -a subcommands
+   local curcontext="$curcontext" state line
+   typeset -A opt_args
+
+   subcommands=("${(@f)$(tux compinit)}")
+
+   # Determine the current state based on the words typed so far
+   _arguments -C \
+       '1: :->command' \
+       '*:: :->args'
+
+   case $state in
+   command)
+       _describe 'command' subcommands
+       ;;
+   args)
+       case $line[1] in
+       add)
+           # Enable file completion for `tux add <file_path>`
+           _files
+           ;;
+       *)
+           # Handle other subcommands or default behavior
+           ;;
+       esac
+       ;;
+   esac
+}
+
+compdef _tux_completion tux
 
 #Set some ZSH styles
 #zstyle ':completion:*:descriptions' format '%U%B%d%b%u'
