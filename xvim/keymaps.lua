@@ -102,7 +102,8 @@ vim.keymap.set('n', '<leader>a', toggle_autocomplete)
 
 local function fuzzy_search()
    vim.g.fuzzysearch_prompt = 'fz/'
-   local status, err = pcall(vim.fn['fuzzysearch#start_search'])
+   -- local status, err = pcall(vim.fn['fuzzysearch#start_search'])
+   local status, _ = pcall(vim.fn['fuzzysearch#start_search'])
    if not status then
       vim.print("")
    end
@@ -144,15 +145,6 @@ vim.keymap.set('', 'sr', ':%s///g<left><left>')
 
 -- " clear search highlighting
 vim.keymap.set('', '<leader>/', ":noh<cr>")
-
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
--- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
--- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-
--- vim.keymap.set('n', 'sh', jump_into_hover_window, opts)
-vim.keymap.set('n', 'crn', vim.lsp.buf.rename, opts)
 
 local function toggle_virtual_text()
    local current_state = vim.diagnostic.config().virtual_text
@@ -217,6 +209,15 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- vim.keymap.set('n', 'sh', jump_into_hover_window, opts)
     vim.keymap.set('n', 'crn', vim.lsp.buf.rename, opts)
     vim.keymap.set({ 'n', 'v' }, 'caa', vim.lsp.buf.code_action, opts)
+
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+    -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+
+    -- vim.keymap.set('n', 'sh', jump_into_hover_window, opts)
+    -- vim.keymap.set('n', 'crn', vim.lsp.buf.rename, opts)
 
     -- can't use w slows down easymotions
     -- vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)

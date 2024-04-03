@@ -83,14 +83,14 @@ process_dotdir $term_root/$plat/dots
 process_dotdir $term_root/local/dots
 
 install_fzf(){
-
-# --no-update-rc --no-completion
+   echo "intall fzf"
+   # --no-update-rc --no-completion
 }
 
 install_gcc(){
-
+   echo "intall gcc"
 }
 
 install_nvm(){
-
+   echo "intall nvm"
 }
