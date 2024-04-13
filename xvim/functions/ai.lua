@@ -4,7 +4,7 @@ local function make_temp_path(prefix)
    return "/tmp/" .. prefix .. "_" .. tostring(os.time()) .. "_" .. tostring(math.random(1000000000, 9999999999))
 end
 
-local function start_term_and_insert_file_on_close(cmd, temp_path, term_info)
+local function start_term_and_insert_file_on_close(cmd, temp_path, term_info, last_line)
 
    local prev_win = vim.api.nvim_get_current_win()
 
@@ -20,31 +20,48 @@ local function start_term_and_insert_file_on_close(cmd, temp_path, term_info)
    vim.cmd("startinsert")
 
    -- handle process termination
-   vim.cmd("autocmd TermClose * ++once lua exec_term_close_and_insert(".. prev_win .. ", '" .. temp_path .. "', " .. split_win .. ")")
+   vim.cmd("autocmd TermClose * ++once lua exec_term_close_and_insert(".. prev_win .. ", '" .. temp_path .. "', " .. split_win .. ", " .. tostring(last_line) .. ")")
 end
 
 function _G.do_llm(extra_cmd)
 
    local temp_path = make_temp_path("llm_output")
 
-   local cmd = "llm --wait --output " .. temp_path .. " " .. extra_cmd
+   local llm_cmd = "llm --wait --output " .. temp_path .. " " .. extra_cmd
 
-   start_term_and_insert_file_on_close(cmd, temp_path, { vertical = true, size = 90 })
+   start_term_and_insert_file_on_close(llm_cmd, temp_path, { vertical = true, size = 90 }, false)
 
 end
 
-function _G.exec_term_close_and_insert(prev_win, temp_path, split_win)
+function _G.exec_term_close_and_insert(prev_win, temp_path, split_win, last_line)
    local prev_buf = vim.api.nvim_win_get_buf(prev_win)
+
+   if vim.fn.filereadable(temp_path) == 0 then
+      vim.notify("you either canceled the command or the temp_file wasn't created because something went wrong.", vim.log.levels.INFO)
+      return
+   end
 
    -- insert output at cursor position in previous buffer
    local lines = vim.fn.readfile(temp_path)
-   local cursor_pos = vim.api.nvim_win_get_cursor(prev_win)
 
-   vim.api.nvim_buf_set_text(prev_buf, cursor_pos[1]-1, cursor_pos[2], cursor_pos[1]-1, cursor_pos[2], lines)
+   if #lines > 0 then
+      if (last_line) then
+         lines = { lines[#lines] }
+      end
+
+      local cursor_pos = vim.api.nvim_win_get_cursor(prev_win)
+
+      vim.api.nvim_buf_set_text(prev_buf, cursor_pos[1]-1, cursor_pos[2], cursor_pos[1]-1, cursor_pos[2], lines)
+
+      vim.api.nvim_win_set_cursor(prev_win, cursor_pos)
+
+   end
 
    -- restore view and close terminal buffer
    vim.api.nvim_set_current_win(prev_win)
    vim.api.nvim_win_close(split_win, true)
+
+   os.remove(temp_path)
 
 end
 
@@ -53,7 +70,6 @@ local function llm_map(keys, command)
    vim.api.nvim_set_keymap('v', '<leader>' .. keys, 'c<C-O>:lua do_llm("' .. command .. '")<CR>', {noremap = true, silent = true})
 end
 
-llm_map("lt", "3 ham .")
 llm_map("ll", "")
 llm_map("ld", "3 verbose")
 llm_map("ls", "4 verbose")
@@ -61,10 +77,11 @@ llm_map("ls", "4 verbose")
 
 -- whisper.cpp stuff.
 
-vim.api.nvim_set_keymap('i', '<C-f>', [[<C-\><C-o>:lua ExecuteAndInsert()<CR>]], {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<C-f>', [[i<C-o>:lua ExecuteAndInsert()<CR>]], {noremap = true, silent = true})
+vim.api.nvim_set_keymap('i', '<C-f>', [[<C-\><C-o>:lua do_whisper()<CR>]], {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', '<C-f>', [[i<C-o>:lua do_whisper()<CR>]], {noremap = true, silent = true})
 
-function ExecuteAndInsert()
+function _G.do_whisper()
+
 
    local temp_path = make_temp_path("whisper_cpp_stream")
 
@@ -81,16 +98,6 @@ function ExecuteAndInsert()
 
    local stream_cmd = stream_cmd_name .. ' ' .. temp_path
 
-   vim.api.nvim_command('10split | terminal ' .. stream_cmd)
+   start_term_and_insert_file_on_close(stream_cmd, temp_path, { vertical = false, size = 10 }, true)
 
-   -- Once the terminal job is done, open the file, read the contents and put it in the current buffer
-   local term_bufnr = vim.api.nvim_get_current_buf()
-   vim.api.nvim_buf_attach(term_bufnr, false, {
-      on_detach = function()
-         local content = vim.fn.readfile(temp_path)
-         if #content > 0 then
-            vim.api.nvim_put(content, 'l', -1, true)
-         end
-      end
-   })
 end
