@@ -170,7 +170,7 @@ end
 
 local function color_for_mode(prefix, suffix)
 
-   local mode_map = { V = 'n', ['\22'] = 'n', s = 'n', v = 'n', ['\19'] = 'n', c = 'n', R = 'n' }
+   local mode_map = { V = 'n', ['\22'] = 'n', s = 'n', v = 'n', ['\19'] = 'n', c = 'n', R = 'n', t = 'n' }
 
    local insert_hl = vim.api.nvim_get_hl(0, { name = prefix .. '_insert_' .. suffix })
    local normal_hl = vim.api.nvim_get_hl(0, { name = prefix .. '_normal_' .. suffix })
@@ -420,7 +420,7 @@ vim.api.nvim_exec([[
 
 local function lightline_setup()
 
-   -- we only support numberwidth 4 or higher 
+   -- we only support numberwidth 4 or higher
    vim.o.numberwidth = math.max(vim.o.numberwidth, 4)
 
    -- vim.o.numberwidth = 4 --   (to 999)

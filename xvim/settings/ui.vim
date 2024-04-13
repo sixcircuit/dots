@@ -1,4 +1,7 @@
 
+" don't readjust the splits when we create and delete them
+set noequalalways
+
 " tell vim we're fast so redraw more for smother action
 set ttyfast
 
@@ -48,10 +51,10 @@ set wildmode=list:longest
 " match OverLength /\%81v.*/
 
 " remove show mode
-set noshowmode 
+set noshowmode
 
 "remove right scroll bar in macvim fullscreen
-set guioptions-=r 
+set guioptions-=r
 
 "set cursor line
 set cursorline

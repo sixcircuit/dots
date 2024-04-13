@@ -1,4 +1,70 @@
 
+
+function insert_cmd_output(cmd)
+   local temp_file = "/tmp/temp_cmd_output.txt"
+   vim.cmd("silent ! " .. cmd .. " > " .. temp_file)
+   local file = io.open(temp_file, "r")
+   local data = {}
+   for line in file:lines() do
+      table.insert(data, line)
+   end
+   vim.api.nvim_put(data, 'l', false, true)
+   file:close()
+   os.remove(temp_file)
+end
+
+
+function insert_text(command)
+
+   function insert_text_at_cursor(text)
+      vim.schedule(function()
+         local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+         local text_without_newlines = string.gsub(text, "\n", "\\n")
+         vim.api.nvim_buf_set_lines(0, row - 1, row - 1, false, {text_without_newlines})
+      end)
+   end
+
+   local uv = require('luv')
+   local stdin = uv.new_pipe()
+   local stdout = uv.new_pipe()
+   local stderr = uv.new_pipe()
+   print("stdin", stdin)
+   print("stdout", stdout)
+   print("stderr", stderr)
+   local handle, pid = uv.spawn("/bin/bash", {
+      -- args = { "-c", "echo hello; sleep 1; echo blah; sleep 5; echo world" },
+      args = { "-c", "stream.lingo" },
+      stdio = {stdin, stdout, stderr}
+   }, function(code, signal) -- on exit
+     print("exit code", code)
+     print("exit signal", signal)
+   end)
+   print("process opened", handle, pid)
+   uv.read_start(stdout, function(err, data)
+     assert(not err, err)
+     if data then
+       print("stdout chunk", stdout, data)
+       insert_text_at_cursor(data)
+     else
+       print("stdout end", stdout)
+     end
+   end)
+   uv.read_start(stderr, function(err, data)
+     assert(not err, err)
+     if data then
+       print("stderr chunk", stderr, data)
+     else
+       print("stderr end", stderr)
+     end
+   end)
+   -- uv.write(stdin, "Hello World")
+end
+
+-- function term_to_scratch(command)
+-- end
+
+-- vim.api.nvim_command([[command! -nargs=1 TermToScratch lua term_to_scratch(<f-args>)]])
+
 local function rg_and_open_first()
    local status, search_term = pcall(vim.fn.input, 'rg/')
    if not status then
@@ -90,14 +156,14 @@ vim.keymap.set('n', 'sn', cnext_rollover)
 -- easy macro
 vim.keymap.set('', ',,', "@@")
 
-vim.keymap.set({ "n", "i" }, '<C-q>', '<cmd>quitall<cr>')
+vim.keymap.set({ "n", "i" }, '<C-q>', '<cmd>wqall<cr>')
 
 -- CommandT excludes no files, CommandTFind excludes some files. see the code in command-t.lua
 vim.keymap.set('n', '<leader>o', ':CommandTFind<cr>')
-vim.keymap.set('n', '<leader>lo', ':CommandT<cr>')
-vim.keymap.set('n', '<leader>ll', ':CommandT<cr>')
-vim.keymap.set('n', '<leader>lb', ':CommandTBuffer<cr>')
-vim.keymap.set('n', '<leader>a', toggle_autocomplete)
+-- vim.keymap.set('n', '<leader>lo', ':CommandT<cr>')
+-- vim.keymap.set('n', '<leader>ll', ':CommandT<cr>')
+-- vim.keymap.set('n', '<leader>lb', ':CommandTBuffer<cr>')
+-- vim.keymap.set('n', '<leader>a', toggle_autocomplete)
 -- vim.keymap.set('n', '<leader>o', ':CommandTBuffer<cr>')
 
 local function fuzzy_search()

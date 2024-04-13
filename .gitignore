@@ -2,3 +2,4 @@ ignore/
 local
 local/
 vifm/vifminfo
+.luarc.json

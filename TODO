@@ -1,9 +1,23 @@
 
+= whisper
+   - Add whisper eo the llm (and nvim! Make an nvim plugin if it doesn't exist.) -- verbal
+   - add verbal to nvim. I would love a command line buffer kind of thing. Where I pick a piece of code and then hit a button and get a new buffer with a prompt and then I could just use the verbal hotkey to say some shit. Do this. Have it read and write into a new vsplit buffer in nvim. Can you switch existing buffer to raw or something and have an update as it writes. Or, could you write a real plug-in that streams into the buffer while it's running, and it could just replace the previous output as it goes. Use gpt4 to write it.  https://www.reddit.com/r/vim/s/9IqBVvcHuD
+
+= ai
+   - use terminal in vim to do ai. open a split and use it. or save what was there and restore it when you're done.
+   - produce a file to read of the output (without color). ai llm --out file.txt --fzf
+   - wait till "ai" is done, then close it out read the file and import the response
+
+
 = review commands
    - completion (rename, gd go to definition)
    - move myi mpi m" m' m[
 
 = longterm
+   - you have a onetab list called "improvements" in chrome.
+      - work them. there's some good stuff in there.
+   - move to buffers over tabs? watch a video.
+   - look into this: https://github.com/svermeulen/vim-easyclip
    - move tabline to lightline and get rid of tabline
    - maybe write your own tabout. tabout seems shitty
    - hack support into command-t lua for:

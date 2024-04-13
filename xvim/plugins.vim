@@ -64,7 +64,7 @@ let delimitMate_expand_cr = 1
 let delimitMate_expand_space = 1
 autocmd FileType CommandTPrompt let b:loaded_delimitMate = 1
 
-" the autocmd is a hack that tricks auto-pairs into not breaking command-t. 
+" the autocmd is a hack that tricks auto-pairs into not breaking command-t.
 " if we don't do this it completely blows up when we use backspace in the
 " command-t completion window.
 " Plug 'jiangmiao/auto-pairs'
@@ -84,8 +84,6 @@ Plug 'vim-scripts/Cpp11-Syntax-Support'
 
 Plug 'tpope/vim-markdown'
 Plug 'othree/html5.vim'
-
-Plug 'nathanaelkane/vim-indent-guides'
 
 " camel case, snake case
 Plug 'tpope/vim-abolish'

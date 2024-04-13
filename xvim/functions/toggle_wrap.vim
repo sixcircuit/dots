@@ -15,7 +15,7 @@ function! WrapOn()
    noremap  <buffer> <silent> k gk
    noremap  <buffer> <silent> j gj
    noremap  <buffer> <silent> 0 g0
-   noremap  <buffer> <silent> $ g$
+   " noremap  <buffer> <silent> $ g$
 endfunction
 
 function! WrapOff()
@@ -33,7 +33,7 @@ function! WrapOff()
    silent! iunmap <buffer> k
    silent! iunmap <buffer> j
    silent! iunmap <buffer> 0
-   silent! iunmap <buffer> $
+   " silent! iunmap <buffer> $
 endfunction
 
 

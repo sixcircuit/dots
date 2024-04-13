@@ -8,8 +8,8 @@ set hidden
 " use persistent undos
 " set undofile
 
-" no automatic eol 
-set noeol 
+" no automatic eol
+set noeol
 
 " enable yank to clipboard
 set clipboard=unnamed

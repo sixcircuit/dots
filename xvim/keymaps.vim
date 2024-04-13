@@ -1,4 +1,3 @@
-
 " https://www.johnhawthorn.com/2012/09/vi-escape-delays/
 " one part of fixing slow / missing escapes in nvim
 set ttimeoutlen=50
@@ -26,7 +25,7 @@ noremap Y y$
 
 noremap M %
 
-map <leader>s :w <bar> :source %<cr>
+map <leader>ss :w <bar> :source %<cr>
 
 " nnoremap <C-k> <Up>
 " nnoremap <C-j> <Down>
@@ -100,4 +99,9 @@ nnoremap <leader>= ggvG=``
 " nnoremap <leader>3 :call ChangeSoftTabs(input("from: "), input("to: "))<CR>
 nnoremap <leader>43 :call ChangeSoftTabs(4, 3)<CR>
 nnoremap <leader>34 :call ChangeSoftTabs(3, 4)<CR>
+
+" inoremap <C-f>  <C-O>:!stream.lingo<CR><C-O>:let @a = system("cat /tmp/stream.lingo \| tail -n 1 \| xargs -0 \| tr -d '\\n' \| sed -e 's/^[[:space:]]*//'")<CR><C-R>a
+" nnoremap <C-f>       :!stream.lingo<CR>:let @a = system("cat /tmp/stream.lingo \| tail -n 1 \| xargs -0 \| tr -d '\\n' \| sed -e 's/^[[:space:]]*//'")<CR>"ap
+" vnoremap <C-f> c<C-O>:!stream.lingo<CR><C-O>:let @a = system("cat /tmp/stream.lingo \| tail -n 1 \| xargs -0 \| tr -d '\\n' \| sed -e 's/^[[:space:]]*//'")<CR><C-R>a
+" inoremap <C-f>  <C-O>:!stream.lingo<CR><C-O>:let @a = system("cat /tmp/stream.lingo \| tail -n 1 \| xargs -0 \| tr -d \'\\n\' \| sed -e \'s/^[[:space:]]*//\' \| sed \'s/\x1b\\[ [0-9;]*[a-zA-Z]//g\'")<CR><C-R>a
 
