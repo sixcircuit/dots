@@ -177,8 +177,6 @@ end
 
 vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory" })
 
-vim.keymap.set('', '/', "<nop>")
-
 vim.keymap.set('n', '<Leader>gl', function()
   vim.cmd('call OpenURI()')
 end, { silent = true })
@@ -204,10 +202,12 @@ vim.keymap.set('v', '<leader>gg', function()
 end, { silent = true })
 
 -- this only works because i have <c-/> mapped to $ in carabiner
-vim.keymap.set({ 'n', 'v' }, '$', "/") -- <c-/>
-vim.keymap.set('', '/', fuzzy_search)
+vim.keymap.set({ 'n', 'v' }, '$', fuzzy_search) -- <c-/>
+-- vim.keymap.set('', '/', "<nop>")
+-- vim.keymap.set('', '/', fuzzy_search)
 vim.keymap.set('n', 'sf', rg_and_open_first)
 vim.keymap.set('', 'sr', ':%s///g<left><left>')
+vim.keymap.set('', 'sd', ':/_\\.<cr>')
 
 -- " clear search highlighting
 vim.keymap.set('', '<leader>/', ":noh<cr>")

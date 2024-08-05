@@ -55,13 +55,28 @@ local cmp = require("cmp")
 
 local luasnip = require("luasnip")
 
-require("luasnip.loaders.from_snipmate").lazy_load({paths = "~/term/xvim/snippets"})
+luasnip.setup({ enable_autosnippets = true })
+
+require("luasnip.loaders.from_lua").load({ paths = "~/term/xvim/snippets" })
+
+vim.keymap.set('i', '<c-space>', function()
+   luasnip.expand_or_jump()
+end, { noremap = true, silent = true })
+
+local function jump_back()
+   if luasnip.jumpable(-1) then
+      luasnip.jump(-1)
+   end
+end
+-- i have <s-space> mapped to page up in my terminal, <s-space> may work in some guis
+vim.keymap.set('i', '<s-space>', jump_back, { noremap = true, silent = true })
+vim.keymap.set('i', '<pageup>', jump_back, { noremap = true, silent = true })
 
 local mapping = {
    -- accept currently selected item. set `select` to `false` to only confirm explicitly selected items.
    ['<cr>'] = cmp.mapping.confirm({ select = true }),
    ['<c-e>'] = cmp.mapping.abort(),
-   ['<c-space>'] = cmp.mapping.complete(),
+   -- ['<c-space>'] = cmp.mapping.complete(),
    ["<tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
          if #cmp.get_entries() == 1 then
@@ -72,8 +87,8 @@ local mapping = {
          -- cmp.select_next_item()
          -- you could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
          -- that way you will only jump inside the snippet region
-      elseif luasnip.expand_or_locally_jumpable() then
-         luasnip.expand_or_jump()
+      -- elseif luasnip.expand_or_locally_jumpable() then
+         -- luasnip.expand_or_jump()
       elseif has_words_before() then
          cmp.complete()
       else
@@ -192,8 +207,21 @@ lspconfig.tsserver.setup({
    init_options = {
       hostInfo = "neovim",
       preferences = {
-         disableSuggestions = true,
-         --    -- documentFormatting = true
+         disableSuggestions = true
+      },
+   },
+   settings = {
+      typescript = {
+         suggest = {
+            autoImports = false
+         },
+         preferences = { disableSuggestions = true }
+      },
+      javascript = {
+         suggest = {
+            autoImports = false
+         },
+         preferences = { disableSuggestions = true }
       }
    }
 })

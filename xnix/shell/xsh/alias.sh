@@ -8,6 +8,13 @@ alias vd='vimdiff'
 alias t='\tux'
 alias tt='tree'
 alias tux='echo "USE Ctrl+O to open sessions."'
+alias ter='terraform'
+alias kc='kubectl'
+alias cpr='cp -R'
+
+alias cpr='cp -R'
+
+alias rgl='rg -F'
 
 alias wget='curl -L -O'
 
@@ -42,12 +49,13 @@ alias gcm='git commit -m'
 alias gd='git difftool'
 alias gp='git push'
 alias gs='git status'
+alias gco='git checkout'
 
-gco() {
-  local branches branch
-  branches=$(git branch --all | grep -v HEAD) &&
-  branch=$(echo "$branches" |
-           fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
-  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
-}
+# gco() {
+#   local branches branch
+#   branches=$(git branch --all | grep -v HEAD) &&
+#   branch=$(echo "$branches" |
+#            fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
+#   git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+# }
 

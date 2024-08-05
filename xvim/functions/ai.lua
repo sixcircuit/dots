@@ -82,7 +82,6 @@ vim.api.nvim_set_keymap('n', '<C-f>', [[i<C-o>:lua do_whisper()<CR>]], {noremap 
 
 function _G.do_whisper()
 
-
    local temp_path = make_temp_path("whisper_cpp_stream")
 
    local hostname = vim.fn.system('hostname -s'):gsub('%s+', '')

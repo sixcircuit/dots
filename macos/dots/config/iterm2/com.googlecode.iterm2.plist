@@ -729,6 +729,19 @@
 	<real>0.25</real>
 	<key>GlobalKeyMap</key>
 	<dict>
+		<key>0x20-0x20000-0x31</key>
+		<dict>
+			<key>Action</key>
+			<integer>10</integer>
+			<key>Apply Mode</key>
+			<integer>0</integer>
+			<key>Escaping</key>
+			<integer>2</integer>
+			<key>Text</key>
+			<string>[5~</string>
+			<key>Version</key>
+			<integer>2</integer>
+		</dict>
 		<key>0x48-0x120000</key>
 		<dict>
 			<key>Action</key>

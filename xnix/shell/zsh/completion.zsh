@@ -15,6 +15,11 @@ else
    echo "missing $HOME/plat/fzf-tab/fzf-tab.plugin.zsh you should clone fzf-tab into ~/plat/fzf-tab from here: https://github.com/Aloxaf/fzf-tab"
 fi
 
+if [[ -f $HOME/plat/google-cloud-sdk/completion.zsh.inc ]]; then
+    source $HOME/plat/google-cloud-sdk/completion.zsh.inc
+else
+    echo "missing $HOME/plat/google-cloud-sdk/completion.zsh.inc"
+fi
 
 # for startup speed, only check zcompdump once a day, this seems unnecessary now.
 # if [[ "$plat" == "macos" ]]; then

@@ -1,4 +1,13 @@
 
+vim.opt.background = 'dark'
+
+vim.cmd('highlight clear')
+if vim.fn.exists('syntax_on') then
+   vim.cmd('syntax reset')
+end
+
+vim.g.colors_name = 'kendrick'
+
 local function disable_all_highlight_groups()
    -- Retrieve list of all highlight groups
    local highlight_groups = vim.api.nvim_get_hl(0, { link = true })
@@ -23,6 +32,7 @@ local link = {}
 
 link.norm = { link = "Normal" }
 link.todo = { link = "Todo" }
+link.constant = { link = "Constant" }
 
 local color = {}
 
@@ -56,6 +66,10 @@ color.gold = {
    h = {
       term = 178,
       gui = "#d7af00"
+   },
+   hh = {
+      term = 220,
+      gui = "#ffd700"
    },
    -- l = { hideous. don't use it.
    --    term = 94,
@@ -237,6 +251,7 @@ hl("Pmenu", ui.light, ui.dark)
 hl("PmenuSel", ui.dark, ui.light)
 hl("PmenuSbar", ui.dark, ui.light)
 hl("PmenuThumb", ui.dark, ui.light)
+hl("NormalFloat", { link = "PMenu" })
 
 -- completion item in completion menu
 hl("CmpItemKind", { link = "Pmenu" })
@@ -244,6 +259,7 @@ hl("CmpItemKind", { link = "Pmenu" })
 -- hl("CmpItemKindMethod", color.green)
 
 hl("VertSplit", ui.dark, ui.dark)
+hl("WinSeparator", { link = "VertSplit" })
 hl("StatusLine", ui.dark, ui.dark)
 hl("StatusLineNC", ui.dark, ui.dark)
 
@@ -273,6 +289,7 @@ hl("CursorLineNR", color.gray.ml, color.gray.ll)
 hl("Cursor", color.bg, color.fg)
 hl("lCursor", { link = "Cursor" })
 
+hl("QuickFixLine", { link = "Search" })
 
 hl("DiffAdd", color.green)
 hl("DiffChange", color.gold)
@@ -376,7 +393,7 @@ hl("Whitespace", color.red)
 hl("Normal", color.fg)
 hl("Comment", color.gray.ml) -- is 241, maybe bump to 242 if it's too dark.
 -- hl('Comment', { term = 242 })
-hl("Identifier", { link = "Normal" })
+hl("Identifier", link.norm)
 hl("PreProc", color.orange)
 hl("Type", color.gold, { bold = true })
 
@@ -402,6 +419,7 @@ local vis_color = color.gold
 hl("Visual", color.bg, color.gray.ml)
 hl("HighlightYank", color.bg, vis_color)
 hl("Search", color.bg, vis_color)
+hl("CurSearch", color.bg, vis_color.hh)
 hl("IncSearch", color.bg, vis_color)
 
 -- hl("MatchParen", color.gold, { bold = true })
@@ -472,6 +490,12 @@ hl("@lsp.type.comment", { })
 hl("@lsp.type.function", { })
 hl("@function.builtin", { })
 
+hl("String", link.constant)
+hl("Function", link.norm)
+hl("@variable", link.norm)
+hl("@string.regex", link.constant)
+hl("@preproc.javascript", { link = "PreProc" })
+
 -- hl("@punctuation.bracket", color.green, { default = true })
 -- hl("@punctuation.delimiter", color.gray.ml)
 
@@ -500,7 +524,7 @@ hl("@property", color.fg, { default = true })
 hl("@label.json", color.fg, { default = true })
 
 -- hl("@operator", {})
-hl("@operator", { link = "Normal" })
+hl("@operator", link.norm)
 -- hl("@operator", color.fg, { bold = true })
 
 hl("@lsp.type.variable", {})
