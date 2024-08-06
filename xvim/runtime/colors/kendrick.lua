@@ -493,6 +493,7 @@ hl("@function.builtin", { })
 hl("String", link.constant)
 hl("Function", link.norm)
 hl("@variable", link.norm)
+hl("@parameter.javascript", link.norm)
 hl("@string.regex", link.constant)
 hl("@preproc.javascript", { link = "PreProc" })
 

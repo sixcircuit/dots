@@ -59,22 +59,41 @@ luasnip.setup({ enable_autosnippets = true })
 
 require("luasnip.loaders.from_lua").load({ paths = "~/term/xvim/snippets" })
 
-vim.keymap.set('i', '<c-space>', function()
-   luasnip.expand_or_jump()
-end, { noremap = true, silent = true })
+
+local function try_jump_many()
+   local rights = vim.fn['delimitMate#JumpMany']()
+   if rights ~= '' then
+      local expr = vim.api.nvim_replace_termcodes("<C-]>", true, false, true) .. rights
+      vim.api.nvim_feedkeys(expr, 'n', true)
+      return(true)
+   else
+      return(false)
+   end
+end
 
 local function jump_back()
    if luasnip.jumpable(-1) then
       luasnip.jump(-1)
    end
 end
+
+local function jump_forward()
+   if luasnip.jumpable(-1) then
+      luasnip.jump(-1)
+   end
+end
+
+vim.keymap.set('i', '<c-l>', jump_forward, { noremap = true, silent = true })
+vim.keymap.set('i', '<c-h>', jump_back, { noremap = true, silent = true })
+vim.keymap.set('i', '<c-space>', try_jump_many, { noremap = true, silent = true })
+
 -- i have <s-space> mapped to page up in my terminal, <s-space> may work in some guis
-vim.keymap.set('i', '<s-space>', jump_back, { noremap = true, silent = true })
-vim.keymap.set('i', '<pageup>', jump_back, { noremap = true, silent = true })
+-- vim.keymap.set('i', '<s-space>', jump_back, { noremap = true, silent = true })
+-- vim.keymap.set('i', '<pageup>', jump_back, { noremap = true, silent = true })
 
 local mapping = {
    -- accept currently selected item. set `select` to `false` to only confirm explicitly selected items.
-   ['<cr>'] = cmp.mapping.confirm({ select = true }),
+   -- ['<cr>'] = cmp.mapping.confirm({ select = true }),
    ['<c-e>'] = cmp.mapping.abort(),
    -- ['<c-space>'] = cmp.mapping.complete(),
    ["<tab>"] = cmp.mapping(function(fallback)

@@ -1,4 +1,12 @@
 
+local ls = require("luasnip")
+local s = ls.snippet
+local i = ls.insert_node
+local d = ls.dynamic_node
+local f = ls.function_node
+local t = ls.text_node
+local fmt = require("luasnip.extras.fmt").fmt
+
 local snipppets = {}
 local autosnippets = {}
 
@@ -17,27 +25,15 @@ end
 
 local function create_function_mappings(snips, is_async)
    local fsnips = {
-      { trigger = ";l<trigger>",
-        description = "line <type>",
-        fmt = "<async>function({}){{ {} }}{}",
+      { trigger = ";<trigger>",
+        description = "<type>",
+        fmt = "<async>function({}){{{}}}{}",
         args = { i(1), i(2), i(0) }
       },
 
-      { trigger = ";nl<trigger>",
-        description = "named line <type>",
-        fmt = "<async>function {}({}){{ {} }}{}",
-        args = { i(1, "name"), i(2), i(3), i(0) }
-      },
-
-      { trigger = ";m<trigger>",
-        description = "multi <type>",
-        fmt = "<async>function({}){{\n   {}\n}}{}",
-        args = { i(1), i(2), i(0) }
-      },
-
-      { trigger = ";nm<trigger>",
-        description = "named multi <type>",
-        fmt = "function {}({}){{\n   {}\n}}{}",
+      { trigger = ";n<trigger>",
+        description = "named <type>",
+        fmt = "<async>function {}({}){{{}}}{}",
         args = { i(1, "name"), i(2), i(3), i(0) }
       },
    }
@@ -59,12 +55,12 @@ local function create_function_mappings(snips, is_async)
    end
 
    for _, snip in ipairs(fsnips) do
-      local snip = s(
+      local sn = s(
          render(snip.trigger, values),
          fmt(render(snip.fmt, values), snip.args),
          { description = render(snip.description, values) }
       )
-      table.insert(snips, snip)
+      table.insert(snips, sn)
    end
 end
 
@@ -72,16 +68,17 @@ create_function_mappings(autosnippets, true)
 create_function_mappings(autosnippets, false)
 
 insert(autosnippets, {
-   s(";ll", fmt( "let {} = {};", { i(1, "var"), i(0) })),
-   s(";ln", fmt( "let {} = new {};", { i(1, "var"), i(0) })),
-   s(";ls", fmt( "let {} = Symbol(\"{}\");", { i(1, "var"), i(0, "name") })),
-   s(";lo", fmt( "let {} = {{\n   {}\n}};", { i(1, "var"), i(0) })),
-   s(";la", fmt( "let {} = [\n   {}\n];", { i(1, "var"), i(0) })),
-   s(";cc", fmt( "const {} = {};", { i(1, "var"), i(0) })),
-   s(";cn", fmt( "const {} = new {};", { i(1, "var"), i(0) })),
-   s(";cs", fmt( "const {} = Symbol(\"{}\");", { i(1, "var"), i(0, "name") })),
-   s(";co", fmt( "const {} = {{\n   {}\n}};", { i(1, "var"), i(0) })),
-   s(";ca", fmt( "const {} = [\n   {}\n];", { i(1, "var"), i(0) }))
+   s(";ll", fmt( "let {} = {};", { i(1), i(0) })),
+   s(";ln", fmt( "let {} = new {};", { i(1), i(0) })),
+   s(";ls", fmt( "let {} = Symbol(\"{}\");", { i(1), i(0, "name") })),
+   s(";lo", fmt( "let {} = {{{}}};", { i(1), i(0) })),
+   s(";la", fmt( "let {} = [{}];", { i(1), i(0) })),
+   s(";cc", fmt( "const {} = {};", { i(1), i(0) })),
+   s(";cn", fmt( "const {} = new {};", { i(1), i(0) })),
+   s(";csy", fmt( "const {} = Symbol(\"{}\");", { i(1), i(0, "name") })),
+   s(";co", fmt( "const {} = {{{}}};", { i(1), i(0) })),
+   s(";ca", fmt( "const {} = [{}];", { i(1), i(0) })),
+   s(";cse", fmt( "const self = this;", {}))
 })
 
 insert(autosnippets, {
@@ -109,41 +106,29 @@ insert(autosnippets, {
       "({} ? {} : {}){}",
       { i(1, "cond"), i(2, "if_true"), i(3, "if_false"), i(0) }
    )),
-   s(";lif", fmt(
-      "if({}){{ {} }}{}",
+   s(";if", fmt(
+      "if({}){{{}}}{}",
       { i(1, "true"), i(2), i(0) }
    )),
-   s(";mif", fmt(
-      "if({}){{\n   {}\n}}{}",
+   s(";elif", fmt(
+      "else if({}){{{}}}{}",
       { i(1, "true"), i(2), i(0) }
    )),
-   s(";llif", fmt(
-      "else if({}){{ {} }}{}",
-      { i(1, "true"), i(2), i(0) }
-   )),
-   s(";mlif", fmt(
-      "else if({}){{\n   {}\n}}{}",
-      { i(1, "true"), i(2), i(0) }
-   )),
-   s(";lels", fmt(
-      "else{{ {} }}{}",
+   s(";el", fmt(
+      "else{{{}}}{}",
       { i(1), i(0) }
    )),
-   s(";mels", fmt(
-      "else{{\n   {}\n}}{}",
-      { i(1), i(0) }
-   ))
 });
 
 
 insert(autosnippets, {
    s(";tc", fmt(
-      "try{{\n   {}\n}}catch({}){{\n   {}\n}}{}",
-      { i(1), i(2, "e"), i(3), i(0) }
+      "try{{\n   {}\n}}catch(e{}){{\n   {}\n}}{}",
+      { i(1), i(2), i(3), i(0) }
    )),
    s(";tf", fmt(
-      "try{{\n   {}\n}}catch({}){{\n   {}\n}}finally{{\n   {}\n}}{}",
-      { i(1), i(2, "e"), i(3), i(4), i(0) }
+      "try{{\n   {}\n}}catch(e{}){{\n   {}\n}}finally{{\n   {}\n}}{}",
+      { i(1), i(2), i(3), i(4), i(0) }
    ))
 });
 

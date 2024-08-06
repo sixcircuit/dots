@@ -1,7 +1,7 @@
 " must setup vim-plug before you get here. see .vimrc and .nvimrc
 
 " TODO: remove this when colorscheme is done.
-Plug 'sixcircuit/vim-javascript'
+"Plug 'sixcircuit/vim-javascript'
 
 Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'norcalli/nvim-colorizer.lua'
@@ -59,9 +59,10 @@ Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 " the autocmd is a hack that tricks delimitmate into not breaking command-t.
 " if we don't do this it completely blows up when we use backspace in the
 " command-t completion window.
-Plug 'Raimondi/delimitMate'
-let delimitMate_expand_cr = 1
+Plug 'sixcircuit/delimitMate'
+let delimitMate_expand_cr = 2
 let delimitMate_expand_space = 1
+"let delimitMate_jump_expansion = 0
 autocmd FileType CommandTPrompt let b:loaded_delimitMate = 1
 
 " the autocmd is a hack that tricks auto-pairs into not breaking command-t.
