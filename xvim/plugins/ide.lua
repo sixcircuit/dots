@@ -78,8 +78,8 @@ local function jump_back()
 end
 
 local function jump_forward()
-   if luasnip.jumpable(-1) then
-      luasnip.jump(-1)
+   if luasnip.jumpable(1) then
+      luasnip.jump(1)
    end
 end
 

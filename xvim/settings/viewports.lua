@@ -145,5 +145,5 @@ vim.keymap.set('n', '<C-j>', '5<C-e>')
 vim.keymap.set('n', '<C-k>', '5<C-y>')
 
 -- navigate windows easily
-vim.keymap.set('', '<C-n>', '<C-w>w')
+vim.keymap.set('n', '<C-n>', '<C-w>w')
 

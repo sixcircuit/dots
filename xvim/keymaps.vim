@@ -25,7 +25,7 @@ noremap Y y$
 
 noremap M %
 
-map <leader>ss :w <bar> :source %<cr>
+nmap <leader>ss :w <bar> :source %<cr>
 
 " nnoremap <C-k> <Up>
 " nnoremap <C-j> <Down>

@@ -15,20 +15,20 @@ let g:asterisk#keeppos = 1
 
 Plug 'stevearc/oil.nvim'
 
-" map *   <Plug>(asterisk-*)
-" map #   <Plug>(asterisk-#)
-" map g*  <Plug>(asterisk-g*)
-" map g#  <Plug>(asterisk-g#)
+" nmap *   <Plug>(asterisk-*)
+" nmap #   <Plug>(asterisk-#)
+" nmap g*  <Plug>(asterisk-g*)
+" nmap g#  <Plug>(asterisk-g#)
 
-" map *  <Plug>(asterisk-z*)
-" map #  <Plug>(asterisk-z#)
-" map g* <Plug>(asterisk-gz*)
-" map g# <Plug>(asterisk-gz#)
+" nmap *  <Plug>(asterisk-z*)
+" nmap #  <Plug>(asterisk-z#)
+" nmap g* <Plug>(asterisk-gz*)
+" nmap g# <Plug>(asterisk-gz#)
 
-map *  <Plug>(asterisk-z*)<Plug>(is-nohl-1)
-map g* <Plug>(asterisk-gz*)<Plug>(is-nohl-1)
-map #  <Plug>(asterisk-z#)<Plug>(is-nohl-1)
-map g# <Plug>(asterisk-gz#)<Plug>(is-nohl-1)
+nmap *  <Plug>(asterisk-z*)<Plug>(is-nohl-1)
+nmap g* <Plug>(asterisk-gz*)<Plug>(is-nohl-1)
+nmap #  <Plug>(asterisk-z#)<Plug>(is-nohl-1)
+nmap g# <Plug>(asterisk-gz#)<Plug>(is-nohl-1)
 
 Plug 'smoka7/hop.nvim'
 " Plug 'rlane/pounce.nvim'

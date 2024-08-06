@@ -41,17 +41,9 @@ local function create_function_mappings(snips, is_async)
    local values;
 
    if(is_async) then
-      values = {
-         trigger= "af",
-         async = "async ",
-         type = "async function"
-      }
+      values = { trigger= "af", async = "async ", type = "async function" }
    else
-      values = {
-         trigger= "f",
-         async = "",
-         type = "function"
-      }
+      values = { trigger= "f", async = "", type = "function" }
    end
 
    for _, snip in ipairs(fsnips) do
@@ -67,22 +59,78 @@ end
 create_function_mappings(autosnippets, true)
 create_function_mappings(autosnippets, false)
 
-insert(autosnippets, {
-   s(";ll", fmt( "let {} = {};", { i(1), i(0) })),
-   s(";ln", fmt( "let {} = new {};", { i(1), i(0) })),
-   s(";ls", fmt( "let {} = Symbol(\"{}\");", { i(1), i(0, "name") })),
-   s(";lo", fmt( "let {} = {{{}}};", { i(1), i(0) })),
-   s(";la", fmt( "let {} = [{}];", { i(1), i(0) })),
-   s(";cc", fmt( "const {} = {};", { i(1), i(0) })),
-   s(";cn", fmt( "const {} = new {};", { i(1), i(0) })),
-   s(";csy", fmt( "const {} = Symbol(\"{}\");", { i(1), i(0, "name") })),
-   s(";co", fmt( "const {} = {{{}}};", { i(1), i(0) })),
-   s(";ca", fmt( "const {} = [{}];", { i(1), i(0) })),
-   s(";cse", fmt( "const self = this;", {}))
-})
+
+local function create_declaration_mappings(snips, is_let)
+
+   local base_trigger = ";cn"
+   if is_let then base_trigger = ";le" end
+
+   local dsnips = {
+      {
+         trigger = base_trigger,
+         fmt = "<storage> {} = {};",
+         args = { i(1, "x"), i(0, "v") }
+      },
+      {
+         trigger = ";<trigger>s",
+         fmt = "<storage> {} = Symbol(\"{}\");",
+         args = { i(1, "x"), i(0) }
+      },
+      {
+         trigger = ";<trigger>o",
+         fmt = "<storage> {} = {{{}}};",
+         args = { i(1, "x"), i(0) }
+      },
+      {
+         trigger = ";<trigger>a",
+         fmt = "<storage> {} = [{}];",
+         args = { i(1, "x"), i(0) }
+      },
+      {
+         trigger = ";<trigger>ods",
+         fmt = "<storage> {{{}}} = {};",
+         args = { i(1), i(0, "obj") }
+      },
+      {
+         trigger = ";<trigger>ads",
+         fmt = "<storage> [{}] = {};",
+         args = { i(1), i(0, "ary") }
+      },
+      {
+         trigger = ";<trigger>se",
+         fmt = "<storage> self = this;",
+         args = {}
+      },
+      {
+         trigger = ";<trigger>ops",
+         fmt = "<storage> {{{}}} = opts;";
+         args = { i(0) }
+      },
+   }
+
+   local values;
+
+   if(is_let) then
+      values = { trigger= "l", storage = "let" }
+   else
+      values = { trigger= "c", storage = "const" }
+   end
+
+   for _, snip in ipairs(dsnips) do
+      local sn = s(
+         render(snip.trigger, values),
+         fmt(render(snip.fmt, values), snip.args)
+      )
+      table.insert(snips, sn)
+   end
+end
+
+create_declaration_mappings(autosnippets, true)
+create_declaration_mappings(autosnippets, false)
+
 
 insert(autosnippets, {
-   s(";rr", fmt( "return {}", { i(0) })),
+   s(";re", fmt( "return {}", { i(0) })),
    s(";rv", fmt( "return({});", { i(0, "value") })),
 });
 
@@ -102,7 +150,7 @@ insert(autosnippets, {
 })
 
 insert(autosnippets, {
-   s(";ter", fmt(
+   s(";trn", fmt(
       "({} ? {} : {}){}",
       { i(1, "cond"), i(2, "if_true"), i(3, "if_false"), i(0) }
    )),
@@ -114,7 +162,7 @@ insert(autosnippets, {
       "else if({}){{{}}}{}",
       { i(1, "true"), i(2), i(0) }
    )),
-   s(";el", fmt(
+   s(";els", fmt(
       "else{{{}}}{}",
       { i(1), i(0) }
    )),
@@ -123,12 +171,12 @@ insert(autosnippets, {
 
 insert(autosnippets, {
    s(";tc", fmt(
-      "try{{\n   {}\n}}catch(e{}){{\n   {}\n}}{}",
-      { i(1), i(2), i(3), i(0) }
+      "try{{\n   {}\n}}catch({}){{\n   {}\n}}{}",
+      { i(1), i(2, "e"), i(3), i(0) }
    )),
    s(";tf", fmt(
-      "try{{\n   {}\n}}catch(e{}){{\n   {}\n}}finally{{\n   {}\n}}{}",
-      { i(1), i(2), i(3), i(4), i(0) }
+      "try{{\n   {}\n}}catch({}){{\n   {}\n}}finally{{\n   {}\n}}{}",
+      { i(1), i(2, "e"), i(3), i(4), i(0) }
    ))
 });
 

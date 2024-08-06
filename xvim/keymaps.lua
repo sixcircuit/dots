@@ -154,7 +154,7 @@ vim.keymap.set('n', 'sn', cnext_rollover)
 -- vim.api.nvim_set_keymap('n', '<leader>o', ':CommandTRipgrep<cr>', { noremap = true, silent = true })
 
 -- easy macro
-vim.keymap.set('', ',,', "@@")
+vim.keymap.set("n", ",,", "@@")
 
 vim.keymap.set({ "n", "i" }, '<C-q>', '<cmd>wqall<cr>')
 
@@ -202,15 +202,15 @@ vim.keymap.set('v', '<leader>gg', function()
 end, { silent = true })
 
 -- this only works because i have <c-/> mapped to $ in carabiner
-vim.keymap.set({ 'n', 'v' }, '$', fuzzy_search) -- <c-/>
+vim.keymap.set('n', '$', fuzzy_search) -- <c-/>
 -- vim.keymap.set('', '/', "<nop>")
 -- vim.keymap.set('', '/', fuzzy_search)
 vim.keymap.set('n', 'sf', rg_and_open_first)
-vim.keymap.set('', 'sr', ':%s///g<left><left>')
-vim.keymap.set('', 'sd', ':/_\\.<cr>')
+vim.keymap.set('n', 'sr', ':%s///g<left><left>')
+vim.keymap.set('n', 'sd', ':/_\\.<cr>')
 
 -- " clear search highlighting
-vim.keymap.set('', '<leader>/', ":noh<cr>")
+vim.keymap.set('n', '<leader>/', ":noh<cr>")
 
 local function toggle_virtual_text()
    local current_state = vim.diagnostic.config().virtual_text
