@@ -7,7 +7,7 @@
    - do this in install script
       - clone sixcircuit/spaceship-prompt into xnix/shell/zsh/spaceship-prompt
       ? maybe just do a static include here. it never changes.
-   - make sure <shift + space> is mapped to the <page up> control sequence in your terminal emulator
+   - make sure <shift + space> is mapped to the <page up> control sequence in your terminal emulator -- maybe not. this seems to be really annoying for me.
 
 
 this setup no longer supports vim. i've standardized on neovim. vim support stops somewhere in the commit history. if you want it, it's in there somewhere.

@@ -88,6 +88,7 @@ vim.keymap.set('i', '<c-h>', jump_back, { noremap = true, silent = true })
 vim.keymap.set('i', '<c-space>', try_jump_many, { noremap = true, silent = true })
 
 -- i have <s-space> mapped to page up in my terminal, <s-space> may work in some guis
+-- i don't have it mapped that way anymore. it was super annoying.
 -- vim.keymap.set('i', '<s-space>', jump_back, { noremap = true, silent = true })
 -- vim.keymap.set('i', '<pageup>', jump_back, { noremap = true, silent = true })
 

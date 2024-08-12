@@ -118,7 +118,7 @@ color.green = {
    term = 64,
    gui = "#5f8700",
    h = {
-      term = 28,
+      term = 34,
       gui = "#00af00"
    },
    l = {
@@ -520,7 +520,7 @@ hl("@conditional", color.violet, { bold = true })
 
 hl("@if.block", color.violet)
 hl("@if.condition", color.violet)
-hl("@lsp.type.property", {})
+hl("@lsp.type.property", color.fg, { default = true })
 hl("@property", color.fg, { default = true })
 hl("@label.json", color.fg, { default = true })
 

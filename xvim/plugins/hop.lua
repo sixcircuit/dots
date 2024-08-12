@@ -56,42 +56,55 @@ end
 vim.keymap.set('n', 'mm', 'm')
 
 -- vim.keymap.set('n', '<leader>w', "<cmd>HopWord<cr>")
-vim.keymap.set('n', 'ma', "<cmd>HopAnywhere<cr>")
+vim.keymap.set({ 'n', 'v' }, 'ma', "<cmd>HopAnywhere<cr>")
 
-vim.keymap.set('n', 'mw', "<cmd>HopWordAC<cr>")
-vim.keymap.set('n', '<leader>w', "<cmd>HopWordAC<cr>")
+-- vim.keymap.set({ 'n', 'v' }, 'mw', "<cmd>HopWordAC<cr>")
+vim.keymap.set({ 'n', 'v' }, '<leader>w', "<cmd>HopWordAC<cr>")
 
-vim.keymap.set('n', 'mb', "<cmd>HopWordBC<cr>")
-vim.keymap.set('n', '<leader>b', "<cmd>HopWordBC<cr>")
+-- vim.keymap.set({ 'n', 'v' }, 'mb', "<cmd>HopWordBC<cr>")
+vim.keymap.set({ 'n', 'v' }, '<leader>b', "<cmd>HopWordBC<cr>")
 
-vim.keymap.set('n', 'mj', "<cmd>HopLineAC<cr>")
-vim.keymap.set('n', '<leader>j', "<cmd>HopLineAC<cr>")
+vim.keymap.set({ 'n', 'v' }, 'mj', "<cmd>HopLineAC<cr>")
+vim.keymap.set({ 'n', 'v' }, '<leader>j', "<cmd>HopLineAC<cr>")
 
-vim.keymap.set('n', 'mk', "<cmd>HopLineBC<cr>")
-vim.keymap.set('n', '<leader>k', "<cmd>HopLineBC<cr>")
+vim.keymap.set({ 'n', 'v' }, 'mk', "<cmd>HopLineBC<cr>")
+vim.keymap.set({ 'n', 'v' }, '<leader>k', "<cmd>HopLineBC<cr>")
 
-vim.keymap.set('n', 'mc', "<cmd>HopChar1<cr>")
+vim.keymap.set({ 'n', 'v' }, 'mc', "<cmd>HopChar1<cr>")
 
 vim.keymap.set('n', 'mlw', "<cmd>HopWordCurrentLineAC<cr>")
 vim.keymap.set('n', 'mlc', "<cmd>HopChar1CurrentLineAC<cr>")
 vim.keymap.set('n', 'mla', "<cmd>HopAnywhereCurrentLineAC<cr>")
 vim.keymap.set('n', 'mll', "<cmd>HopAnywhereCurrentLineAC<cr>")
 vim.keymap.set('n', 'mls', "<cmd>HopCamelCaseCurrentLineAC<cr>")
-vim.keymap.set('n', 'ms', "<cmd>HopCamelCase<cr>")
+
+vim.keymap.set('n', 'ms', "<cmd>HopCamelCaseCurrentLine<cr>")
+vim.keymap.set('n', 'mms', "<cmd>HopCamelCase<cr>")
 
 vim.keymap.set('n', 'mpp', "<cmd>HopPasteChar1<cr>")
 
 vim.keymap.set('n', 'm/', "<cmd>HopPatternAC<cr>")
 vim.keymap.set('n', 'm?', "<cmd>HopPatternBC<cr>")
 
-vim.keymap.set('n', 'mpi"', hop_paste_inside_f('"'))
-vim.keymap.set('n', 'mpi`', hop_paste_inside_f('`'))
-vim.keymap.set('n', 'mpi\'', hop_paste_inside_f("'"))
-vim.keymap.set('n', 'mpi(', hop_paste_inside_f("("))
 vim.keymap.set('n', 'myi"', hop_yank_inside_f('"'))
-vim.keymap.set('n', 'myi\'', hop_yank_inside_f("'"))
+vim.keymap.set('n', 'mpi"', hop_paste_inside_f('"'))
 vim.keymap.set('n', 'myi`', hop_yank_inside_f("`"))
+vim.keymap.set('n', 'mpi`', hop_paste_inside_f('`'))
+vim.keymap.set('n', 'myi\'', hop_yank_inside_f("'"))
+vim.keymap.set('n', 'mpi\'', hop_paste_inside_f("'"))
 vim.keymap.set('n', 'myi(', hop_yank_inside_f('('))
+vim.keymap.set('n', 'mpi(', hop_paste_inside_f("("))
+vim.keymap.set('n', 'myi{', hop_yank_inside_f('{'))
+vim.keymap.set('n', 'mpi{', hop_paste_inside_f("{"))
+vim.keymap.set('n', 'myi[', hop_yank_inside_f('['))
+vim.keymap.set('n', 'mpi[', hop_paste_inside_f("["))
+
+vim.keymap.set('n', 'myip', hop_yank_inside_f('('))
+vim.keymap.set('n', 'mpip', hop_paste_inside_f("("))
+vim.keymap.set('n', 'myib', hop_yank_inside_f('{'))
+vim.keymap.set('n', 'mpib', hop_paste_inside_f("{"))
+vim.keymap.set('n', 'myia', hop_yank_inside_f('['))
+vim.keymap.set('n', 'mpia', hop_paste_inside_f("["))
 
 local m_chars = {
    '<', '>', '{', '}', '[', ']', '(', ')',
@@ -99,6 +112,10 @@ local m_chars = {
    ',', '.', ';', ':',
    '|', '&', '-', '_',
 }
+
+vim.keymap.set('n', "mb", f_to_chars_f("[\\{\\}]", true))
+vim.keymap.set('n', "mp", f_to_chars_f("[\\(\\)]", true))
+vim.keymap.set('n', "ma", f_to_chars_f("[\\[\\]]", true))
 
 for _, char in pairs(m_chars) do
    vim.keymap.set('n', "m"  .. char, f_to_chars_f(char))

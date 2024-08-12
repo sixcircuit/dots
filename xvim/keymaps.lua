@@ -134,6 +134,35 @@ local function toggle_quickfix()
     end
 end
 
+vim.keymap.set({ "n", "o", "x" },
+   ",w",
+   "<cmd>lua require('spider').motion('w')<CR>",
+   { desc = "Spider-w" }
+)
+vim.keymap.set({ "n", "o", "x" },
+   ",e",
+   "<cmd>lua require('spider').motion('e')<CR>",
+   { desc = "Spider-e" }
+)
+vim.keymap.set({ "n", "o", "x" },
+   ",b",
+   "<cmd>lua require('spider').motion('b')<CR>",
+   { desc = "Spider-b" }
+)
+
+
+vim.keymap.set('n', 'dib', "di{")
+vim.keymap.set('n', 'dip', "di(")
+vim.keymap.set('n', 'dia', "di[")
+vim.keymap.set('n', 'cib', "ci{")
+vim.keymap.set('n', 'cip', "ci(")
+vim.keymap.set('n', 'cia', "ci[")
+vim.keymap.set('n', 'dsb', "<Plug>Dsurround{")
+vim.keymap.set('n', 'dsp', "<Plug>Dsurround(")
+vim.keymap.set('n', 'dsa', "<Plug>Dsurround[")
+vim.keymap.set('n', 'ds<space>', "F<space>xf<space>x")
+
+
 vim.keymap.set('n', '[f', cprev_rollover)
 vim.keymap.set('n', ']f', cnext_rollover)
 

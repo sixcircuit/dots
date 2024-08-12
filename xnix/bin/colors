@@ -445,7 +445,7 @@ const code_colors = {
    code_colors[i] = color;
 });
 
-function padl(str, n){ 
+function padl(str, n){
    str += "";
    return str.padStart(n, " ");
 }
@@ -456,21 +456,21 @@ function color_16(fg, str, npad){
    if(fg <= 7){ fg += 30; }
    else{ fg = (fg-8) + 90; }
 
-   return(["\033[", `${fg}m`, padl(str, npad), "\033[0m"].join(""));
+   return(["\x1b[", `${fg}m`, padl(str, npad), "\x1b[0m"].join(""));
 }
 
 function color_256(colors, str, npad){
    if(Array.isArray(colors)){
       let [fg, bg] = colors;
       return([
-         "\033[38;5;", `${fg}m`, 
-         "\033[48;5;", `${bg}m`,
-         padl(str, npad), 
-         "\033[0m"
+         "\x1b[38;5;", `${fg}m`,
+         "\x1b[48;5;", `${bg}m`,
+         padl(str, npad),
+         "\x1b[0m"
       ].join(""));
    }else{
       let fg = colors;
-      return(["\033[38;5;", `${fg}m`, padl(str, npad), "\033[0m"].join(""));
+      return(["\x1b[38;5;", `${fg}m`, padl(str, npad), "\x1b[0m"].join(""));
    }
 }
 
@@ -480,15 +480,15 @@ function color_hex(fg_hex, str, npad){
 }
 
 function color_rgb(rgb, str, npad){
-   return(["\033[38;2;", `${rgb.r};${rgb.g};${rgb.b}m`, padl(str, npad), "\033[0m"].join(""));
+   return(["\x1b[38;2;", `${rgb.r};${rgb.g};${rgb.b}m`, padl(str, npad), "\x1b[0m"].join(""));
 }
 
 
 function print_solarized(){
 
    _.line(
-      padl("name", 7) , " ", 
-      padl("16", 2), " ", 
+      padl("name", 7) , " ",
+      padl("16", 2), " ",
       padl("256", 3), " ",
       padl("256hex", 6), " ",
       padl("24mhex", 6)
@@ -497,8 +497,8 @@ function print_solarized(){
    for(let i = 0; i < solarized.length; i++){
       const item = solarized[i];
       _.line(
-         padl(item.name, 7) , " ", 
-         color_16(item.c16-0, item.c16, 2), " ", 
+         padl(item.name, 7) , " ",
+         color_16(item.c16-0, item.c16, 2), " ",
          color_256(item.code, item.code, 3), " ",
          color_hex(item.xterm_hex, item.xterm_hex, 6), " ",
          color_hex(item.hex, item.hex, 6), " ",
@@ -518,9 +518,9 @@ function print_rgb_color(rgb){
 function print_24_bit_colors(){
    for(let i = 0; i < 16; i++){ _.line(color_16(i, i+"")); }
    const step = 16;
-   for(let r = 0; r < 255; r += step){ 
-      for(let g = 0; g < 255; g += step){ 
-         for(let b = 0; b < 255; b += step){ 
+   for(let r = 0; r < 255; r += step){
+      for(let g = 0; g < 255; g += step){
+         for(let b = 0; b < 255; b += step){
             print_rgb_color({ r, g, b });
          }
       }
@@ -584,7 +584,7 @@ function _print_term256_colors({ colors, wide, columns, hsl, highlight }){
       }else{
          const cols = [];
          let line = [];
-         for(let i = skip; i < colors.length; i++){ 
+         for(let i = skip; i < colors.length; i++){
             if((i % 6 === 0) && line.length){ _.line(line.join(" ")); line = []; }
             const color = colors[i];
             line.push(color_to_str({ color, highlight, hsl, wide }));
@@ -592,7 +592,7 @@ function _print_term256_colors({ colors, wide, columns, hsl, highlight }){
          if(line.length){ _.line(line.join(" ")); }
       }
    }else{
-      for(let i = skip; i < colors.length; i++){ 
+      for(let i = skip; i < colors.length; i++){
          const color = colors[i];
          _.line(color_to_str({ color, highlight, hsl, wide }));
       }
@@ -642,7 +642,7 @@ function print_pallet_map({ colors, highlight, compressed }){
 
    highlight = highlight || {};
 
-   const sort = function(a, b){ 
+   const sort = function(a, b){
       const { h: ah, s: as, l: al } = a.hsl;
       const { h: bh, s: bs, l: bl } = b.hsl;
 
@@ -690,7 +690,7 @@ function print_pallet_map({ colors, highlight, compressed }){
          const color = columns[col][h];
          if(color){
             has_one = true;
-            if(_cols[col][col_n]){ 
+            if(_cols[col][col_n]){
                has_conflict = true;
             }
          }
@@ -741,7 +741,7 @@ function print_pallet({ colors, highlight }){
 
    highlight = highlight || {};
 
-   const sort = function(a, b){ 
+   const sort = function(a, b){
       const { h: ah, s: as, l: al } = a.hsl;
       const { h: bh, s: bs, l: bl } = b.hsl;
 
@@ -808,7 +808,7 @@ function print_user_colors({ colors, highlight, lua }){
          if(compact){
             if(name === "black"){
                lines.push([
-                  (name + ": ").padEnd(9, " "), "{ ", 
+                  (name + ": ").padEnd(9, " "), "{ ",
                   color_256([color.l, colors.white.h], `l: [${padl(color.l, 3)}], `),
                   color_256([color.m, colors.white.h], `m: [${padl(color.m, 3)}], `),
                   color_256([color.h, colors.white.h], `h: [${padl(color.h, 3)}] `),
@@ -816,7 +816,7 @@ function print_user_colors({ colors, highlight, lua }){
                ].join(""));
             }else{
                lines.push([
-                  (name + ": ").padEnd(9, " "), "{ ", 
+                  (name + ": ").padEnd(9, " "), "{ ",
                   color_256(color.l, `l: [${padl(color.l, 3)}], `),
                   color_256(color.m, `m: [${padl(color.m, 3)}], `),
                   color_256(color.h, `h: [${padl(color.h, 3)}]${color.hh?", ":" "}`),
@@ -905,7 +905,7 @@ function print_term256_colors({ colors, wide, highlight }){
       return(h + s - l);
    };
 
-   const score_color = function(color){ 
+   const score_color = function(color){
       // return score_val(color);
       // return score_max_val(color);
       // return score_total_val(color);
@@ -915,7 +915,7 @@ function print_term256_colors({ colors, wide, highlight }){
    // colors.sort(function(a, b){ return(score_color(b) - score_color(a)); });
    // colors = colors.filter(function(a){ return(a.hsl.l === 50); });
 
-   colors.sort(function(a, b){ 
+   colors.sort(function(a, b){
       const { h: ah, s: as, l: al } = a.hsl;
       const { h: bh, s: bs, l: bl } = b.hsl;
 
@@ -971,10 +971,10 @@ function print_term256_colors({ colors, wide, highlight }){
 
    function print_help(){
       _.line([
-         "<number or hex>", 
+         "<number or hex>",
          "-s for solarized",
-         "-c for 24 bit colors", 
-         "-t for 256 term colors", 
+         "-c for 24 bit colors",
+         "-t for 256 term colors",
          "-h for help",
       ].join("\n"));
    }
@@ -1008,7 +1008,7 @@ function print_term256_colors({ colors, wide, highlight }){
    }else if(opt === "-cclua"){
       return print_user_colors({ colors: code_colors, lua: true });
    }else{
-      if(opt.length === 7){ 
+      if(opt.length === 7){
          // #xxxxxx -> xxxxxx
          opt = opt.slice(1);
       }
@@ -1024,23 +1024,23 @@ function print_term256_colors({ colors, wide, highlight }){
 
 
 
-// \033[38;2;<r>;<g>;<b>m     #Select RGB foreground color
-// \033[48;2;<r>;<g>;<b>m     #Select RGB background color
+// \x1b[38;2;<r>;<g>;<b>m     #Select RGB foreground color
+// \x1b[48;2;<r>;<g>;<b>m     #Select RGB background color
 // for i in range(30, 37 + 1):
-//     print("\033[%dm%d\t\t\033[%dm%d" % (i, i, i + 60, i + 60))
+//     print("\x1b[%dm%d\t\t\x1b[%dm%d" % (i, i, i + 60, i + 60))
 //
-// # print("\033[39m\\033[49m                 - Reset color")
-// # print("\\033[2K                          - Clear Line")
-// # print("\\033[<L>;<C>H or \\033[<L>;<C>f  - Put the cursor at line L and column C.")
-// # print("\\033[<N>A                        - Move the cursor up N lines")
-// # print("\\033[<N>B                        - Move the cursor down N lines")
-// # print("\\033[<N>C                        - Move the cursor forward N columns")
-// # print("\\033[<N>D                        - Move the cursor backward N columns\n")
-// # print("\\033[2J                          - Clear the screen, move to (0,0)")
-// # print("\\033[K                           - Erase to end of line")
-// # print("\\033[s                           - Save cursor position")
-// # print("\\033[u                           - Restore cursor position\n")
-// # print("\\033[4m                          - Underline on")
-// # print("\\033[24m                         - Underline off\n")
-// # print("\\033[1m                          - Bold on")
-// # print("\\033[21m                         - Bold off")
+// # print("\x1b[39m\\x1b[49m                 - Reset color")
+// # print("\\x1b[2K                          - Clear Line")
+// # print("\\x1b[<L>;<C>H or \\x1b[<L>;<C>f  - Put the cursor at line L and column C.")
+// # print("\\x1b[<N>A                        - Move the cursor up N lines")
+// # print("\\x1b[<N>B                        - Move the cursor down N lines")
+// # print("\\x1b[<N>C                        - Move the cursor forward N columns")
+// # print("\\x1b[<N>D                        - Move the cursor backward N columns\n")
+// # print("\\x1b[2J                          - Clear the screen, move to (0,0)")
+// # print("\\x1b[K                           - Erase to end of line")
+// # print("\\x1b[s                           - Save cursor position")
+// # print("\\x1b[u                           - Restore cursor position\n")
+// # print("\\x1b[4m                          - Underline on")
+// # print("\\x1b[24m                         - Underline off\n")
+// # print("\\x1b[1m                          - Bold on")
+// # print("\\x1b[21m                         - Bold off")

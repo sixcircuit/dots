@@ -42,7 +42,9 @@ Plug 'jremmen/vim-ripgrep'
 " Plug 'duane9/nvim-rg'
 
 Plug 'tpope/vim-surround'
-Plug 'bkad/CamelCaseMotion'
+
+"Plug 'bkad/CamelCaseMotion'
+Plug 'chrisgrieser/nvim-spider'
 
 Plug 'tpope/vim-commentary'
 

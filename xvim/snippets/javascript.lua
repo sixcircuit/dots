@@ -25,13 +25,13 @@ end
 
 local function create_function_mappings(snips, is_async)
    local fsnips = {
-      { trigger = ";<trigger>",
+      { trigger = ";<base_trigger>",
         description = "<type>",
         fmt = "<async>function({}){{{}}}{}",
         args = { i(1), i(2), i(0) }
       },
 
-      { trigger = ";n<trigger>",
+      { trigger = ";<trigger>n",
         description = "named <type>",
         fmt = "<async>function {}({}){{{}}}{}",
         args = { i(1, "name"), i(2), i(3), i(0) }
@@ -41,9 +41,9 @@ local function create_function_mappings(snips, is_async)
    local values;
 
    if(is_async) then
-      values = { trigger= "af", async = "async ", type = "async function" }
+      values = { base_trigger = "af", trigger = "af", async = "async ", type = "async function" }
    else
-      values = { trigger= "f", async = "", type = "function" }
+      values = { base_trigger = "ff", trigger= "f", async = "", type = "function" }
    end
 
    for _, snip in ipairs(fsnips) do
@@ -72,8 +72,13 @@ local function create_declaration_mappings(snips, is_let)
          args = { i(1, "x"), i(0, "v") }
       },
       {
-         trigger = ";<trigger>s",
-         fmt = "<storage> {} = Symbol(\"{}\");",
+         trigger = ";<trigger>f",
+         fmt = "<storage> {} = function({}){{{}}};",
+         args = { i(1, "x"), i(2), i(0) }
+      },
+      {
+         trigger = ";<trigger>o",
+         fmt = "<storage> {} = {{{}}};",
          args = { i(1, "x"), i(0) }
       },
       {
@@ -106,6 +111,11 @@ local function create_declaration_mappings(snips, is_let)
          fmt = "<storage> {{{}}} = opts;";
          args = { i(0) }
       },
+      {
+         trigger = ";<trigger>sy",
+         fmt = "<storage> {} = Symbol(\"{}\");",
+         args = { i(1, "x"), i(0) }
+      },
    }
 
    local values;
@@ -128,10 +138,39 @@ end
 create_declaration_mappings(autosnippets, true)
 create_declaration_mappings(autosnippets, false)
 
+local function create_type_checks(snips, test)
+
+   local defsnips = {
+      { trigger = ";<test>s", fmt = "_.<test>_str({})", args = { i(0) } },
+      { trigger = ";<test>n", fmt = "_.<test>_num({})", args = { i(0) } },
+      { trigger = ";<test>o", fmt = "_.<test>_obj({})", args = { i(0) } },
+      { trigger = ";<test>a", fmt = "_.<test>_ary({})", args = { i(0) } },
+      { trigger = ";<test>f", fmt = "_.<test>_fun({})", args = { i(0) } },
+      { trigger = ";<test>d", fmt = "_.<test>_def({})", args = { i(0) } },
+      { trigger = ";<test>u", fmt = "_.<test>_und({})", args = { i(0) } },
+      { trigger = ";<test>y", fmt = "_.<test>_sym({})", args = { i(0) } },
+   }
+
+   local values = { test = test }
+
+   for _, snip in ipairs(defsnips) do
+      local sn = s(
+         render(snip.trigger, values),
+         fmt(render(snip.fmt, values), snip.args)
+      )
+      table.insert(snips, sn)
+   end
+end
+
+create_type_checks(autosnippets, "is")
+create_type_checks(autosnippets, "ok")
+
 
 insert(autosnippets, {
-   s(";re", fmt( "return {}", { i(0) })),
-   s(";rv", fmt( "return({});", { i(0, "value") })),
+   s(";rr", fmt( "return {}", { i(0) })),
+   s(";re", fmt( "return({});", { i(0, "value") })),
+   s(";rt", fmt( "return(this);", {})),
+   s(";rn", fmt( "return(null);", {})),
 });
 
 insert(autosnippets, {
@@ -158,11 +197,11 @@ insert(autosnippets, {
       "if({}){{{}}}{}",
       { i(1, "true"), i(2), i(0) }
    )),
-   s(";elif", fmt(
+   s(";ei", fmt(
       "else if({}){{{}}}{}",
       { i(1, "true"), i(2), i(0) }
    )),
-   s(";els", fmt(
+   s(";el", fmt(
       "else{{{}}}{}",
       { i(1), i(0) }
    )),

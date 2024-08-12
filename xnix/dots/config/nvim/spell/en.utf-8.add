@@ -87,3 +87,17 @@ dirname
 vals
 ctors
 fmt
+rehydrating
+arg
+lru
+replacer
+reviver
+prev
+ansi
+lhs
+rhs
+fg
+bg
+rgb
+ary
+bs
