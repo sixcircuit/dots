@@ -2,7 +2,7 @@
 
 if [ $1 = "-n" ]; then
     find . -name "$2" -exec rename -n "s/$3/$4/" {} \;
-else 
+else
     find . -name "$1" -exec rename "s/$2/$3/" {} \;
-fi 
+fi
 

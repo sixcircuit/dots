@@ -45,9 +45,11 @@ LS_COLORS+="ex=00;38;5;160:"
 # EXEC 01;38;5;64
 
 ls="ls"
+sort="sort"
 
 if [[ $plat == 'macos' ]]; then
    ls="gls"
+   sort="gsort"
 fi
 
 ls="$ls -N -h --color=auto --time-style=long-iso"
@@ -59,9 +61,9 @@ group_dir="--group-directories-first"
 dref="--dereference"
 
 
-alias ls="$ls $dref $group_dir"
-alias ll="$ls $dref -l $group_dir"
-alias la="$ls $list_all $group_dir"
+# alias ls="$ls $dref $group_dir"
+# alias ll="$ls $dref -l $group_dir"
+# alias la="$ls $list_all $group_dir"
 # alias lz="$ls $list_all $dref --sort=size -s1"
 # alias lt="$ls $list_all $dref --sort=time"
 
@@ -70,10 +72,44 @@ alias la="$ls $list_all $group_dir"
 # TODO: add "B" to size column if there isn't a unit
 sed_three_col_filter=" --color=always | sed -E 's/[\+drwxst-]{10,11}[[:space:]]+[[:digit:]]+[[:space:]]+[^[:space:]]+[[:space:]]+[^[:space:]]+//'"
 
-function lz(){ 
+usage="[ ll, le, lt, lz, lu ]"
+
+function ls(){
+   echo $usage
+   eval "$ls $dref $group_dir $@"
+}
+
+function ll(){
+   echo $usage
+   eval "$ls $dref -l $group_dir $@"
+}
+
+function le(){
+   echo $usage
+   eval "$ls $list_all $group_dir $@"
+}
+
+function lu(){
+   echo $usage
+
+   if [ $# -gt 0 ]; then
+      eval "du -sh $1/* | $sort --human"
+   else
+      eval "du -sh * | $sort --human"
+   fi
+}
+
+# function lu(){
+#    echo $usage
+#    eval "du -sh * | $sort --human"
+# }
+
+function lz(){
+   echo $usage
    eval "$ls $list_all $dref --sort=size -r $@ $sed_three_col_filter"
 }
 
-function lt(){ 
+function lt(){
+   echo $usage
    eval "$ls $list_all $dref --sort=time -r $@ $sed_three_col_filter"
 }

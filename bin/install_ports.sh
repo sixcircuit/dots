@@ -1,4 +1,4 @@
-version="2.8.1"
+version="2.10.1"
 mkdir ${HOME}/macports_install
 cd ${HOME}/macports_install
 mv ~/Downloads/MacPorts-$version.tar.gz ./

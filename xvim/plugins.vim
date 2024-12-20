@@ -64,6 +64,9 @@ Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 Plug 'sixcircuit/delimitMate'
 let delimitMate_expand_cr = 2
 let delimitMate_expand_space = 1
+let delimitMate_smart_matchpairs = '[^[:space:][:punct:]]'
+" default
+"let delimitMate_smart_matchpairs = '^\%(\w\|\!\|[£$]\|[^[:space:][:punct:]]\)'
 "let delimitMate_jump_expansion = 0
 autocmd FileType CommandTPrompt let b:loaded_delimitMate = 1
 

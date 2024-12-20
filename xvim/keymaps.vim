@@ -10,10 +10,9 @@ set notimeout
 
 " one less key for command mode
 nnoremap ; :
-vnoremap ; :
-
 nnoremap : ;
-vnoremap ; :
+"vnoremap ; :
+"vnoremap : ;
 
 
 " ' now goes to the mark line and column, instead of just the line

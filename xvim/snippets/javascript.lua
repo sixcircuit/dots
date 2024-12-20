@@ -41,7 +41,7 @@ local function create_function_mappings(snips, is_async)
    local values;
 
    if(is_async) then
-      values = { base_trigger = "af", trigger = "af", async = "async ", type = "async function" }
+      values = { base_trigger = "aff", trigger = "af", async = "async ", type = "async function" }
    else
       values = { base_trigger = "ff", trigger= "f", async = "", type = "function" }
    end
@@ -70,6 +70,21 @@ local function create_declaration_mappings(snips, is_let)
          trigger = base_trigger,
          fmt = "<storage> {} = {};",
          args = { i(1, "x"), i(0, "v") }
+      },
+      {
+         trigger = ";<trigger>i",
+         fmt = "<storage> {} = ",
+         args = { i(0, "x") }
+      },
+      {
+         trigger = ";<trigger>`",
+         fmt = "<storage> {} = `{}`",
+         args = { i(1, "x"), i(0, "str") }
+      },
+      {
+         trigger = ";<trigger>\"",
+         fmt = "<storage> {} = \"{}\"",
+         args = { i(1, "x"), i(0, "str") }
       },
       {
          trigger = ";<trigger>f",
@@ -165,10 +180,39 @@ end
 create_type_checks(autosnippets, "is")
 create_type_checks(autosnippets, "ok")
 
+local function create_type_check_ifs(snips, test)
+
+   local defsnips = {
+      { trigger = ";i<trigger>s", fmt = "if(_.<test>_str({})){{{}}}", args = { i(1, "val"), i(0) } },
+      { trigger = ";i<trigger>n", fmt = "if(_.<test>_num({})){{{}}}", args = { i(1, "val"), i(0) } },
+      { trigger = ";i<trigger>o", fmt = "if(_.<test>_obj({})){{{}}}", args = { i(1, "val"), i(0) } },
+      { trigger = ";i<trigger>a", fmt = "if(_.<test>_ary({})){{{}}}", args = { i(1, "val"), i(0) } },
+      { trigger = ";i<trigger>f", fmt = "if(_.<test>_fun({})){{{}}}", args = { i(1, "val"), i(0) } },
+      { trigger = ";i<trigger>d", fmt = "if(_.<test>_def({})){{{}}}", args = { i(1, "val"), i(0) } },
+      { trigger = ";i<trigger>u", fmt = "if(_.<test>_und({})){{{}}}", args = { i(1, "val"), i(0) } },
+      { trigger = ";i<trigger>y", fmt = "if(_.<test>_sym({})){{{}}}", args = { i(1, "val"), i(0) } },
+   }
+
+   local values = { trigger = "i", test = "is" }
+
+   for _, snip in ipairs(defsnips) do
+      local sn = s(
+         render(snip.trigger, values),
+         fmt(render(snip.fmt, values), snip.args)
+      )
+      table.insert(snips, sn)
+   end
+end
+
+create_type_check_ifs(autosnippets)
 
 insert(autosnippets, {
    s(";rr", fmt( "return {}", { i(0) })),
+   s(";rf", fmt( "return(function({}){{{}}});", { i(1), i(0) })),
+   s(";raf", fmt( "return(async function({}){{{}}});", { i(1), i(0) })),
    s(";re", fmt( "return({});", { i(0, "value") })),
+   s(";rbt", fmt( "return(true);", {})),
+   s(";rbf", fmt( "return(false);", {})),
    s(";rt", fmt( "return(this);", {})),
    s(";rn", fmt( "return(null);", {})),
 });
@@ -256,7 +300,7 @@ insert(autosnippets, {
       { i(0) }
    )),
    s(";eb", fmt(
-      "exports.bundle = function(_, _opts){{\n   _opts = _opts || {{}};\n\n   const lib = {{}};\n   {}\n\n}};",
+      "exports.bundle = function(_, _opts){{\n   const lib = {{}};\n   {}\n\n}};",
       { i(0) }
    )),
 })

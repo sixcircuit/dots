@@ -520,7 +520,8 @@ hl("@conditional", color.violet, { bold = true })
 
 hl("@if.block", color.violet)
 hl("@if.condition", color.violet)
-hl("@lsp.type.property", color.fg, { default = true })
+-- hl("@lsp.type.property", color.fg, { default = true })
+hl("@lsp.type.property", {})
 hl("@property", color.fg, { default = true })
 hl("@label.json", color.fg, { default = true })
 
