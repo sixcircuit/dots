@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+const strs = [];
+
+for(let i = 0; i < 255; i++){
+   let c =String.fromCharCode(i)
+
+   if(c === '"'){ c = `'"'`; }
+   else{ c = JSON.stringify(c); }
+   strs.push((i + "").padStart(3, " ") + ": " + c);
+}
+
+for(let i = 0; i < 255; i += 8){
+   console.log(strs.slice(i, i+8).join(" "));
+}

@@ -1,0 +1,110 @@
+#!/usr/bin/env node
+
+// dtag todo proj.dry
+
+const fzf = function({ list, delim, raw }){
+   return new Promise(function(resolve, reject){
+      delim = delim || " ";
+
+      if(Array.isArray(list)){ list = list.join("\n"); }
+
+      const { spawn } = require("child_process");
+      const fzf = spawn("fzf", [], { stdio: ["pipe", "pipe", process.stderr] });
+
+      let selection = "";
+
+      fzf.stdout.on("data", function(data){ selection += data.toString(); });
+
+      fzf.on("close", function(){
+         if(raw){ return resolve(selection); }
+
+         selection = selection.trim();
+         if(selection){
+            selection = selection.split(delim)[0].trim();
+            return resolve(selection);
+         }else{ return resolve(null); }
+      });
+
+      fzf.stdin.write(list);
+      fzf.stdin.end();
+   });
+};
+
+const fs = require('fs');
+const _path = require('path');
+
+const args = process.argv.slice(2);
+
+function usage(msg){
+   if(msg){ console.log(`error: ${msg}`); }
+   console.log(`usage: todo [add] <path> | rm <path>`);
+   process.exit(1);
+}
+
+if(!args.length){ return usage("no command selected."); }
+
+let cmd = args.shift();
+let path = "";
+
+if(cmd !== "ls"){
+   if(!args.length){ path = cmd; cmd = "add"; }
+   else{ path = args.shift(); }
+}
+
+if(["add", "rm", "ls"].indexOf(cmd) < 0){ return usage(); }
+
+const todo_dir = _path.join(process.cwd(), ':todo');
+const todo_path = _path.join(todo_dir, _path.basename(path));
+const link_path = _path.resolve(_path.join("..", path));
+
+console.log("path: ", path);
+console.log("todo_dir: ", todo_dir);
+console.log("todo_path: ", todo_path);
+console.log("link_path: ", link_path);
+
+if(cmd === "ls"){
+
+   const list = [];
+   const dirs = fs.readdirSync(todo_dir);
+   for(let i = 0; i < dirs.length; i++){
+      const dir = dirs[i];
+      list.push([dir, ": ", fs.readlinkSync(dir)].join(""));
+   }
+   console.log(list.join("\n"));
+   //fzf()
+   //fs.unlinkSync(todo_path);
+   process.exit(0);
+
+}else if(cmd === "add"){
+
+   if(!fs.existsSync(path)){
+      console.log(`${path} does not exist.`);
+      process.exit(1);
+   }
+
+   if(!fs.existsSync(todo_dir)){ fs.mkdirSync(todo_dir); }
+
+   console.log("todo_path exists: ", fs.existsSync(todo_path));
+   console.log("todo_path lstat: ", fs.lstatSync(todo_path));
+
+   try{ fs.lstatSync(todo_path); }
+   catch(e){
+      console.log(`${ _path.relative(process.cwd(), todo_path) } already exists.`);
+      process.exit(1);
+   }
+
+   fs.symlinkSync(link_path, todo_path);
+
+   console.log("todo added: ",  _path.relative(process.cwd(), todo_path));
+
+}else if(cmd === "rm"){
+
+   if(!fs.existsSync(todo_path)){
+      console.log(`${ _path.relative(process.cwd(), todo_path) } does not exist.`);
+      process.exit(1);
+   }
+
+   fs.unlinkSync(todo_path);
+   console.log("todo removed: ", path);
+
+}

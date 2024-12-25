@@ -76,17 +76,17 @@ usage="[ ll, le, lt, lz, lu ]"
 
 function ls(){
    echo $usage
-   eval "$ls $dref $group_dir $@"
+   eval "$ls $dref $group_dir ${1+\"$@\"}"
 }
 
 function ll(){
    echo $usage
-   eval "$ls $dref -l $group_dir $@"
+   eval "$ls $dref -l $group_dir ${1+\"$@\"}"
 }
 
 function le(){
    echo $usage
-   eval "$ls $list_all $group_dir $@"
+   eval "$ls $list_all $group_dir ${1+\"$@\"}"
 }
 
 function lu(){
@@ -106,10 +106,11 @@ function lu(){
 
 function lz(){
    echo $usage
-   eval "$ls $list_all $dref --sort=size -r $@ $sed_three_col_filter"
+   eval "$ls $list_all $dref --sort=size -r ${1+\"$@\"} $sed_three_col_filter"
 }
 
 function lt(){
    echo $usage
-   eval "$ls $list_all $dref --sort=time -r $@ $sed_three_col_filter"
+   eval "$ls $list_all $dref --sort=time -r ${1+\"$@\"} $sed_three_col_filter"
 }
+

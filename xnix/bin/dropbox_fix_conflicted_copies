@@ -1,0 +1,19 @@
+
+# find . -name * conflicted copy *" | tee conflicts.paths"
+# ./fix_conflicts.sh < conflicts.paths
+# this doesn't quite work right for files with other (paren groups) (conflicted copy...).psd
+# so you can be explicit about the wording and hostname which can help you. see commented out line
+
+while read conflicted_path; do
+   other_file=`echo "$conflicted_path" | sed -e "s/ (.* conflicted copy .*-.*-.*)//"`
+   # other_file=`echo "$conflicted_path" | sed -e "s/ (hostname.local's conflicted copy .*-.*-.*)//"`
+   echo "$conflicted_path"
+   echo "$other_file"
+   diff "$conflicted_path" "$other_file"
+   if [[ $? == 0 ]]; then
+      echo "rm \"$conflicted_path\""
+      rm "$conflicted_path"
+   else
+      echo $?
+   fi
+done

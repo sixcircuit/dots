@@ -1,3 +1,0 @@
-#!/bin/bash
-cd ./zandbox/parent/child
-../../../run relative_echo "relative paths work"

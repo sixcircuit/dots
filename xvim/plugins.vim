@@ -1,8 +1,5 @@
 " must setup vim-plug before you get here. see .vimrc and .nvimrc
 
-" TODO: remove this when colorscheme is done.
-"Plug 'sixcircuit/vim-javascript'
-
 Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'norcalli/nvim-colorizer.lua'
 
@@ -143,8 +140,4 @@ Plug 'saadparwaiz1/cmp_luasnip'
 " For snippy users.
 " Plug 'dcampos/nvim-snippy'
 " Plug 'dcampos/cmp-snippy'
-
-" Plug 'sktaylor/vim-colors-solarized'
-
-" Plug 'maxmx03/solarized.nvim'
 
