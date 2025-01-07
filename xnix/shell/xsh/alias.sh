@@ -8,12 +8,23 @@ alias vd='vimdiff'
 alias t='\tux'
 alias tt='tree'
 alias tux='echo "USE Ctrl+O to open sessions."'
-alias ag='dtag'
 alias ter='terraform'
 alias kc='kubectl'
 alias cpr='cp -R'
 
-alias cpr='cp -R'
+alias td='tagd'
+alias tl="tagl"
+
+alias lm='llm'
+alias lc='llm continue'
+
+c() {
+   local result=`cdf "$@"`
+   if [ $? -eq 0 ]; then
+      # echo "cd $result"
+      cd "$result"
+   fi
+}
 
 alias rgl='rg -F'
 

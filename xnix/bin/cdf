@@ -1,0 +1,64 @@
+#!/usr/bin/env node
+
+// adapted from: https://github.com/bevacqua/fuzzysearch/blob/master/index.js
+// i added scoring which prioritizes streaks of letters and strings that appear earlier in the string.
+function fuzzysearch(needle, haystack){
+   const hlen = haystack.length;
+   const nlen = needle.length;
+
+   if(nlen > hlen){ return(0); }
+
+   const hlen_factor = (1 / hlen);
+
+   let score = 0;
+   let streak = 0;
+   let streaking = false;
+
+   outer: for(var i = 0, j = 0; i < nlen; i++){
+      const nch = needle.charCodeAt(i);
+      while(j < hlen){
+         if(haystack.charCodeAt(j++) === nch){
+            if(streaking){ streak++; }
+            else{ streak = 1; }
+            streaking = true;
+            score += ((hlen - j) * hlen_factor) + (streak / nlen);
+            continue outer;
+         }else{ streaking = false; }
+      }
+      return(0);
+   }
+   return(score);
+}
+
+const fs = require('fs');
+const _path = require('path');
+
+;(function(){
+   const args = process.argv.slice(2);
+   if(!args.length){ process.exit(1); }
+   const [fzy_path] = args;
+   const paths = fs.readdirSync(process.cwd());
+
+   let max = null;
+
+   const scores = {};
+
+   for(let i = 0; i < paths.length; i++){
+      const path = paths[i];
+      if(path[0] === "." && fzy_path[0] !== "."){ continue; }
+      if(!fs.statSync(path).isDirectory()){ continue; }
+      const score = fuzzysearch(fzy_path.toLowerCase(), path.toLowerCase());
+      if(score){
+         if(!max || max.score < score){ max = { score, path }; }
+         scores[path] = score;
+      }
+   }
+
+   if(max){
+      process.stdout.write(max.path);
+      process.exit(0);
+   }
+
+   process.exit(1);
+
+})();

@@ -1,0 +1,117 @@
+#!/usr/bin/env node
+
+// dtag todo proj.dry
+
+const fs = require('fs');
+const _path = require('path');
+
+const fzf = function({ list, delim, raw }){
+   return new Promise(function(resolve, reject){
+      delim = delim || " ";
+
+      if(Array.isArray(list)){ list = list.join("\n"); }
+
+      const { spawn } = require("child_process");
+      const fzf = spawn("fzf", [], { stdio: ["pipe", "pipe", process.stderr] });
+
+      let selection = "";
+
+      fzf.stdout.on("data", function(data){ selection += data.toString(); });
+
+      fzf.on("close", function(){
+         if(raw){ return resolve(selection); }
+
+         selection = selection.trim();
+         if(selection){
+            selection = selection.split(delim)[0].trim();
+            return resolve(selection);
+         }else{ return resolve(null); }
+      });
+
+      fzf.stdin.write(list);
+      fzf.stdin.end();
+   });
+};
+
+const tag_path = function(tag, path){
+
+   const tag_dir = _path.join(process.cwd(), `@${tag}`);
+   const tag_path = _path.join(tag_dir, _path.basename(path));
+   const link_path = _path.relative(tag_dir, path);
+
+   //console.log("tag: ", tag);
+   //console.log("path: ", path);
+   //console.log("tag_dir: ", tag_dir);
+   //console.log("tag_path: ", tag_path);
+   //console.log("link_path: ", link_path);
+
+   if(!fs.existsSync(path)){
+      console.log(`${path} does not exist.`);
+      process.exit(1);
+   }
+
+   if(!fs.existsSync(tag_dir)){ fs.mkdirSync(tag_dir); }
+
+   //console.log("tag_path exists: ", fs.existsSync(tag_path));
+
+   try{
+      fs.lstatSync(tag_path);
+      console.log(`${ _path.relative(process.cwd(), tag_path) } already exists.`);
+      process.exit(1);
+   }catch(e){
+      //console.log(e);
+   }
+
+   fs.symlinkSync(link_path, tag_path);
+
+   console.log("tag added", _path.relative(process.cwd(), tag_path));
+
+};
+
+//const cmds = {};
+
+//cmds.ls = function(args){
+//   const list = [];
+//   const dirs = fs.readdirSync(todo_dir);
+//   for(let i = 0; i < dirs.length; i++){
+//      const dir = dirs[i];
+//      list.push([dir, " -> ", fs.readlinkSync(dir)].join(""));
+//   }
+//   console.log(list.join("\n"));
+//   //fzf()
+//   //fs.unlinkSync(todo_path);
+//   process.exit(0);
+//};
+//
+//cmds.rm = function(args){
+//
+//   if(!fs.existsSync(todo_path)){
+//      console.log(`${ _path.relative(process.cwd(), todo_path) } does not exist.`);
+//      process.exit(1);
+//   }
+//
+//   fs.unlinkSync(todo_path);
+//   console.log("todo removed: ", path);
+//
+//};
+
+;(function(){
+
+   const args = process.argv.slice(2);
+
+   function usage(msg){
+      if(msg){ console.log(`error: ${msg}`); }
+      console.log(`usage: dtag <tag> [path] [path] [path]`);
+      process.exit(1);
+   }
+
+   if(!args.length){ return usage("no command selected."); }
+
+   const tag = args.shift();
+
+   for(let i = 0; i < args.length; i++){
+      const path = args[i];
+      tag_path(tag, path);
+   }
+
+})();

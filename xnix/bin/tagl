@@ -1,0 +1,7 @@
+#!/bin/bash
+
+ shopt -s nullglob
+ for item in @*; do
+   tree -L 1 --noreport "$item"
+ done
+ shopt -u nullglob

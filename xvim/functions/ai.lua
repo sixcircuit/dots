@@ -33,6 +33,15 @@ function _G.do_llm(extra_cmd)
 
 end
 
+local function trim_lines(array)
+    local trimmed_array = {}
+    for _, line in ipairs(array) do
+        trimmed_array[#trimmed_array + 1] = line:gsub("^%s+", ""):gsub("%s+$", "")
+    end
+    return trimmed_array
+end
+
+
 function _G.exec_term_close_and_insert(prev_win, temp_path, split_win, last_line)
    local prev_buf = vim.api.nvim_win_get_buf(prev_win)
 
@@ -44,9 +53,16 @@ function _G.exec_term_close_and_insert(prev_win, temp_path, split_win, last_line
    -- insert output at cursor position in previous buffer
    local lines = vim.fn.readfile(temp_path)
 
+   lines = trim_lines(lines)
+
    if #lines > 0 then
       if (last_line) then
          lines = { lines[#lines] }
+      end
+
+      -- this is a hack for whisper, but i don't care to refactor everything so this is in the do_whisper function.
+      if (lines[1] == "[BLANK_AUDIO]") then
+         lines[1] = ""
       end
 
       local cursor_pos = vim.api.nvim_win_get_cursor(prev_win)
@@ -70,10 +86,11 @@ local function llm_map(keys, command)
    vim.api.nvim_set_keymap('v', '<leader>' .. keys, 'c<C-O>:lua do_llm("' .. command .. '")<CR>', {noremap = true, silent = true})
 end
 
-llm_map("ll", "")
-llm_map("ld", "3 verbose")
-llm_map("ls", "4 verbose")
-
+llm_map("ai", "")
+llm_map("ls", "llama-3.1-8b verbose")
+llm_map("lb", "llama-3.3-70b verbose")
+llm_map("asj", "llama-3.1-8b jsfun")
+llm_map("abj", "llama-3.3-70b jsfun")
 
 -- whisper.cpp stuff.
 
