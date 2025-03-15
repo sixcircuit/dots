@@ -34,7 +34,7 @@ require('nvim-treesitter.configs').setup({
 
 -- https://github.com/williamboman/mason-lspconfig.nvim
 
--- tsserver does javascript
+-- tsserver does javascript // update to ts_ls everywhere if/when you upgrade
 
 local lsp_servers = { "lua_ls", "tsserver" }
 

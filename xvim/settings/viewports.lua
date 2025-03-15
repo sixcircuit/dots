@@ -47,8 +47,6 @@ local function layout_windows(adjust_left)
    local all_cols = vim.o.columns
    local panes = vim.fn.winnr('$')
 
-   local first_split_small = 50 + adjust_left
-   local second_split_small = 85
 
    local first_split_big = 83 + adjust_left -- same as = on big screen (for 17 font size)
 
@@ -57,7 +55,17 @@ local function layout_windows(adjust_left)
 
    -- terminal windows - 10
 
-   if all_cols <= 250 then
+   if all_cols <= 250 then -- laptop screens
+      local first_split_small = 50
+      local second_split_small = 85
+
+      if all_cols <= 150 then
+         first_split_small = 35
+         second_split_small = 85
+      end
+
+      first_split_small = first_split_small + adjust_left
+
       if panes == 1 then
          split_window()
          switch_to_window(2)
@@ -69,7 +77,6 @@ local function layout_windows(adjust_left)
       elseif panes == 3 then
          resize_window(1, first_split_small)
          resize_window(2, second_split_small)
-
       else
          vim.api.nvim_exec("wincmd =", false)
       end

@@ -43,6 +43,7 @@ zle -N dateclear
 bindkey '^l' dateclear
 
 bindkey -s '^O' 't fzf^M'
+# bindkey -s '^I' 'llm^M'
 
 # bindkey '^L' clear -x && ls
 # zle     -N              clear_and_ls

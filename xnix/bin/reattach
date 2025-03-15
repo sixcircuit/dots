@@ -2,7 +2,7 @@
 
 sessions=$(tmux list-sessions -F "#{session_name}")
 
- for session_name in $sessions; do 
-    echo "reattaching: $session_name" 
-    tab tmux attach-session -t "$session_name"
- done; 
+ for session_name in $sessions; do
+    echo "reattaching: $session_name"
+    tab -t "$session_name" tmux attach-session -t "$session_name"
+ done;

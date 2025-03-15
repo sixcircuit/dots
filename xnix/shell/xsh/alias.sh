@@ -15,8 +15,16 @@ alias cpr='cp -R'
 alias td='tagd'
 alias tl="tagl"
 
-alias lm='llm'
-alias lc='llm continue'
+small_llm="llama-3.1-8b"
+big_llm="llama-3.3-70b"
+
+alias lc="llm continue"
+alias lls="llm $small_llm"
+alias llb="llm $big_llm"
+alias lsv="llm $small_llm verbose"
+alias lbv="llm $big_llm verbose"
+alias lsj="llm $small_llm jsfun"
+alias lbj="llm $big_llm jsfun"
 
 c() {
    local result=`cdf "$@"`

@@ -1008,14 +1008,16 @@ function print_term256_colors({ colors, wide, highlight }){
    }else if(opt === "-cclua"){
       return print_user_colors({ colors: code_colors, lua: true });
    }else{
-      if(opt.length === 7){
-         // #xxxxxx -> xxxxxx
-         opt = opt.slice(1);
-      }
-      if(opt.length === 6){
-         _.line(print_rgb_color(hex_to_rgb(opt)));
-      }else if(opt.length <= 3){
-         _.line(color_256(opt, `term_color: ${opt} text: lorem ipsum dolor`));
+      if(opt){
+         if(opt.length === 7){
+            // #xxxxxx -> xxxxxx
+            opt = opt.slice(1);
+         }
+         if(opt.length === 6){
+            _.line(print_rgb_color(hex_to_rgb(opt)));
+         }else if(opt.length <= 3){
+            _.line(color_256(opt, `term_color: ${opt} text: lorem ipsum dolor`));
+         }
       }else{
          return print_help();
       }

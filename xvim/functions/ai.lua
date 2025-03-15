@@ -86,16 +86,22 @@ local function llm_map(keys, command)
    vim.api.nvim_set_keymap('v', '<leader>' .. keys, 'c<C-O>:lua do_llm("' .. command .. '")<CR>', {noremap = true, silent = true})
 end
 
-llm_map("ai", "")
-llm_map("ls", "llama-3.1-8b verbose")
-llm_map("lb", "llama-3.3-70b verbose")
-llm_map("asj", "llama-3.1-8b jsfun")
-llm_map("abj", "llama-3.3-70b jsfun")
+-- llm_map("ai", "")
+llm_map("lc", "continue")
+llm_map("lls", "llama-3.1-8b")
+llm_map("llb", "llama-3.3-70b")
+llm_map("lsv", "llama-3.1-8b verbose")
+llm_map("lbv", "llama-3.3-70b verbose")
+llm_map("lsj", "llama-3.1-8b jsfun")
+llm_map("lbj", "llama-3.3-70b jsfun")
 
 -- whisper.cpp stuff.
 
 vim.api.nvim_set_keymap('i', '<C-f>', [[<C-\><C-o>:lua do_whisper()<CR>]], {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<C-f>', [[i<C-o>:lua do_whisper()<CR>]], {noremap = true, silent = true})
+
+-- vim.api.nvim_set_keymap('i', '<C-i>', [[<C-\><C-o>:lua do_llm("")<CR>]], {noremap = true, silent = true})
+-- vim.api.nvim_set_keymap('n', '<C-i>', [[i<C-o>:lua do_llm("")<CR>]], {noremap = true, silent = true})
 
 function _G.do_whisper()
 

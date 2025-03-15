@@ -87,8 +87,13 @@ local function create_declaration_mappings(snips, is_let)
          args = { i(1, "x"), i(0, "str") }
       },
       {
-         trigger = ";<trigger>f",
+         trigger = ";<trigger>ff",
          fmt = "<storage> {} = function({}){{{}}};",
+         args = { i(1, "x"), i(2), i(0) }
+      },
+      {
+         trigger = ";<trigger>fa",
+         fmt = "<storage> {} = async function({}){{{}}};",
          args = { i(1, "x"), i(2), i(0) }
       },
       {
@@ -149,6 +154,25 @@ local function create_declaration_mappings(snips, is_let)
       table.insert(snips, sn)
    end
 end
+
+local function create_random(snips, prefix)
+
+   local defsnips = {
+      { trigger = ";opt", fmt = "opts = opts || {{}};{}", args = { i(0) } },
+   }
+
+   local values = { prefix = prefix }
+
+   for _, snip in ipairs(defsnips) do
+      local sn = s(
+         render(snip.trigger, values),
+         fmt(render(snip.fmt, values), snip.args)
+      )
+      table.insert(snips, sn)
+   end
+end
+
+create_random(autosnippets, "")
 
 create_declaration_mappings(autosnippets, true)
 create_declaration_mappings(autosnippets, false)
