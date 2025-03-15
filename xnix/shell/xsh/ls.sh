@@ -44,15 +44,15 @@ LS_COLORS+="ex=00;38;5;160:"
 # # This is for files with execute permission:
 # EXEC 01;38;5;64
 
-ls="ls"
-sort="sort"
+ls_bin="ls"
+sort_bin="sort"
 
 if [[ $plat == 'macos' ]]; then
-   ls="gls"
-   sort="gsort"
+   ls_bin="gls"
+   sort_bin="gsort"
 fi
 
-ls="$ls -N -h --color=auto --time-style=long-iso"
+ls_cmd="command $ls_bin -N -h --color=auto --time-style=long-iso"
 
 # we don't really need --dereference because we color with ln:target
 
@@ -61,11 +61,11 @@ group_dir="--group-directories-first"
 dref="--dereference"
 
 
-# alias ls="$ls $dref $group_dir"
-# alias ll="$ls $dref -l $group_dir"
-# alias la="$ls $list_all $group_dir"
-# alias lz="$ls $list_all $dref --sort=size -s1"
-# alias lt="$ls $list_all $dref --sort=time"
+# alias ls="$ls_cmd $dref $group_dir"
+# alias ll="$ls_cmd $dref -l $group_dir"
+# alias la="$ls_cmd $list_all $group_dir"
+# alias lz="$ls_cmd $list_all $dref --sort=size -s1"
+# alias lt="$ls_cmd $list_all $dref --sort=time"
 
 # this is ugly but seems to work strips the first three columns
 # TODO: swap the date and size columns
@@ -76,41 +76,41 @@ usage="[ ll, le, lt, lz, lu ]"
 
 function ls(){
    echo $usage
-   eval "$ls $dref $group_dir ${1+\"$@\"}"
+   eval "$ls_cmd $dref $group_dir ${1+\"$@\"}"
 }
 
 function ll(){
    echo $usage
-   eval "$ls $dref -l $group_dir ${1+\"$@\"}"
+   eval "$ls_cmd $dref -l $group_dir ${1+\"$@\"}"
 }
 
 function le(){
    echo $usage
-   eval "$ls $list_all $group_dir ${1+\"$@\"}"
+   eval "$ls_cmd $list_all $group_dir ${1+\"$@\"}"
 }
 
 function lu(){
    echo $usage
 
    if [ $# -gt 0 ]; then
-      eval "du -sh $1/* | $sort --human"
+      eval "du -sh $1/* | $sort_bin --human"
    else
-      eval "du -sh * | $sort --human"
+      eval "du -sh * | $sort_bin --human"
    fi
 }
 
 # function lu(){
 #    echo $usage
-#    eval "du -sh * | $sort --human"
+#    eval "du -sh * | $sort_bin --human"
 # }
 
 function lz(){
    echo $usage
-   eval "$ls $list_all $dref --sort=size -r ${1+\"$@\"} $sed_three_col_filter"
+   eval "$ls_cmd $list_all $dref --sort=size -r ${1+\"$@\"} $sed_three_col_filter"
 }
 
 function lt(){
    echo $usage
-   eval "$ls $list_all $dref --sort=time -r ${1+\"$@\"} $sed_three_col_filter"
+   eval "$ls_cmd $list_all $dref --sort=time -r ${1+\"$@\"} $sed_three_col_filter"
 }
 

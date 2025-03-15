@@ -18,7 +18,7 @@ fi
 if [[ -f $HOME/plat/google-cloud-sdk/completion.zsh.inc ]]; then
     source $HOME/plat/google-cloud-sdk/completion.zsh.inc
 else
-    echo "missing $HOME/plat/google-cloud-sdk/completion.zsh.inc"
+    # echo "missing $HOME/plat/google-cloud-sdk/completion.zsh.inc"
 fi
 
 # for startup speed, only check zcompdump once a day, this seems unnecessary now.
