@@ -43,13 +43,8 @@ SPACESHIP_RPROMPT_ORDER=(
 )
 
 local foreground=245
-local darker=236
+local darker=240
 local darkest=238
-local git_color=$darkest
-local user_color=200 # bright pink
-local host_color=200 # bright pink
-local host_at_color=47 # bright green
-local exit_code_color=$darkest
 
 local gold=214 # gold
 local red=196 # red
@@ -59,18 +54,26 @@ local purple=57 # purple
 local dark_blue=21 # dark blue
 local light_blue=33 # light blue
 
+local exit_code_color=$darkest
+
+local git_color=$darkest
+local user_color=$darkest
+local host_color=$darkest
+local user_at_color=$darkest
 local char_color=$light_blue
+local char_symbol="∙"
 
-local prompt_color_file="$HOME/.prompt"
+local _git_color=$git_color
+local _user_color=$user_color
+local _host_color=$host_color
+local _user_at_color=$user_at_color
+local _char_color=$char_color
+local _char_symbol=$char_symbol
 
-if [ -f $prompt_color_file ]; then
-   local _user_color=$(sed "1q;d" $prompt_color_file)
-   local _host_color=$(sed "2q;d" $prompt_color_file)
-   local _host_at_color=$(sed "3q;d" $prompt_color_file)
-   re='^[0-9]+$'
-   if [[ $_user_color =~ $re ]] || (( _user_color >= 16 && _user_color <= 255 )); then user_color=$_user_color; fi
-   if [[ $_host_color =~ $re ]] || (( _host_color >= 16 && _host_color <= 255 )); then host_color=$_host_color; fi
-   if [[ $_host_at_color =~ $re ]] || (( _host_at_color >= 16 && _host_at_color <= 255 )); then host_at_color=$_host_at_color; fi
+local prompt_file="$HOME/.prompt"
+
+if [ -f "$prompt_file" ]; then
+    source "$prompt_file"
 fi
 
 # SPACESHIP_CHAR_COLORS=( $gold $red $green $orange $purple $dark_blue $light_blue )
@@ -116,7 +119,7 @@ SPACESHIP_USER_SUFFIX=""
 SPACESHIP_USER_COLOR=$user_color
 
 SPACESHIP_HOST_SHOW="always"
-SPACESHIP_HOST_PREFIX="%F{$host_at_color}@%f" # the @ in there is what we print
+SPACESHIP_HOST_PREFIX="%F{$user_at_color}@%f" # the @ in there is what we print
 SPACESHIP_HOST_SUFFIX=" "
 SPACESHIP_HOST_COLOR=$host_color
 SPACESHIP_HOST_COLOR_SSH=$host_color
@@ -136,7 +139,7 @@ SPACESHIP_EXIT_CODE_SUFFIX="%F{$exit_code_color}) %f" # the paren + space in the
 SPACESHIP_EXIT_CODE_COLOR_SUCCESS="$exit_code_color"
 SPACESHIP_EXIT_CODE_COLOR_FAILURE="red"
 
-SPACESHIP_CHAR_SYMBOL="∙"
+SPACESHIP_CHAR_SYMBOL=$char_symbol
 SPACESHIP_CHAR_PREFIX="\n"
 SPACESHIP_CHAR_SUFFIX=" "
 # SPACESHIP_CHAR_SYMBOL_ROOT="#"
