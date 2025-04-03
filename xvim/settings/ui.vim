@@ -14,9 +14,6 @@ set modelines=4
 " always show status bar
 set laststatus=2
 
-" always show tabline
-set showtabline=2
-
 " set the window title and other window stuff
 set title
 set showcmd

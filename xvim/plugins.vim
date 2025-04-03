@@ -35,8 +35,9 @@ Plug 'junegunn/limelight.vim'
 
 Plug 'ggvgc/vim-fuzzysearch'
 
-Plug 'jremmen/vim-ripgrep'
-" Plug 'duane9/nvim-rg'
+let g:rg_map_keys = 0
+"Plug 'jremmen/vim-ripgrep'
+Plug 'duane9/nvim-rg'
 
 Plug 'tpope/vim-surround'
 
@@ -98,7 +99,7 @@ Plug 'christoomey/vim-titlecase'
 Plug 'Keithbsmiley/swift.vim'
 
 Plug 'itchyny/lightline.vim'
-Plug 'mkitt/tabline.vim'
+"Plug 'mkitt/tabline.vim'
 
 
 let g:CommandTPreferredImplementation='lua'

@@ -252,7 +252,14 @@ function LightlineFileName()
    elseif vim.bo.filetype == 'vimshell' then
       return vim.fn['vimshell#get_status_string']()
    else
-      return fname ~= '' and vim.fn.expand('%') or '[No Name]'
+      if fname == '' then
+         return "*"
+      else
+         local path = vim.fn.expand('%:p')
+         path = vim.fn.fnamemodify(path, ":~")
+         path = vim.fn.fnamemodify(path, ":.")
+         return(path)
+      end
    end
 end
 
@@ -446,7 +453,8 @@ local function lightline_setup()
       },
       tabline = {
          left = { {'tabs'} },
-         right = { {'close'} }
+         -- right = { {'close'} }
+         right = { }
       },
       tab = {
          active = { 'tabnum', 'filename', 'modified', 'diagnostics' },

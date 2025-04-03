@@ -71,7 +71,16 @@ local function rg_and_open_first()
       return
    end
    vim.cmd('Rg ' .. search_term)
-   vim.cmd('cc 1')
+   -- vim.cmd('cc 1')
+end
+
+local function rgl_and_open_first()
+   local status, search_term = pcall(vim.fn.input, 'rg/')
+   if not status then
+      return
+   end
+   vim.cmd('Rg -F "' .. search_term .. '"')
+   -- vim.cmd('cc 1')
 end
 
 local function cmove_with_rollover(direction)
@@ -234,7 +243,8 @@ end, { silent = true })
 vim.keymap.set('n', '$', fuzzy_search) -- <c-/>
 -- vim.keymap.set('', '/', "<nop>")
 -- vim.keymap.set('', '/', fuzzy_search)
-vim.keymap.set('n', 'sf', rg_and_open_first)
+vim.keymap.set('n', 'sff', rg_and_open_first)
+vim.keymap.set('n', 'sfl', rgl_and_open_first)
 vim.keymap.set('n', 'sr', ':%s///g<left><left>')
 vim.keymap.set('n', 'sd', ':/_\\.<cr>')
 
