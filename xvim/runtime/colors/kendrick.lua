@@ -271,7 +271,8 @@ hl("StatusLineNC", ui.dark, ui.dark)
 
 hl("TabLine", color.gray.m, { underline = true })
 hl("TabLineFill", color.gray.m, { underline = true })
-hl("TabLineSel", color.gray.hh, color.gray.l, { underline = true })
+-- hl("TabLineSel", color.gray.hh, color.gray.l, { underline = true })
+hl("TabLineSel", color.gray.hh, { underline = true })
 -- hl("TabLineModified", { term=196, gui="#ff0000" }, color.gray.l, { bold = true, underline = true })
 -- hl("TabLineModifiedIcon", { term=196, gui="#ff0000" }, color.gray.l, { bold = true, underline = true })
 

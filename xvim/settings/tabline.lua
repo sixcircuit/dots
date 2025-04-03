@@ -1,39 +1,6 @@
 -- based on
 -- https://github.com/mkitt/tabline.vim
 
-local function tab_label(i, bufnr, unique_paths)
-   local bufname = vim.fn.bufname(bufnr)
-   local is_modified = vim.fn.getbufvar(bufnr, "&mod") == 1
-   local name
-
-   if bufname == "" then
-      name = '*'
-   else
-      name = unique_paths[bufnr]
-   end
-
-   -- for command windows that just pop up like command-t
-   if name == "" or name == nil then
-      name = bufname
-   end
-
-   -- local label = ' ' .. i .. ':' .. name .. ' '
-   local label = '[' .. name .. ']'
-
-   if is_modified then
-      -- name = name .. '%#TabLineModifiedIcon#•'
-      -- name = name .. ' •'
-      -- name = name .. '*'
-      label = label .. '[+]'
-   end
-
-   if is_modified then
-      -- label = '%#TabLineModified#' .. label
-   end
-
-   return label
-end
-
 local function filename_buffers(type)
    local bufs;
 
@@ -136,26 +103,71 @@ local function compute_shortest_names(type)
    return results
 end
 
+local function tab_label(i, bufnr, unique_paths)
+   local bufname = vim.fn.bufname(bufnr)
+   local is_modified = vim.fn.getbufvar(bufnr, "&mod") == 1
+   local name
+
+   if bufname == "" then
+      name = '*'
+   else
+      name = unique_paths[bufnr]
+   end
+
+   -- for command windows that just pop up like command-t
+   if name == "" or name == nil then
+      name = bufname
+   end
+
+   -- local label = ' ' .. i .. ':' .. name .. ' '
+   local label = '[' .. name .. ']'
+
+   if is_modified then
+      -- name = name .. '%#TabLineModifiedIcon#•'
+      -- name = name .. ' •'
+      -- name = name .. '*'
+      label = label .. '[+]'
+   end
+
+   if is_modified then
+      -- label = '%#TabLineModified#' .. label
+   end
+
+   return label
+end
 
 function _G.Tabline()
    local s = ''
    local tab_count = vim.fn.tabpagenr('$')
    local unique_paths = compute_shortest_names("tabs")
+   local highlight_space = false
 
    for i = 1, tab_count do
       local winnr = vim.fn.tabpagewinnr(i)
       local buflist = vim.fn.tabpagebuflist(i)
       local bufnr = buflist[winnr]
 
-      if (i == vim.fn.tabpagenr()) then
-         s = s .. '%#TabLineSel#' .. ' ' .. tab_label(i, bufnr, unique_paths)
+      if highlight_space then
+         if (i == vim.fn.tabpagenr()) then
+            s = s .. '%#TabLineSel#' .. ' ' .. tab_label(i, bufnr, unique_paths)
+         else
+            s = s .. ' %*' .. '%#TabLine#' ..  tab_label(i, bufnr, unique_paths) .. ''
+         end
       else
-         s = s .. ' %*' .. '%#TabLine#' ..  tab_label(i, bufnr, unique_paths) .. ''
+         if (i == vim.fn.tabpagenr()) then
+            s = s .. ' %#TabLineSel#' .. '' .. tab_label(i, bufnr, unique_paths)
+         else
+            s = s .. '%* ' .. '%#TabLine#' ..  tab_label(i, bufnr, unique_paths) .. ''
+         end
       end
 
    end
 
-   s = s .. ' %*%#TabLineFill#'
+   if highlight_space then
+      s = s .. ' %*%#TabLineFill#'
+   else
+      s = s .. '%*%#TabLineFill#'
+   end
 
    return s
 end
