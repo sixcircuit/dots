@@ -119,7 +119,6 @@ local function tab_label(i, bufnr, unique_paths)
       name = bufname
    end
 
-   -- local label = ' ' .. i .. ':' .. name .. ' '
    local label = '[' .. name .. ']'
 
    if is_modified then
@@ -129,9 +128,8 @@ local function tab_label(i, bufnr, unique_paths)
       label = label .. '[+]'
    end
 
-   if is_modified then
-      -- label = '%#TabLineModified#' .. label
-   end
+   -- add this for mouse clicks (say the docs)
+   label = '%' .. i .. 'T' .. label
 
    return label
 end
@@ -168,6 +166,8 @@ function _G.Tabline()
    else
       s = s .. '%*%#TabLineFill#'
    end
+
+
 
    return s
 end
