@@ -128,46 +128,141 @@ local function tab_label(i, bufnr, unique_paths)
       label = label .. '[+]'
    end
 
-   -- add this for mouse clicks (say the docs)
-   label = '%' .. i .. 'T' .. label
 
    return label
 end
 
 function _G.Tabline()
-   local s = ''
+
    local tab_count = vim.fn.tabpagenr('$')
    local unique_paths = compute_shortest_names("tabs")
-   local highlight_space = false
+
+   local labels = {}
 
    for i = 1, tab_count do
       local winnr = vim.fn.tabpagewinnr(i)
       local buflist = vim.fn.tabpagebuflist(i)
       local bufnr = buflist[winnr]
 
-      if highlight_space then
-         if (i == vim.fn.tabpagenr()) then
-            s = s .. '%#TabLineSel#' .. ' ' .. tab_label(i, bufnr, unique_paths)
-         else
-            s = s .. ' %*' .. '%#TabLine#' ..  tab_label(i, bufnr, unique_paths) .. ''
-         end
-      else
-         if (i == vim.fn.tabpagenr()) then
-            s = s .. ' %#TabLineSel#' .. '' .. tab_label(i, bufnr, unique_paths)
-         else
-            s = s .. '%* ' .. '%#TabLine#' ..  tab_label(i, bufnr, unique_paths) .. ''
-         end
+      local label = tab_label(i, bufnr, unique_paths)
+      local len = vim.fn.strdisplaywidth(label) + 1 -- add 1 for the extra space.
+      local style = "TabLine"
+
+      if (i == vim.fn.tabpagenr()) then
+         style = "TabLineSel"
       end
 
+      local style_f = function(s)
+         local leading_space = true
+         -- add the %iT for mouse clicks (say the docs) (the docs are correct)
+         s = '%#' .. style .. '#' .. '%' .. i .. 'T' .. s .. '%*'
+         if leading_space then
+            s = ' ' .. s
+         end
+         return s
+      end
+
+      table.insert(labels, { label = label, len = len, style_f = style_f })
+
    end
 
-   if highlight_space then
-      s = s .. ' %*%#TabLineFill#'
-   else
-      s = s .. '%*%#TabLineFill#'
+   local s = ''
+   local total_len = 0
+   local total = 0
+   local cols = vim.o.columns
+   local used = 0
+   local tab_count_label
+   local needs_tab_count_label = false
+
+   local function tab_count_label_f(n)
+      return "[+" .. (tab_count - (used + n)) .. "]"
+   end
+
+   local function trunc_label(item, cols_left)
+      local extra = "..]"
+      local label = item.label:sub(1, ((cols_left - 1) - #extra))
+      label = label .. extra
+      return label
+   end
+
+   local function add_padding(cols_left)
+      local label = ""
+      -- if cols_left == 0 then
+      --    label = ""
+      -- elseif cols_left == 1 then
+      --    label = "|"
+      -- elseif cols_left == 2 then
+      --    label = "||"
+      -- elseif cols_left == 3 then
+      --    label = "|||"
+      -- elseif cols_left == 4 then
+      --    label = "||||"
+      -- else
+         label = string.rep(" ", cols_left)
+      -- end
+      s = label .. s
    end
 
 
+   local function add_label(item, label)
+      used = used + 1
+      total_len = total_len + (#label + 1) -- add one for extra space
+      s = item.style_f(label) .. s
+   end
+
+   local function cols_left(n)
+      return ((cols - n) - total_len)
+   end
+
+   for i = #labels, 1, -1 do
+      local item = labels[i]
+
+      tab_count_label = tab_count_label_f(1)
+
+      local cols_l = cols_left(#tab_count_label)
+
+      if (item.len > cols_l) then
+
+         if i == 1 then -- last item
+
+            if (item.len < cols_left(0)) then -- does it fit without a tab count?
+               add_label(item, item.label)
+            else
+               if cols_l < 5 then
+                  needs_tab_count_label = true
+                  tab_count_label = tab_count_label_f(0)
+                  add_padding(cols_l)
+               else
+                  add_label(item, trunc_label(item, cols_left(0)))
+               end
+            end
+         else
+            needs_tab_count_label = true
+            if cols_l < 5 then
+               tab_count_label = tab_count_label_f(0)
+               add_padding(cols_l)
+            else
+               add_label(item, trunc_label(item, cols_l))
+            end
+         end
+
+         break
+      else
+         add_label(item, item.label)
+      end
+   end
+
+   if needs_tab_count_label then
+      local style
+      if (vim.fn.tabpagenr() <= (tab_count - used)) then
+         style = "TabLineSel"
+      else
+         style = "TabLine"
+      end
+      s = "%#".. style .. "#" .. tab_count_label .. '%*' .. s
+   end
+
+   s = s .. '%*%#TabLineFill#'
 
    return s
 end
