@@ -132,7 +132,7 @@ local function tab_label(i, bufnr, unique_paths)
    return label
 end
 
-function _G.Tabline()
+function _G.TablineSimple()
 
    local tab_count = vim.fn.tabpagenr('$')
    local unique_paths = compute_shortest_names("tabs")
@@ -168,7 +168,6 @@ function _G.Tabline()
 
    local s = ''
    local total_len = 0
-   local total = 0
    local cols = vim.o.columns
    local used = 0
    local tab_count_label
@@ -202,7 +201,6 @@ function _G.Tabline()
       -- end
       s = label .. s
    end
-
 
    local function add_label(item, label)
       used = used + 1
@@ -265,6 +263,222 @@ function _G.Tabline()
    s = s .. '%*%#TabLineFill#'
 
    return s
+end
+
+-- Superscript and subscript digit maps
+local superscript = {
+  ["0"] = "⁰", ["1"] = "¹", ["2"] = "²", ["3"] = "³", ["4"] = "⁴",
+  ["5"] = "⁵", ["6"] = "⁶", ["7"] = "⁷", ["8"] = "⁸", ["9"] = "⁹",
+  ["/"] = "⁄", ["-"] = "⁻"
+}
+
+local subscript = {
+  ["0"] = "₀", ["1"] = "₁", ["2"] = "₂", ["3"] = "₃", ["4"] = "₄",
+  ["5"] = "₅", ["6"] = "₆", ["7"] = "₇", ["8"] = "₈", ["9"] = "₉",
+  ["/"] = "/",  ["-"] = "₋" -- no subscript slash, fallback to normal
+}
+
+-- Helper to convert a string to superscript or subscript
+local function to_super(s)
+  return (s:gsub(".", superscript))
+end
+
+local function to_sub(s)
+  return (s:gsub(".", subscript))
+end
+
+--- Returns a unicode-styled fraction using superscript + subscript
+--- @param num string|number: numerator
+--- @param den string|number: denominator
+--- @return string
+function UnicodeFraction(num, den)
+  num = tostring(num)
+  den = tostring(den)
+  return to_super(num) .. "⁄" .. to_sub(den)
+end
+
+function _G.Tabline()
+
+   local tab_count = vim.fn.tabpagenr('$')
+   local selected_tab_i = vim.fn.tabpagenr()
+
+   local unique_paths = compute_shortest_names("tabs")
+
+   local labels = {}
+
+   for i = 1, tab_count do
+      local winnr = vim.fn.tabpagewinnr(i)
+      local buflist = vim.fn.tabpagebuflist(i)
+      local bufnr = buflist[winnr]
+
+      local label = tab_label(i, bufnr, unique_paths)
+      local len = vim.fn.strdisplaywidth(label) + 1 -- add 1 for the extra space.
+      local style = "TabLine"
+
+      if (i == vim.fn.tabpagenr()) then
+         style = "TabLineSel"
+      end
+
+      label = ' ' .. '%#' .. style .. '#' .. '%' .. i .. 'T' .. label .. '%*'
+
+      table.insert(labels, { label = label, len = len })
+
+   end
+
+   local pages = {}
+
+   local function pad_start(str, length, pad_char)
+      str = tostring(str)
+      pad_char = pad_char or " "
+      local pad_len = length - #str
+      if pad_len > 0 then
+         return string.rep(pad_char, pad_len) .. str
+      else
+         return str
+      end
+   end
+
+   local function page_label_f(cur_page_i)
+      return "[" .. pad_start(cur_page_i, 1, "0") .. "/" .. pad_start((#pages), 1, "0") .. "]"
+      -- return "[" .. pad_start(cur_page_i, 1, "0") .. "/" .. pad_start((#pages), 1, "0") .. " " .. pad_start(selected_tab_i, #tostring(tab_count), "0") .. "/" .. tab_count .. "]"
+   end
+
+   local function new_page()
+      local page = { tabline = "", cols_used = 0 }
+
+      page.account = function(self, item)
+         local len = #item.label
+         if item.len then
+            len = item.len
+         end
+         self.cols_used = self.cols_used + len
+      end
+
+      page.prepend = function(self, item)
+         self:account(item)
+         self.tabline = item.label .. self.tabline
+      end
+
+      page.append = function(self, item)
+         self:account(item)
+         self.tabline = self.tabline .. item.label
+      end
+
+      page.cols_left = function(self, n)
+         return(vim.o.columns - (self.cols_used + n))
+      end
+
+      page.finish_page = function(self, item)
+         local label = item.label
+         self:append({ label = string.rep(" ", self:cols_left(#label)) })
+         self:append({ label = label })
+      end
+
+      return page
+   end
+
+   local function right_corner(i)
+      return " [+" .. (tab_count - (i-1)) .. "]"
+   end
+
+   local function left_corner(i)
+      return "[+" .. (i-1) .."]"
+   end
+
+   local selected_page
+   local selected_page_i
+   local cur_page = new_page()
+
+   cur_page:prepend({ label = "[|]" })
+
+   table.insert(pages, cur_page)
+
+
+   for i = 1, #labels do
+      local item = labels[i]
+
+      -- local page_label = page_label_f("x")
+
+      -- local cols_l = cur_page:cols_left(#page_label)
+      local cols_l = cur_page:cols_left(#right_corner(i))
+
+      if (item.len > cols_l) then
+         cur_page:finish_page({ label = right_corner(i) })
+         cur_page = new_page()
+         -- cur_page:prepend({ label = "[<]" })
+         cur_page:prepend({ label = left_corner(i) })
+         table.insert(pages, cur_page)
+      end
+
+      if (selected_tab_i == i) then
+         selected_page = cur_page
+         selected_page_i = #pages
+      end
+
+      cur_page:append(item)
+
+
+      --    if i == 1 then -- last item
+      --
+      --       if (item.len < cols_left(cur_page, 0)) then -- does it fit without a tab count?
+      --          add_label(cur_page, item, item.label)
+      --       else
+      --          if cols_l < 5 then
+      --             needs_tab_count_label = true
+      --             tab_count_label = tab_count_label_f(0)
+      --             add_padding(cur_page, cols_l)
+      --          else
+      --             add_label(cur_page, item, trunc_label(item, cols_left(cur_page, 0)))
+      --          end
+      --       end
+      --    else
+      --       needs_tab_count_label = true
+      --       if cols_l < 5 then
+      --          tab_count_label = tab_count_label_f(0)
+      --          add_padding(cols_l)
+      --       else
+      --          add_label(item, trunc_label(item, cols_l))
+      --       end
+      --    end
+      --
+      --    break
+      -- else
+      --    add_label(item, item.label)
+      -- end
+   end
+
+   cur_page:finish_page({ label = "[|]" })
+
+   -- we calc'd it for every page because it has a fixed width,
+   -- but we only need to add it to the selected page because it's the only one that's going to show up
+   -- and we have to do it at the end because we don't know how many pages we have till the end.
+   -- selected_page:prepend({ label = page_label_f(selected_page_i) })
+
+   -- if needs_tab_count_label then
+   --    local style
+   --    if (vim.fn.tabpagenr() <= (tab_count - used)) then
+   --       style = "TabLineSel"
+   --    else
+   --       style = "TabLine"
+   --    end
+   --    selected_page.tabline = "%#".. style .. "#" .. tab_count_label .. '%*' .. selected_page.tabline
+   -- end
+
+   local page_label = page_label_f(selected_page_i)
+   -- selected_page:prepend({ label = "[" .. selected_page_i .. "]" })
+   -- selected_page:append({ label = string.rep(" ", selected_page:cols_left(3)) })
+   -- selected_page:append({ label = string.rep(" ", selected_page:cols_left(#page_label - 1)) })
+   -- selected_page:append({ label = "[|]" })
+   -- selected_page:append({ label = page_label_f(selected_page_i) })
+   -- selected_page:append({ label = " [".. #pages .. "]" })
+   -- selected_page:append({ label = " ".. UnicodeFraction(selected_tab_i, tab_count) .. "" })
+   -- selected_page:append({ label = " ".. UnicodeFraction(selected_page_i, #pages) .. "" })
+   -- selected_page:append({ label = "[".. (selected_page_i .. "/" .. #pages) .. "]" })
+
+   selected_page.tabline = selected_page.tabline .. '%*%#TabLineFill#'
+
+
+   return selected_page.tabline
 end
 
 vim.o.showtabline = 2
