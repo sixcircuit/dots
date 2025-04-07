@@ -137,6 +137,32 @@ colors.tabline = {
    right = { {'gray9', 'gray3'} }
 }
 
+-- this might be helpful in the future, i'm keeping it here just in case
+local superscript = {
+  ["0"] = "⁰", ["1"] = "¹", ["2"] = "²", ["3"] = "³", ["4"] = "⁴",
+  ["5"] = "⁵", ["6"] = "⁶", ["7"] = "⁷", ["8"] = "⁸", ["9"] = "⁹",
+  ["/"] = "⁄", ["-"] = "⁻"
+}
+
+local subscript = {
+  ["0"] = "₀", ["1"] = "₁", ["2"] = "₂", ["3"] = "₃", ["4"] = "₄",
+  ["5"] = "₅", ["6"] = "₆", ["7"] = "₇", ["8"] = "₈", ["9"] = "₉",
+  ["/"] = "/",  ["-"] = "₋" -- no subscript slash, fallback to normal
+}
+
+local function to_super(s)
+  return (s:gsub(".", superscript))
+end
+
+local function to_sub(s)
+  return (s:gsub(".", subscript))
+end
+
+local function unicode_fraction(num, den)
+  num = tostring(num)
+  den = tostring(den)
+  return to_super(num) .. "⁄" .. to_sub(den)
+end
 
 local function gutter_width()
    local num_col_width = 0
