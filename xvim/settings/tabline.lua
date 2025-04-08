@@ -2,6 +2,11 @@
 -- https://github.com/mkitt/tabline.vim
 -- a long, long time ago. this is basically unrecognizable now
 
+local _fill_char = "-"
+local _show_tab_counts = false
+local _first_page_fix = true
+local _anchor = "[|]"
+
 local function filename_buffers(type)
    local bufs;
 
@@ -130,14 +135,27 @@ local function tab_label(i, bufnr, unique_paths)
       -- name = name .. '%#TabLineModifiedIcon#•'
       -- name = name .. ' •'
       -- name = name .. '*'
-      label = label .. '[+]'
+      -- label = label .. '[+]'
    end
 
 
    return label
 end
 
-function utf8_sub_displaywidth(str, max_width)
+local function fill_chars(n, char)
+   char = char or _fill_char
+   -- char = "😊"
+   local str = ""
+   local w = vim.fn.strdisplaywidth(char)
+   local total = 0
+   while (total + w) < n do
+      str = str .. char
+      total = total + w
+   end
+   return(str)
+end
+
+local function utf8_sub_displaywidth(str, max_width)
   local result = ""
   local i = 1
   local width = 0
@@ -218,6 +236,7 @@ local function compute_labels()
       local bufnr = buflist[winnr]
 
       local label = tab_label(i, bufnr, unique_paths)
+      local is_modified = (vim.fn.getbufvar(bufnr, "&mod") == 1)
       local len = vim.fn.strdisplaywidth(label) + 1 -- add 1 for the extra space.
       local style = "TabLine"
       local selected = false
@@ -225,6 +244,10 @@ local function compute_labels()
       if (i == vim.fn.tabpagenr()) then
          style = "TabLineSel"
          selected = true
+      end
+
+      if (is_modified) then
+         style = style .. "Modified"
       end
 
       local raw = label
@@ -250,7 +273,11 @@ function _G.TablineTruncatedStack()
    local pages = {}
 
    local function left_corner(i)
-      return("[+" .. (i) .."]")
+      if _show_tab_counts then
+         return("[+" .. (i) .."]")
+      else
+         return("[+]")
+      end
    end
 
    local function new_page()
@@ -274,6 +301,7 @@ function _G.TablineTruncatedStack()
          if item.len ~= nil then
             len = item.len
          end
+         self:prepend({ label = fill_chars(self:cols_left(len)) })
          self:prepend({ label = string.rep(" ", self:cols_left(len)) })
          self:prepend({ label = '%#TabLineFill#', len = 0 })
          self:prepend(item)
@@ -345,9 +373,30 @@ function _G.TablinePaged()
       page.finish_page = function(self, item)
          local label = item.label
          self:append({ label = '%#TabLineFill#', len = 0 })
+
+         if self:cols_left(strlen(label)) > 0 then
+            self:append({ label = " " })
+         end
+         self:append({ label = fill_chars(self:cols_left(strlen(label))) })
          self:append({ label = string.rep(" ", self:cols_left(strlen(label))) })
          self:append({ label = '%#TabLineCornerRight#', len = 0 })
          self:append({ label = label })
+      end
+
+      page.right_corner = function(self, i)
+         if _show_tab_counts then
+            return "[+" .. (tab_count - (i-1)) .. "]"
+         else
+            return "[+]"
+         end
+      end
+
+      page.left_corner = function(self, i)
+         if _show_tab_counts then
+            return "[+" .. (i-1) .."]"
+         else
+            return "[+]"
+         end
       end
 
       table.insert(pages, page)
@@ -356,28 +405,21 @@ function _G.TablinePaged()
 
    end
 
-   local function right_corner(i)
-      return "[+" .. (tab_count - (i-1)) .. "]"
-   end
-
-   local function left_corner(i)
-      return "[+" .. (i-1) .."]"
-   end
 
    local cur_page = new_page()
    local selected_page
 
-   cur_page:start_page({ label = "[|]" })
+   cur_page:start_page({ label = _anchor })
 
    for i = 1, #labels do
       local item = labels[i]
 
-      local cols_l = cur_page:cols_left(strlen(right_corner(i)) + 1) -- ensure space
+      local cols_l = cur_page:cols_left(strlen(cur_page:right_corner(i)) + 1) -- ensure space
 
       if (item.len > cols_l) then
-         cur_page:finish_page({ label = right_corner(i) })
+         cur_page:finish_page({ label = cur_page:right_corner(i) })
          cur_page = new_page()
-         cur_page:start_page({ label = left_corner(i) })
+         cur_page:start_page({ label = cur_page:left_corner(i) })
       end
 
       if (item.selected) then
@@ -388,7 +430,7 @@ function _G.TablinePaged()
 
    end
 
-   cur_page:finish_page({ label = "[|]" })
+   cur_page:finish_page({ label = _anchor })
 
    return selected_page.tabline
 end
@@ -405,12 +447,41 @@ function _G.TablinePagedStack()
 
       local page = new_base_page(pages)
 
-      page.start_page = function(self, item)
-         local label = item.label
-         self:prepend({ label = string.rep(" ", self:cols_left(strlen(label))) })
-         self:prepend({ label = '%#TabLineFill#', len = 0 })
-         self:prepend({ label = label })
-         self:prepend({ label = '%#TabLineCornerLeft#', len = 0 })
+      page.start_page = function(self, item, last_page)
+
+         if _first_page_fix and last_page and #pages == 1 then
+
+            local label = item.label
+
+            self:prepend({ label = label })
+            self:prepend({ label = '%#TabLineCornerLeft#', len = 0 })
+
+            -- I fully admit this is horrifying.
+            -- but it works so long as we don't change how the highlights work.
+            -- we strip off the right corner, add all the extra fill stuff and then add the corner back
+
+            local start_pos = self.tabline:find('%#TabLineCornerRight#')
+            self.tabline = self.tabline:sub(1, start_pos-2)
+            self.cols_used = self.cols_used - strlen(_anchor) - 1
+
+            self:append({ label = '%#TabLineFill#', len = 0 })
+
+            if self:cols_left(0) > 0 then
+               self:append({ label = " " })
+            end
+
+            self:append({ label = fill_chars(self:cols_left(strlen(_anchor))) })
+            self:append({ label = string.rep(" ", self:cols_left(strlen(_anchor))) })
+            self:append({ label = '%#TabLineCornerRight#' .. _anchor, len = strlen(_anchor) })
+
+         else
+            local label = item.label
+            self:prepend({ label = fill_chars(self:cols_left(strlen(label))) })
+            self:prepend({ label = string.rep(" ", self:cols_left(strlen(label))) })
+            self:prepend({ label = '%#TabLineFill#', len = 0 })
+            self:prepend({ label = label })
+            self:prepend({ label = '%#TabLineCornerLeft#', len = 0 })
+         end
       end
 
       page.finish_page = function(self, item)
@@ -419,42 +490,61 @@ function _G.TablinePagedStack()
          self:prepend({ label = '%#TabLineCornerRight#', len = 0 })
       end
 
+      page.right_corner = function(self, i)
+         if _show_tab_counts then
+            return " [+" .. (tab_count - (i)) .. "]"
+         else
+            return " [+]"
+         end
+      end
+
+      page.left_corner = function(self, i)
+         if _show_tab_counts then
+            return "[+" .. (i) .."]"
+         else
+            return "[+]"
+         end
+      end
+
       return page
-   end
 
-   local function right_corner(i)
-      return " [+" .. (tab_count - (i)) .. "]"
-   end
-
-   local function left_corner(i)
-      return "[+" .. (i) .."]"
    end
 
    local cur_page = new_page()
    local selected_page
 
-   cur_page:finish_page({ label = " [|]" })
+   cur_page:finish_page({ label = " " .. _anchor })
 
    for i = #labels, 1, -1 do
       local item = labels[i]
 
-      local cols_l = cur_page:cols_left(strlen(left_corner(i)))
+      local cols_l = cur_page:cols_left(strlen(cur_page:left_corner(i)))
 
-      if (item.len > cols_l) then
-         cur_page:start_page({ label = left_corner(i) })
+      if cols_l < cur_page.min_truc_len then
+
+         cur_page:start_page({ label = cur_page:left_corner(i) })
          cur_page = new_page()
-         cur_page:finish_page({ label = right_corner(i) })
+         cur_page:finish_page({ label = cur_page:right_corner(i) })
+
+         cur_page:prepend(item)
+
+      elseif (item.len > cols_l) then
+
+         cur_page:prepend(cur_page:trunc_label(item, strlen(cur_page:left_corner(i))))
+
+      else
+
+         cur_page:prepend(item)
+
       end
 
       if (item.selected) then
          selected_page = cur_page
       end
 
-      cur_page:prepend(item)
-
    end
 
-   cur_page:start_page({ label = "[|] " })
+   cur_page:start_page({ label = _anchor }, true)
 
    return selected_page.tabline
 end

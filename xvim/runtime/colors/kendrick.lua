@@ -155,6 +155,10 @@ color.red = {
       term = 160,
       gui = "#d70000"
    },
+   hh = {
+      term = 196,
+      gui = "#ff0000"
+   },
    l = {
       term = 88,
       gui = "#870000"
@@ -273,6 +277,10 @@ hl("TabLine", color.gray.m, { underline = true })
 hl("TabLineFill", color.gray.m, { underline = true })
 -- hl("TabLineSel", color.gray.hh, color.gray.l, { underline = true })
 hl("TabLineSel", color.gray.hh, { underline = true })
+
+hl("TabLineModified", color.red, { underline = true })
+hl("TabLineSelModified", color.gray.hh, { underline = true })
+-- hl("TabLineSelModified", color.red.h, { underline = true })
 -- hl("TabLineModified", { term=196, gui="#ff0000" }, color.gray.l, { bold = true, underline = true })
 -- hl("TabLineModifiedIcon", { term=196, gui="#ff0000" }, color.gray.l, { bold = true, underline = true })
 
