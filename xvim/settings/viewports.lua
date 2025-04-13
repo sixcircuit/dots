@@ -11,23 +11,26 @@ vim.o.splitright = true
 -- })
 
 local function switch_to_window(win_index)
-    vim.api.nvim_exec(win_index .. "wincmd w", false)
+   vim.api.nvim_exec(win_index .. "wincmd w", false)
+   vim.defer_fn(function()
+      vim.cmd("normal! zH")
+   end, 10)
 end
 
 local function switch_to_next_window()
-    vim.api.nvim_exec("wincmd w", false)
+   vim.api.nvim_exec("wincmd w", false)
 end
 
 local function rotate_panes()
-    vim.api.nvim_exec("wincmd r", false)
+   vim.api.nvim_exec("wincmd r", false)
 end
 
 local function split_window()
-    vim.api.nvim_exec('vs', false)
+   vim.api.nvim_exec('vs', false)
 end
 
 local function resize_current_window(size)
-    vim.api.nvim_exec('vertical resize ' .. size, false)
+   vim.api.nvim_exec('vertical resize ' .. size, false)
 end
 
 local function resize_window(win_index, size)
@@ -110,6 +113,7 @@ local function rotate_windows_keep_cursor()
     -- if panes == 2
        rotate_panes()
        switch_to_window(cur_win)
+       layout_windows()
     -- elseif panes == 3
     --    rotate_panes()
     --    rotate_panes()
@@ -121,7 +125,6 @@ local function rotate_windows_keep_cursor()
     --    switch_to_window(cur_win)
     -- end
 
-    layout_windows()
 end
 
 _G.layout_windows = layout_windows
@@ -130,16 +133,7 @@ _G.rotate_windows_keep_cursor = rotate_windows_keep_cursor
 -- Rotate Windows and Keep Cursor
 vim.keymap.set('n', '<leader>r', rotate_windows_keep_cursor, { silent = true })
 
--- Resize windows with arrow keys
-vim.keymap.set('n', '<down>', ':vertical resize -3<CR>', { silent = true })
-vim.keymap.set('n', '<up>', ':vertical resize +3<CR>', { silent = true })
--- vim.keymap.set('n', '<left>', ':vertical resize 80<CR>', { silent = true })
 vim.keymap.set('n', '\\', layout_windows, { silent = true })
--- vim.keymap.set('n', '\\', '<C-w>=', { silent = true })
-
--- Cycle between tabs: Ctrl-t forward, Ctrl-p backward
--- vim.keymap.set('n', '<C-t>', ':tabn<CR>', { silent = true })
--- vim.keymap.set('n', '<C-p>', ':tabp<CR>', { silent = true })
 
 -- Tab navigation
 vim.keymap.set('n', '<C-h>', ':tabp<CR>')

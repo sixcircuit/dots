@@ -71,10 +71,10 @@ color.gold = {
       term = 220,
       gui = "#ffd700"
    },
-   -- l = { hideous. don't use it.
-   --    term = 94,
-   --    gui = "#875f00"
-   -- }
+   l = { -- hideous. don't use it.
+      term = 94,
+      gui = "#875f00"
+   }
 }
 
 color.blue = {
@@ -98,6 +98,10 @@ color.purple = {
 color.cyan = {
    term = 37,
    gui = "#00afaf",
+   ll = {
+      term = 23,
+      gui = "#005f5f"
+   },
    l = {
       term = 30,
       gui = "#008787"
@@ -145,6 +149,10 @@ color.orange = {
    l = {
       term = 130,
       gui = "#af5f00"
+   },
+   h = {
+      term = 202,
+      gui = "#ff5f00"
    }
 }
 
@@ -168,6 +176,14 @@ color.red = {
 color.yellow = {
    term = 142,
    gui = "#afaf00",
+   h = {
+      term = 184,
+      gui = "#d7d700"
+   },
+   hh = {
+      term = 226,
+      gui = "#ffff00"
+   },
    l = {
       term = 100,
       gui = "#878700"
@@ -354,12 +370,18 @@ vim.fn.sign_define("DiagnosticSignHint",  { text = "H", texthl = "DiagnosticSign
 
 -- hop highlights
 
-hl("HopNextKey", color.gold.h, { bold = true })
-hl("HopNextKey1", color.gold.h, { bold = true })
-hl("HopNextKey2", color.red, { bold = true })
+hl("HopNextKey", color.gold.hh, { bold = true })
+hl("HopNextKey1", color.gold.hh, { bold = true })
+hl("HopNextKey2", color.red.l, { bold = false })
 hl("HopUnmatched", color.gray.l) -- 242
 hl("HopCursor", { link = "Cursor" })
 hl("HopPreview", { link = "IncSearch" })
+
+-- hl("HopMatchingPair", color.cyan.l, { bold = true })
+-- hl("HopMatchingQuote", color.gold.l, { bold = true })
+hl("HopMatchingPair", color.gold, { bold = true })
+hl("HopMatchingQuote", color.gold, { bold = true })
+-- hl("HopMatchingPair", color.red, { bold = true })
 
 
 -- scope highlighting

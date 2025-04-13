@@ -8,9 +8,6 @@ set ttyfast
 " set visual bell off
 set novisualbell
 
-" don't use modelines
-set modelines=4
-
 " always show status bar
 set laststatus=2
 

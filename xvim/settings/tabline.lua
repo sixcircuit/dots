@@ -276,7 +276,7 @@ function _G.TablineTruncatedStack()
       if _show_tab_counts then
          return("[+" .. (i) .."]")
       else
-         return("[+]")
+         return("[<]")
       end
    end
 
@@ -387,7 +387,7 @@ function _G.TablinePaged()
          if _show_tab_counts then
             return "[+" .. (tab_count - (i-1)) .. "]"
          else
-            return "[+]"
+            return "[>]"
          end
       end
 
@@ -395,7 +395,7 @@ function _G.TablinePaged()
          if _show_tab_counts then
             return "[+" .. (i-1) .."]"
          else
-            return "[+]"
+            return "[<]"
          end
       end
 
@@ -494,7 +494,7 @@ function _G.TablinePagedStack()
          if _show_tab_counts then
             return " [+" .. (tab_count - (i)) .. "]"
          else
-            return " [+]"
+            return " [>]"
          end
       end
 
@@ -502,7 +502,7 @@ function _G.TablinePagedStack()
          if _show_tab_counts then
             return "[+" .. (i) .."]"
          else
-            return "[+]"
+            return "[<]"
          end
       end
 

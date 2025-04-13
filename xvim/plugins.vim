@@ -12,21 +12,6 @@ let g:asterisk#keeppos = 1
 
 Plug 'stevearc/oil.nvim'
 
-" nmap *   <Plug>(asterisk-*)
-" nmap #   <Plug>(asterisk-#)
-" nmap g*  <Plug>(asterisk-g*)
-" nmap g#  <Plug>(asterisk-g#)
-
-" nmap *  <Plug>(asterisk-z*)
-" nmap #  <Plug>(asterisk-z#)
-" nmap g* <Plug>(asterisk-gz*)
-" nmap g# <Plug>(asterisk-gz#)
-
-nmap *  <Plug>(asterisk-z*)<Plug>(is-nohl-1)
-nmap g* <Plug>(asterisk-gz*)<Plug>(is-nohl-1)
-nmap #  <Plug>(asterisk-z#)<Plug>(is-nohl-1)
-nmap g# <Plug>(asterisk-gz#)<Plug>(is-nohl-1)
-
 Plug 'smoka7/hop.nvim'
 " Plug 'rlane/pounce.nvim'
 
@@ -52,7 +37,6 @@ Plug 'glts/vim-radical'
 
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-fugitive'
-
 
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
 
@@ -130,6 +114,8 @@ Plug 'nvimtools/none-ls.nvim'
 " For luasnip users.
 Plug 'L3MON4D3/LuaSnip', {'tag': 'v2.*', 'do': 'make install_jsregexp'}
 Plug 'saadparwaiz1/cmp_luasnip'
+
+Plug 'svermeulen/vim-macrobatics'
 
 " i use this.
 " Plug 'ervandew/supertab'

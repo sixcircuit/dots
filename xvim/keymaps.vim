@@ -15,36 +15,15 @@ nnoremap : ;
 "vnoremap : ;
 
 
-" ' now goes to the mark line and column, instead of just the line
-nnoremap ' `
-nnoremap ` '
-
-" yank till the end of the line
-noremap Y y$
-
 noremap M %
-
-nmap <leader>ss :w <bar> :source %<cr>
-
-" nnoremap <C-k> <Up>
-" nnoremap <C-j> <Down>
 
 " add lines easily with + and -
 nnoremap + myO<esc>`y
-
-nnoremap <leader>ye y$
-nnoremap <leader>yb y^
-nnoremap <leader>y0 y^
 
 nmap <leader>mb ysiW)
 
 " move line to top middle. (on a big screen)
 noremap zz zz10<c-e>
-
-" insert dates, etc
-" unmap <leader> d
-nnoremap <leader>id "=strftime("%Y-%m-%d %H:%M")<CR>P
-nnoremap <leader>im "="= " . strftime("%Y-%m-%d %H:%M")<CR>P
 
 nnoremap <silent> <leader>fq :call FixQuotes()<CR>
 nnoremap <silent> <leader>fw :call FixTrailingWhitespace()<CR>
@@ -87,20 +66,9 @@ let g:mta_filetypes = {
 " reformat buffer
 nnoremap <leader>= ggvG=``
 
-"Rainbow Parentheses Always on
-"au VimEnter * RainbowParenthesesToggleAll
-"au Syntax * RainbowParenthesesLoadRound
-"au Syntax * RainbowParenthesesLoadSquare
-"au Syntax * RainbowParenthesesLoadBraces
-
 "let g:mustache_abbreviations = 1
 
 " nnoremap <leader>3 :call ChangeSoftTabs(input("from: "), input("to: "))<CR>
 nnoremap <leader>43 :call ChangeSoftTabs(4, 3)<CR>
 nnoremap <leader>34 :call ChangeSoftTabs(3, 4)<CR>
-
-" inoremap <C-f>  <C-O>:!stream.lingo<CR><C-O>:let @a = system("cat /tmp/stream.lingo \| tail -n 1 \| xargs -0 \| tr -d '\\n' \| sed -e 's/^[[:space:]]*//'")<CR><C-R>a
-" nnoremap <C-f>       :!stream.lingo<CR>:let @a = system("cat /tmp/stream.lingo \| tail -n 1 \| xargs -0 \| tr -d '\\n' \| sed -e 's/^[[:space:]]*//'")<CR>"ap
-" vnoremap <C-f> c<C-O>:!stream.lingo<CR><C-O>:let @a = system("cat /tmp/stream.lingo \| tail -n 1 \| xargs -0 \| tr -d '\\n' \| sed -e 's/^[[:space:]]*//'")<CR><C-R>a
-" inoremap <C-f>  <C-O>:!stream.lingo<CR><C-O>:let @a = system("cat /tmp/stream.lingo \| tail -n 1 \| xargs -0 \| tr -d \'\\n\' \| sed -e \'s/^[[:space:]]*//\' \| sed \'s/\x1b\\[ [0-9;]*[a-zA-Z]//g\'")<CR><C-R>a
 

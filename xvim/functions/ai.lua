@@ -82,23 +82,23 @@ function _G.exec_term_close_and_insert(prev_win, temp_path, split_win, last_line
 end
 
 local function llm_map(keys, command)
-   vim.api.nvim_set_keymap('n', '<leader>' .. keys, ':lua do_llm("' .. command .. '")<CR>', {noremap = true, silent = true})
-   vim.api.nvim_set_keymap('v', '<leader>' .. keys, 'c<C-O>:lua do_llm("' .. command .. '")<CR>', {noremap = true, silent = true})
+   vim.api.nvim_set_keymap('n', keys, ':lua do_llm("' .. command .. '")<CR>', { desc = "insert llm output: " .. command, noremap = true, silent = true})
+   vim.api.nvim_set_keymap('v', keys, 'c<C-O>:lua do_llm("' .. command .. '")<CR>', { desc = "insert llm output: " .. command, noremap = true, silent = true})
 end
 
 -- llm_map("ai", "")
-llm_map("lc", "continue")
-llm_map("lls", "llama-3.1-8b")
-llm_map("llb", "llama-3.3-70b")
-llm_map("lsv", "llama-3.1-8b verbose")
-llm_map("lbv", "llama-3.3-70b verbose")
-llm_map("lsj", "llama-3.1-8b jsfun")
-llm_map("lbj", "llama-3.3-70b jsfun")
+llm_map("ic", "continue")
+llm_map("is", "llama-3.1-8b")
+llm_map("ib", "llama-3.3-70b")
+-- llm_map("lsv", "llama-3.1-8b verbose")
+-- llm_map("lbv", "llama-3.3-70b verbose")
+llm_map("ijs", "llama-3.1-8b jsfun")
+llm_map("ijb", "llama-3.3-70b jsfun")
 
 -- whisper.cpp stuff.
 
-vim.api.nvim_set_keymap('i', '<C-f>', [[<C-\><C-o>:lua do_whisper()<CR>]], {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<C-f>', [[i<C-o>:lua do_whisper()<CR>]], {noremap = true, silent = true})
+vim.api.nvim_set_keymap('i', '<C-f>', [[<C-\><C-o>:lua do_whisper()<CR>]], { desc = "insert text to speech", noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-f>', [[i<C-o>:lua do_whisper()<CR>]], { desc = "insert text to speech", noremap = true, silent = true })
 
 -- vim.api.nvim_set_keymap('i', '<C-i>', [[<C-\><C-o>:lua do_llm("")<CR>]], {noremap = true, silent = true})
 -- vim.api.nvim_set_keymap('n', '<C-i>', [[i<C-o>:lua do_llm("")<CR>]], {noremap = true, silent = true})

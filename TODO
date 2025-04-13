@@ -1,4 +1,48 @@
 
+= todo
+   / vim: change r to c. cr or cc and map cc to cl unmap r.
+
+   - OVERNIGHT NOTES - 2025-04-12 23:17
+
+   you're doing so great.
+
+   this is cleaning up really nicely
+   i think the new mappings and symmetries are really going to help you move faster
+   and i think they'll help you remember more and use better motions and do annoying things faster.
+
+   start using ma<space> instead of insert. -- set insert to "iii" make it annoying.
+   actually set ma<space> to <leader><i> that's how often i think you'll use it
+
+   also don't forget about sip siq sib sia (adding spaces around the inside. it's so good.)
+
+
+   - vim: finish fixing hop commands. SIMPLIFY
+   - vim: can you count the number of whatever you're looking for and then send keys so you can use . instead of hop?
+      - use "cmf<char>" -- it'll only work on one line
+      - use "cmt<char>" -- it'll only work on one line
+   - do cm(b,a,p,q) change move inside
+   - do mp(b,a,p,q) move paste inside
+   - do mps(b,a,p,q) move paste start parens <here>()
+   - do mpe(b,a,p,q) move paste end paren ()<here>
+   - do my(b,a,p,q) move yank inside
+   - do myc = move yank to char
+   - do mpc = move paste at char
+   - have all quotes be quote starts
+
+   - change single letter moves to mta mtp mtb (move to...)
+   - then use "p" for paste.
+   - then use "a" for append.
+   - because with all the other good moves (append, change, etc, you don't really need just a move.)
+   - setup "mi<blah>" move insert somewhere. it's so good.
+      - mi <all the basic moves>
+      - mic <char> -- probably less useful than bpaq and space and ,;:-=
+      - mi<space> so good!
+
+   - write csa(b, p), csb(a, p), csp(a, b)
+      - change from one surround to another
+
+   - cut new plugin snapshot
+
 = whisper
    - Add whisper eo the llm (and nvim! Make an nvim plugin if it doesn't exist.) -- verbal
    - add verbal to nvim. I would love a command line buffer kind of thing. Where I pick a piece of code and then hit a button and get a new buffer with a prompt and then I could just use the verbal hotkey to say some shit. Do this. Have it read and write into a new vsplit buffer in nvim. Can you switch existing buffer to raw or something and have an update as it writes. Or, could you write a real plug-in that streams into the buffer while it's running, and it could just replace the previous output as it goes. Use gpt4 to write it.  https://www.reddit.com/r/vim/s/9IqBVvcHuD
@@ -45,6 +89,8 @@
       / turn off complete for vim command line ":"
 
    - do a lockfile! (https://shyr.io/blog/vim-plugin-lockfile)
+      - create (in vim): PlugSnapshot ~/.dotfiles/Vim/plug.snapshot
+      - restore (from shell): vim -S ~/.dotfiles/Vim/plug.snapshot
 
 = shell
    - blow away the old dotfiles repo. force push over the old github. save the old one locally in an archive (you need to figure out archiving old projects anyway).
@@ -164,4 +210,28 @@ x setup tux
    x alias this stuff
       / fzf tux init
       / fzf tux ls (can you show a description but only search and pull out the first string?)
+
+= 2025-04-11 20:42
+
+? can you use dot after operator pending mode move? nope.
+
+= 2025-04-12 22:22
+
+   x override j and k and have them all be hops.
+      . this was in fact, insane.
+      x my intuition is that you always move more than one line
+      x see if this is insane.
+      x remap the letters you use per function
+         x k is always 1 up for k
+         x j is always 1 up for j
+
+   x change i to ii
+
+   x map <leader> i<blah> to just i<blah>
+
+   x change x to cx unmap x. map q to ? unmap q. keep a list of what you use.
+
+   x add descriptions to all your keymaps. (longer term) (use ai for the weird ones)
+
+   x write do_inside_quotes with quote starts
 
