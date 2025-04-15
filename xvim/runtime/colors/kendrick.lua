@@ -48,6 +48,16 @@ color.gray = {
    hh = { term = 251, gui = "#c6c6c6" },
 }
 
+color.black = {
+   term = 16,
+   gui = "#000000"
+}
+
+color.white = {
+   term = 255,
+   gui = "#ffffff"
+}
+
 color.bg = {
    term = 16,
    gui = "#000000"
@@ -196,8 +206,16 @@ color.magenta = {
 }
 
 color.pink = {
+   l = {
+      term = 89,
+      gui = "#87005f"
+   },
    term = 126,
-   gui = "#af0087"
+   gui = "#af0087",
+   h = {
+      term = 162,
+      gui = "#d70087"
+   }
 }
 
 color.violet = {
@@ -206,6 +224,67 @@ color.violet = {
    -- term = 62,
    -- gui = "#5f5fd7"
 }
+
+color.hop = color.pink
+
+-- color.hop = {
+
+   -- term = 218,
+   -- gui = "#ffafd7"
+
+   -- term = 89,
+   -- gui = "#87005f"
+
+   -- term = 126,
+   -- gui  = "#af0087",
+
+   -- term = 162,
+   -- gui = "#d70087"
+
+   -- favorites above
+
+   -- term = 219,
+   -- gui = "#ffafff"
+
+   -- term = 159,
+   -- gui = "#afffff",
+
+   --  term = 63,
+   -- gui = "#5f5fff",
+
+   -- term = 104,
+   -- gui = "#8787d7"
+
+   -- term = 216,
+   -- gui = "#ffaf87"
+
+   -- term = 210,
+   -- gui = "#ff8787",
+
+   -- term = 75,
+   -- gui = "#5fafff"
+
+   -- term = 80,
+   -- gui = "#5fd7d7",
+
+   -- term = 212,
+   -- gui = "#ff87d7"
+
+   -- term = 123,
+   -- gui = "#87ffff"
+
+   -- term = 117,
+   -- gui = "#87d7ff"
+
+
+   -- term = 231,
+   -- gui = "#ffffff"
+
+   -- term = 129,
+   -- gui = "#af00ff"
+-- }
+
+
 
 local function _hl(opts, piece, key)
    if(key ~= nil) then
@@ -370,18 +449,60 @@ vim.fn.sign_define("DiagnosticSignHint",  { text = "H", texthl = "DiagnosticSign
 
 -- hop highlights
 
-hl("HopNextKey", color.gold.hh, { bold = true })
-hl("HopNextKey1", color.gold.hh, { bold = true })
-hl("HopNextKey2", color.red.l, { bold = false })
-hl("HopUnmatched", color.gray.l) -- 242
-hl("HopCursor", { link = "Cursor" })
-hl("HopPreview", { link = "IncSearch" })
+hl("HopNextKey", color.hop, nil, { bold = true, italic = false })
+hl("HopNextKey1", color.hop, nil, { bold = true, italic = false })
+hl("HopNextKey2", color.hop, nil, { bold = true, italic = false })
 
--- hl("HopMatchingPair", color.cyan.l, { bold = true })
--- hl("HopMatchingQuote", color.gold.l, { bold = true })
-hl("HopMatchingPair", color.gold, { bold = true })
-hl("HopMatchingQuote", color.gold, { bold = true })
--- hl("HopMatchingPair", color.red, { bold = true })
+hl("HopMatchingPair", color.hop, { bold = true })
+hl("HopMatchingQuote", color.hop, { bold = true })
+
+-- hl("HopNextKey", color.bg, color.hop, { bold = true, italic = false })
+-- hl("HopNextKey1", color.bg, color.hop, { bold = true, italic = false })
+-- hl("HopNextKey2", color.bg, color.hop, { bold = true, italic = false })
+
+-- hl("HopNextKey", color.white, { bold = true })
+-- hl("HopNextKey1", color.white, { bold = true })
+-- hl("HopNextKey2", color.white, { bold = true })
+
+-- hl("HopNextKey", color.white, { bold = true, reverse = true })
+-- hl("HopNextKey1", color.white, { bold = true, reverse = true })
+-- hl("HopNextKey2", color.white, { bold = true, reverse = true })
+
+-- hl("HopNextKey", nil, color.hop, { bold = true, reverse = true })
+-- hl("HopNextKey1", nil, color.hop, { bold = true, reverse = true })
+-- hl("HopNextKey2", nil, color.hop, { bold = true, reverse = true })
+
+-- hl("HopNextKey", nil, nil, { bold = true, reverse = true })
+-- hl("HopNextKey1", nil, nil, { bold = true, reverse = true })
+-- hl("HopNextKey2", nil, nil, { bold = true, reverse = true })
+
+-- hl("HopUnmatched", nil, nil, { bold = false, italic = true })
+
+-- hl("HopNextKey", color.orange.h, color.gray.ll, { bold = true })
+-- hl("HopNextKey1", color.orange.h, color.gray.ll, { bold = true })
+-- hl("HopNextKey2", color.orange, color.gray.ll, { bold = false })
+
+-- hl("HopNextKey", color.bg, color.gold.hh, { bold = true, italic = false })
+-- hl("HopNextKey1", color.bg, color.gold.hh, { bold = true, italic = false })
+-- hl("HopNextKey2", color.bg, color.gold, { bold = false, italic = false })
+
+-- hl("HopNextKey", color.bg, color.gold.hh, { bold = true, italic = false })
+-- hl("HopNextKey1", color.bg, color.gold.hh, { bold = true, italic = false })
+-- hl("HopNextKey2", color.bg, color.gold, { bold = false, italic = false })
+
+
+-- hl("HopNextKey", color.gold.hh, { bold = true })
+-- hl("HopNextKey1", color.gold.hh, { bold = true })
+-- hl("HopNextKey2", color.red.l, { bold = false })
+-- hl("HopUnmatched", color.gray.l) -- 242
+-- hl("HopCursor", { link = "Cursor" })
+-- hl("HopPreview", { link = "IncSearch" })
+--
+-- -- hl("HopMatchingPair", color.cyan.l, { bold = true })
+-- -- hl("HopMatchingQuote", color.gold.l, { bold = true })
+-- hl("HopMatchingPair", color.gold, { bold = true })
+-- hl("HopMatchingQuote", color.gold, { bold = true })
+-- -- hl("HopMatchingPair", color.red, { bold = true })
 
 
 -- scope highlighting

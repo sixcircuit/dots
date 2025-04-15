@@ -115,7 +115,7 @@ Plug 'nvimtools/none-ls.nvim'
 Plug 'L3MON4D3/LuaSnip', {'tag': 'v2.*', 'do': 'make install_jsregexp'}
 Plug 'saadparwaiz1/cmp_luasnip'
 
-Plug 'svermeulen/vim-macrobatics'
+"Plug 'svermeulen/vim-macrobatics'
 
 " i use this.
 " Plug 'ervandew/supertab'

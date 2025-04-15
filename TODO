@@ -1,47 +1,48 @@
 
+
 = todo
-   / vim: change r to c. cr or cc and map cc to cl unmap r.
 
-   - OVERNIGHT NOTES - 2025-04-12 23:17
+   - OVERNIGHT NOTES - 2025-04-15 00:40
 
-   you're doing so great.
+   . ok, you're still doing great.
+   . you should be proud of this
+   . soooo many great mappings.
 
-   this is cleaning up really nicely
-   i think the new mappings and symmetries are really going to help you move faster
-   and i think they'll help you remember more and use better motions and do annoying things faster.
+   . you need to wrap this up tomorrow.
+   . you have all the pieces, just finish it up
+   . you have all the pieces to make changes going forward if you don't like something
+   . at this point you're going to learn a lot more by using what you built and then circling back
 
-   start using ma<space> instead of insert. -- set insert to "iii" make it annoying.
-   actually set ma<space> to <leader><i> that's how often i think you'll use it
-
-   also don't forget about sip siq sib sia (adding spaces around the inside. it's so good.)
-
-
-   - vim: finish fixing hop commands. SIMPLIFY
-   - vim: can you count the number of whatever you're looking for and then send keys so you can use . instead of hop?
-      - use "cmf<char>" -- it'll only work on one line
-      - use "cmt<char>" -- it'll only work on one line
-   - do cm(b,a,p,q) change move inside
-   - do mp(b,a,p,q) move paste inside
-   - do mps(b,a,p,q) move paste start parens <here>()
-   - do mpe(b,a,p,q) move paste end paren ()<here>
-   - do my(b,a,p,q) move yank inside
-   - do myc = move yank to char
-   - do mpc = move paste at char
-   - have all quotes be quote starts
-
-   - change single letter moves to mta mtp mtb (move to...)
-   - then use "p" for paste.
-   - then use "a" for append.
-   - because with all the other good moves (append, change, etc, you don't really need just a move.)
-   - setup "mi<blah>" move insert somewhere. it's so good.
-      - mi <all the basic moves>
-      - mic <char> -- probably less useful than bpaq and space and ,;:-=
-      - mi<space> so good!
+   . love you!
 
    - write csa(b, p), csb(a, p), csp(a, b)
       - change from one surround to another
+      - just write these by hand, there aren't that many permutations
+
+   - you need to write all the insert motions.
+      - i<whatever> work on the whole line
+      - mi<whatever> these work on the whole page.
+      - there should be total symmetry
+      - ii} i} im<char>
+      - see how good the matching bracket highlighting is.
+      - it's ok, decide about the offsets on brackets.
+      - i think not iq and iiq matching in comments is weird
+         - (maybe drop treesitter and just match individuals)
+         - try it and try highlighting all of them with an offset letter like brackets and see what you think
+
+   - you need to write all the change and tf motions.
 
    - cut new plugin snapshot
+   - get rid of goyo
+
+   - keep in mind: you can make all the insert motions repeatable
+      / like f and t but i don't think you need to for right now.
+
+= later
+
+   - figure out macros, i don't love what i'm doing now but it works ok
+   - try zenmode and twilight
+
 
 = whisper
    - Add whisper eo the llm (and nvim! Make an nvim plugin if it doesn't exist.) -- verbal
@@ -55,7 +56,6 @@
 
 = review commands
    - completion (rename, gd go to definition)
-   - move myi mpi m" m' m[
 
 = longterm
    - you have a onetab list called "improvements" in chrome.
@@ -71,15 +71,6 @@
       . https://www.reddit.com/r/neovim/comments/r10llx/the_most_amazing_builtin_feature_nobody_ever/?share_id=oWRt1U8TO-CXlmQ-JF4rk&utm_content=1&utm_medium=android_app&utm_name=androidcss&utm_source=share&utm_term=1
 
 = vim
-
-   - write some code with new colors.
-   - remove old references to colors (original.vim)
-   - move new colors to kendrick.lua
-
-   = setup snippets
-      - remove ultisnip
-      - look into snippet plugins (luasnip)
-      - setup luasnip (implement old ultisnip snippets)
 
    = figure out code completion
       x setup cmp, lsp, mason
@@ -234,4 +225,54 @@ x setup tux
    x add descriptions to all your keymaps. (longer term) (use ai for the weird ones)
 
    x write do_inside_quotes with quote starts
+
+= 2025-04-14 21:24
+   - OVERNIGHT NOTES - 2025-04-12 23:17
+
+   you're doing so great.
+
+   this is cleaning up really nicely
+   i think the new mappings and symmetries are really going to help you move faster
+   and i think they'll help you remember more and use better motions and do annoying things faster.
+
+   x start using ma<space> instead of insert. -- set insert to "iii" make it annoying.
+   x actually set ma<space> to <leader><i> that's how often i think you'll use it
+
+   / vim: change r to c. cr or cc and map cc to cl unmap r.
+
+   x also don't forget about sip siq sib sia (adding spaces around the inside. it's so good.)
+
+
+   x vim: finish fixing hop commands. SIMPLIFY
+   x vim: can you count the number of whatever you're looking for and then send keys so you can use . instead of hop?
+      - use "cmf<char>" -- it'll only work on one line
+      - use "cmt<char>" -- it'll only work on one line
+   x do cm(b,a,p,q) change move inside
+   x do mp(b,a,p,q) move paste inside
+   x do mps(b,a,p,q) move paste start parens <here>()
+   x do mpe(b,a,p,q) move paste end paren ()<here>
+   x do my(b,a,p,q) move yank inside
+   x do myc = move yank to char
+   x do mpc = move paste at char
+   x have all quotes be quote starts
+
+   x change single letter moves to mta mtp mtb (move to...)
+   x then use "p" for paste.
+   x then use "a" for append.
+   x because with all the other good moves (append, change, etc, you don't really need just a move.)
+   x setup "mi<blah>" move insert somewhere. it's so good.
+      - mi <all the basic moves>
+      - mit <char> -- probably less useful than bpaq and space and ,;:-=
+      - mi<space> so good!
+
+x vim
+
+   x write some code with new colors.
+   x remove old references to colors (original.vim)
+   x move new colors to kendrick.lua
+
+   x setup snippets
+      x remove ultisnip
+      x look into snippet plugins (luasnip)
+      x setup luasnip (implement old ultisnip snippets)
 

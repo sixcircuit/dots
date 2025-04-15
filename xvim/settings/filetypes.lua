@@ -34,3 +34,23 @@ vim.api.nvim_create_autocmd('FileType', {
    pattern = 'javascript',
    callback = set_js_abbreviations,
 })
+
+local delimitmate_disabled = false
+
+vim.api.nvim_create_autocmd("InsertEnter", {
+   callback = function()
+      if vim.fn.reg_recording() ~= "" then
+         delimitmate_disabled = true
+         vim.cmd("DelimitMateOff")
+      end
+   end
+})
+
+vim.api.nvim_create_autocmd("InsertLeave", {
+   callback = function()
+      if delimitmate_disabled then
+         delimitmate_disabled = false
+         vim.cmd("DelimitMateOn")
+      end
+   end
+})

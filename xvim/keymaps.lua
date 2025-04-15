@@ -137,6 +137,16 @@ end
 
 vim.keymap.set({ "n", "i" }, '<C-q>', '<cmd>wqall<cr>', { desc = "write quit all with <c-q>" })
 
+-- one less key for command mode
+vim.keymap.set({ "n", "v" }, ":", ";")
+vim.keymap.set({ "n", "v" }, ";", ":")
+
+-- vim.keymap.set("n", "<leader>cf", function() vim.api.nvim_feedkeys("ysiw)i", "n", false) end)
+-- vim.keymap.set("v", "<leader>cf", function() vim.api.nvim_feedkeys("S)i", "x", false) end)
+
+vim.keymap.set("n", "ycf", "<Plug>Ysurroundiw)i")
+-- vim.keymap.set("v", "cf", "<Plug>VSurround)i")
+
 vim.keymap.set({ "n", "i" }, '<up>', '<nop>', { desc = "prevent bad habits, disable up arrow" })
 vim.keymap.set({ "n", "i" }, '<down>', '<nop>', { desc = "prevent bad habits, disable down arrow" })
 vim.keymap.set({ "n", "i" }, '<left>', '<nop>', { desc = "prevent bad habits, disable left arrow" })
@@ -202,11 +212,12 @@ end
 
 _G.add_space_inside_quote = add_space_inside_quote
 
+-- this is so we can . repeat it. you need the plug for repeat#set
 vim.keymap.set('n', '<Plug>AddSpaceInsideQuotes', ":lua add_space_inside_quote()<cr>")
 vim.keymap.set("n", "siq", add_space_inside_quote, { desc = "add space inside closest quotes" })
 
 -- change how macros work
-vim.keymap.set('n', 'q', "<nop>", { desc = "recoup q, we're changing how macros work" })
+-- vim.keymap.set('n', 'q', "<nop>", { desc = "recoup q, we're changing how macros work" })
 
 -- easy macro
 -- vim.keymap.set("n", ",,", "@@")
@@ -214,8 +225,12 @@ vim.keymap.set('n', 'q', "<nop>", { desc = "recoup q, we're changing how macros 
 -- vim.keymap.set('n', 'qq', "<plug>(Mac_RecordNew)")
 -- vim.keymap.set('n', 'qh', "<cmd>DisplayMacroHistory<cr>")
 
-vim.keymap.set('n', ',,', "<plug>(Mac_Play)")
-vim.keymap.set('n', 'qq', "<plug>(Mac_RecordNew)")
+-- vim.keymap.set('n', ',,', "<plug>(Mac_Play)")
+-- vim.keymap.set('n', 'qq', "<plug>(Mac_RecordNew)")
+
+vim.keymap.set('n', ',,', "@q")
+-- vim.keymap.set('n', 'qq', "<plug>(Mac_RecordNew)")
+
 
 -- turns out I use "r" a fuck ton.
 -- vim.keymap.set('n', 'r', "<nop>", { desc = "recoup r characters we don't use much" })
@@ -233,8 +248,60 @@ vim.keymap.set('n', 'yh', 'y^', { desc = "yank to beginning of line" })
 
 -- i key, think "insert stuff"
 
+-- these were cute but all of them moved to hop commands
 vim.keymap.set('n', 'i', "<nop>", { desc = "recoup i" })
-vim.keymap.set('n', 'ii', "i", { desc = "move i to ii" })
+
+-- this is me trying to break a bad habit.
+-- i should be moving and inserting at the same time
+vim.keymap.set('n', 'iiii', "i", { desc = "move i to iiii" })
+-- -- vim.keymap.set('n', 'i ', "f i", { desc = "insert at first space" })
+-- vim.keymap.set('n', 'ia', "f[a", { desc = "insert at first [" })
+-- vim.keymap.set('n', 'i[', "f[a", { desc = "insert at first [" })
+-- vim.keymap.set('n', 'ib', "f{a", { desc = "insert at first {" })
+-- vim.keymap.set('n', 'i{', "f{a", { desc = "insert at first {" })
+-- vim.keymap.set('n', 'ip', "f(a", { desc = "insert at first (" })
+-- vim.keymap.set('n', 'i(', "f(a", { desc = "insert at first (" })
+-- vim.keymap.set('n', 'i]', "f]a", { desc = "insert at first ]" })
+-- vim.keymap.set('n', 'i}', "f}a", { desc = "insert at first }" })
+-- vim.keymap.set('n', 'ii]', "t]a", { desc = "insert at first ]" })
+-- vim.keymap.set('n', 'ii}', "t}a", { desc = "insert at first }" })
+-- vim.keymap.set('n', 'ii)', "t)a", { desc = "insert at first )" })
+-- vim.keymap.set('n', 'i)', "f)a", { desc = "insert at first )" })
+-- vim.keymap.set('n', 'i.', "f.a", { desc = "insert at first ." })
+-- vim.keymap.set('n', 'i_', "f_a", { desc = "insert at first _" })
+-- vim.keymap.set('n', 'i=', "f=a", { desc = "insert at first =" })
+-- vim.keymap.set('n', 'i:', "f:a", { desc = "insert at first :" })
+-- vim.keymap.set('n', 'i<', "f<a", { desc = "insert at first <" })
+-- vim.keymap.set('n', 'i>', "f>a", { desc = "insert at first >" })
+--
+-- vim.keymap.set('n', 'iq', function()
+--    local line = vim.fn.getline('.')
+--    local col = vim.fn.col('.')
+--    local after_cursor = string.sub(line, col)
+--    local offset = vim.fn.match(after_cursor, "[\"'`]")
+--
+--    if offset >= 0 then
+--       vim.fn.cursor(vim.fn.line('.'), col + offset + 1)
+--       vim.cmd('startinsert')
+--    end
+-- end, { silent = true,  desc = "insert at first quote" })
+--
+-- vim.keymap.set('n', 'i ', function()
+--    local line = vim.fn.getline('.')
+--    local col = vim.fn.col('.')
+--
+--    local first_nonspace_col = string.find(line, '%S') or 1
+--    local effective_start = math.max(col, first_nonspace_col)
+--
+--    local search_start = vim.fn.strpart(line, effective_start - 1)
+--    local offset = string.find(search_start, ' ')
+--
+--    if offset then
+--       vim.fn.cursor(vim.fn.line('.'), effective_start + offset - 1)
+--       vim.cmd('startinsert')
+--    end
+-- end, { noremap = true, silent = true, desc = "insert at first non-leading space" })
+
 
 vim.keymap.set('n', 'id', function()
   local ts = os.date("%Y-%m-%d %H:%M")
@@ -299,6 +366,21 @@ vim.keymap.set('v', '<leader>gg', function()
 end, { silent = true, desc = "google visual selection" })
 
 vim.keymap.set('n', '<leader>/', ":noh<cr>", { desc = "turn off search highlighting" })
+
+vim.keymap.set("n", "<leader>ft", function()
+   local from = vim.fn.input("from: ")
+   local to = vim.fn.input("to: ")
+   vim.fn["ChangeSoftTabs"](from, to)
+end, { desc = "fix tabs from one width to another" })
+
+vim.keymap.set("n", "<leader>fq", function()
+   vim.fn["FixQuotes"]()
+end, { desc = "turn unicode quotes into ansi quotes" })
+
+vim.keymap.set("n", "<leader>z", function()
+   vim.fn["ToggleWrap"]()
+end, { desc = "toggle text wrap and fix how motions work" })
+
 
 -- s key -- think "search" and "show"
 
