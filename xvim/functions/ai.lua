@@ -87,13 +87,15 @@ local function llm_map(keys, command)
 end
 
 -- llm_map("ai", "")
-llm_map("ic", "continue")
-llm_map("is", "llama-3.1-8b")
-llm_map("ib", "llama-3.3-70b")
+llm_map("LL", "")
+llm_map("Ll", "")
+llm_map("Lc", "continue")
+llm_map("Ls", "llama-3.1-8b")
+llm_map("Lb", "llama-3.3-70b")
 -- llm_map("lsv", "llama-3.1-8b verbose")
 -- llm_map("lbv", "llama-3.3-70b verbose")
-llm_map("ijs", "llama-3.1-8b jsfun")
-llm_map("ijb", "llama-3.3-70b jsfun")
+llm_map("Ljs", "llama-3.1-8b jsfun")
+llm_map("Ljb", "llama-3.3-70b jsfun")
 
 -- whisper.cpp stuff.
 

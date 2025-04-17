@@ -448,10 +448,15 @@ vim.fn.sign_define("DiagnosticSignInfo",  { text = "I", texthl = "DiagnosticSign
 vim.fn.sign_define("DiagnosticSignHint",  { text = "H", texthl = "DiagnosticSignHint" })
 
 -- hop highlights
+-- local hop_sp = { gui = "#3a4fdf" }
+-- local hop_sp = { gui = "#177c00" }
+-- hl("HopNextKey", color.hop, nil, { bold = true, italic = false, underline = true, sp = hop_sp, standout = false })
+-- hl("HopNextKey1", color.hop, nil, { bold = true, italic = false, underline = true, sp = hop_sp, color.violet, standout = false })
+-- hl("HopNextKey2", color.hop, nil, { bold = true, italic = false, underline = true, sp = hop_sp, color.violet, standout = false })
 
-hl("HopNextKey", color.hop, nil, { bold = true, italic = false })
-hl("HopNextKey1", color.hop, nil, { bold = true, italic = false })
-hl("HopNextKey2", color.hop, nil, { bold = true, italic = false })
+hl("HopNextKey", color.hop, nil, { bold = true, italic = false, underline = false, sp = nil, standout = false })
+hl("HopNextKey1", color.hop, nil, { bold = true, italic = false, underline = false, sp = nil, color.violet, standout = false })
+hl("HopNextKey2", color.hop, nil, { bold = true, italic = false, underline = false, sp = nil, color.violet, standout = false })
 
 hl("HopMatchingPair", color.hop, { bold = true })
 hl("HopMatchingQuote", color.hop, { bold = true })

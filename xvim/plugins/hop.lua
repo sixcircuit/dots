@@ -7,12 +7,13 @@ local jump_target = require("hop.jump_target")
 
 hop.setup {
    x_bias = 100, -- show the letters spread over the x axis (line) first so it's like: a b c on a line
-   -- keys = 'etovxqpdygfblzhckisuran',
-   -- keys = 'asdfghjkl;qwertyuiopvbcnxmz,',
    keys = 'abcdefghijklmnopqrstuvwxyz;',
-   -- keys = 'abcdefghijklmnopqrstuvwxyz;',
    jump_on_sole_occurrence = true,
    create_hl_autocmd = false,
+   uppercase_labels = true,
+   -- hint_position = hint_pos.MIDDLE,
+   -- keys = 'etovxqpdygfblzhckisuran',
+   -- keys = 'asdfghjkl;qwertyuiopvbcnxmz,',
 }
 
 local function escape_lua_pattern(str)
@@ -38,30 +39,40 @@ local function merge(base, ...)
 end
 
 local function bind(func, ...)
-  local args = { ... }
-  return function()
-    return func(unpack(args))
-  end
-end
-
-local function reverse(tbl)
-   local result = {}
-   for i = #tbl, 1, -1 do
-      result[#result + 1] = tbl[i]
+   local args = { ... }
+   return function()
+      return func(unpack(args))
    end
-   return result
 end
 
-local function get_char()
-  local ok, char = pcall(vim.fn.getchar)
-  if not ok then return nil end
+local function get_char(prompt)
+   prompt = prompt or "char? "
 
-  -- handle numbers and char types
-  if type(char) == "number" then
-    return vim.fn.nr2char(char)
-  end
-  return char
+   -- Show the prompt in the command area
+   vim.api.nvim_echo({{prompt, "Question"}}, false, {})
+
+   local ok, char = pcall(vim.fn.getchar)
+   vim.api.nvim_echo({{""}}, false, {}) -- clear prompt
+
+   if not ok then return nil end
+
+   -- handle numbers and char types
+   if type(char) == "number" then
+      return vim.fn.nr2char(char)
+   end
+   return char
 end
+
+-- local function get_char()
+--    local ok, char = pcall(vim.fn.getchar)
+--    if not ok then return nil end
+--
+--    -- handle numbers and char types
+--    if type(char) == "number" then
+--       return vim.fn.nr2char(char)
+--    end
+--    return char
+-- end
 
 local function traverse_tree(node, callback)
    if not node then return end
@@ -208,53 +219,53 @@ local function hop_to_callback_f(opts, hop_opts, callback)
    end
 end
 
-hop_to.quotes = function(opts, hop_opts, callback)
-   local lang = vim.bo.filetype
-   local parser = vim.treesitter.get_parser(0, lang)
-   if not parser then return end
-
-   local function jump_target_gtr()
-
-      local tree = parser:parse()[1]
-      local root = tree:root()
-      local hint_positions = {}
-
-      local win_top = vim.fn.line("w0")
-      local win_bottom = vim.fn.line("w$")
-
-      traverse_tree(root, function(n)
-         local type = n:type()
-         if type == "string" or type == "template_string" then
-            local row, col = n:start()
-            local line = row + 1
-            if line >= win_top and line <= win_bottom then
-               table.insert(hint_positions, {
-                  window = vim.api.nvim_get_current_win(),
-                  buffer = vim.api.nvim_get_current_buf(),
-                  cursor = {
-                     row = row + 1,
-                     col = col,
-                  },
-                  length = 1
-               })
-            end
-         end
-      end)
-      return { jump_targets = hint_positions }
-   end
-
-   hop_opts = merge(hop.opts, { hint_offset = 0 })
-
-   local string_end_match_ids = highlight_string_ends(hop_opts)
-
-   hop.hint_with_callback(jump_target_gtr, hop_opts, hop_to_callback_f(opts, hop_opts, callback))
-
-   clean_up_highlights(string_end_match_ids)
-
-end
+-- hop_to.quotes = function(opts, hop_opts, callback)
+--    local lang = vim.bo.filetype
+--    local parser = vim.treesitter.get_parser(0, lang)
+--    if not parser then return end
+--
+--    local function jump_target_gtr()
+--
+--       local tree = parser:parse()[1]
+--       local root = tree:root()
+--       local jump_targets = {}
+--
+--       local win_top = vim.fn.line("w0")
+--       local win_bottom = vim.fn.line("w$")
+--
+--       traverse_tree(root, function(n)
+--          local type = n:type()
+--          if type == "string" or type == "template_string" then
+--             local row, col = n:start()
+--             local line = row + 1
+--             if line >= win_top and line <= win_bottom then
+--                table.insert(jump_targets, {
+--                   window = vim.api.nvim_get_current_win(),
+--                   buffer = vim.api.nvim_get_current_buf(),
+--                   cursor = {
+--                      row = row + 1,
+--                      col = col,
+--                   },
+--                   length = 1
+--                })
+--             end
+--          end
+--       end)
+--       return { jump_targets = jump_targets }
+--    end
+--
+--    hop_opts = merge(hop.opts, { hint_offset = 0 })
+--
+--    local string_end_match_ids = highlight_string_ends(hop_opts)
+--
+--    hop.hint_with_callback(jump_target_gtr, hop_opts, hop_to_callback_f(opts, hop_opts, callback))
+--
+--    clean_up_highlights(string_end_match_ids)
+--
+-- end
 
 hop_to.regex = function(regex_str, opts, hop_opts, callback)
-   opts = merge(opts or {}, { offset = -1 })
+   opts = merge(opts or {}, { offset = 0 })
 
    local match_ids
 
@@ -297,94 +308,17 @@ hop_to.regex = function(regex_str, opts, hop_opts, callback)
 end
 
 
--- hop_to.regex = function(regex_str, opts, hop_opts, callback)
---    opts = opts or {}
---
---    local match_ids
---
---    if opts.highlight ~= nil then match_ids = highlight(opts.highlight, hop_opts) end
---
---    hop_opts = merge(hop.opts, hop_opts)
---
---    local matcher
---
---    if type(regex_str) == "table" then
---       matcher = regex_str
---    else
---       local regex = vim.regex(regex_str)
---       matcher = {
---          oneshot = false,
---          match = function(s)
---             return regex:match_str(s)
---          end,
---       }
---    end
---
---    hop.hint_with_regex(matcher, hop_opts, hop_to_callback_f(opts, hop_opts, callback))
---
---    if match_ids then clean_up_highlights(match_ids) end
---
--- end
---
 hop_to.chars = function(chars, opts, hop_opts, callback)
-   assert(chars ~= nil)
    opts = opts or {}
    hop_opts = merge(hop.opts, hop_opts)
+
+   if chars == nil then
+      chars = get_char()
+      if chars == nil then return nil end
+   end
+
    local regex = literal_regex(chars, hop_opts)
    hop.hint_with_regex(regex, hop_opts, hop_to_callback_f(opts, hop_opts, callback))
-end
-
-local function hop_vertical_column(dir)
-   local col = vim.fn.col('.') - 1
-   local cursor_row = vim.fn.line(".")
-   local win_top = vim.fn.line("w0")
-   local win_bottom = vim.fn.line("w$")
-
-   local start_row, end_row
-   if dir == "down" then
-      start_row = cursor_row + 1
-      end_row = win_bottom
-   else
-      start_row = win_top
-      end_row = cursor_row - 1
-   end
-
-   local lines = vim.api.nvim_buf_get_lines(0, start_row - 1, end_row, false)
-
-   if dir == "up" then lines = reverse(lines) end
-
-   local function jump_target_gtr()
-      local hint_positions = {}
-
-      for i, line in ipairs(lines) do
-         local row = (dir == "down") and (start_row + i - 1) or (end_row - i + 1)
-         local target_col = col
-
-         if #line < col + 1 then target_col = #line end
-
-         table.insert(hint_positions, {
-            window = vim.api.nvim_get_current_win(),
-            buffer = vim.api.nvim_get_current_buf(),
-            cursor = {
-               row = row,
-               col = target_col,
-            },
-            length = 1,
-         })
-      end
-
-      return { jump_targets = hint_positions }
-   end
-
-   local opts = merge(hop.opts, { hint_offset = 0 })
-
-   local close_char = "j"
-   if dir == "up" then close_char = "k" end
-
-   opts.keys = move_char_to_front(opts.keys, close_char)
-
-   -- TODO: needs hint_with_callback
-   hop.hint_with(jump_target_gtr, opts)
 end
 
 local function wait_for_macro_finish(callback, interval)
@@ -466,10 +400,10 @@ local function hop_change_ft(f_or_t, regex)
 end
 
 
-vim.keymap.set('', 'mk', bind(hop_vertical_column, "up"))
-vim.keymap.set('', 'mj', bind(hop_vertical_column, "down"))
-vim.keymap.set('', '<leader>k', bind(hop_vertical_column, "up"))
-vim.keymap.set('', '<leader>j', bind(hop_vertical_column, "down"))
+vim.keymap.set('', 'mk', "<cmd>HopLineBC<cr>")
+vim.keymap.set('', 'mj', "<cmd>HopLineAC<cr>")
+vim.keymap.set('', '<leader>k', "<cmd>HopLineBC<cr>")
+vim.keymap.set('', '<leader>j', "<cmd>HopLineAC<cr>")
 
 vim.keymap.set('n', 'mm', '<cmd>HopChar1<cr>')
 -- vim.keymap.set({ 'n', 'v' }, 'mc', "<cmd>HopChar1<cr>")
@@ -494,90 +428,239 @@ vim.keymap.set({ 'n', 'v' }, '<leader>b', "<cmd>HopWordBC<cr>")
 -- vim.keymap.set('n', 'm/', "<cmd>HopPatternAC<cr>")
 -- vim.keymap.set('n', 'm?', "<cmd>HopPatternBC<cr>")
 
-local function setup_moves(maps, prefix, moves)
+local function setup_hops(maps, prefix, moves, opts, hopts)
+   opts = opts or {}
+   hopts = hopts or {}
    prefix = prefix or ""
    for _, item in pairs(moves) do
-      if type(item) == "string" then
-         vim.keymap.set(maps, prefix .. item, bind(hop_to.chars, item), { desc = "hop to " .. item })
-      elseif type(item) == "table" then
-         local cmd, desc, f_name, args = unpack(item)
-         args = args or {}
-         vim.keymap.set(maps, prefix .. cmd, bind(hop_to[f_name], unpack(args)), { desc = desc })
-      end
+      assert(type(item) == "table", "item must be a table")
+      local setup = item.setup
+      -- vim.print(item)
+      vim.keymap.set(maps, prefix .. item.keys, bind(hop_to[setup.hop_f], setup.matcher, merge(opts, setup.opts), merge(hopts, setup.hopts)), { desc = item.desc })
    end
 end
 
-local any_pairs_regex = "[\\[\\]\\{\\}\\(\\)\"'`]"
-local left_pairs_regex = "[\\[\\{\\(\"'`]"
+-- local any_pairs_regex = "[\\[\\]\\{\\}\\(\\)\"'`]"
+-- local left_pairs_regex = "[\\[\\{\\(\"'`]"
+
+local function open_or_close(str, loc)
+   if str == "(" then return ("open") end
+   if str == "{" then return ("open") end
+   if str == "[" then return ("open") end
+   if str == ")" then return ("close") end
+   if str == "}" then return ("close") end
+   if str == "]" then return ("close") end
+
+   if str ~= "'" and str ~= "`" and str ~= '"' then
+      vim.notify("you passed a string we didn't expect. this only works with bracket pairs and quotes", vim.log.levels.WARN)
+      return("")
+   end
+
+   local line = vim.api.nvim_buf_get_lines(0, loc.cursor.row - 1, loc.cursor.row, false)[1]
+   local quote_positions = {}
+   local quote = str
+
+   -- find all quotes of the same kind on the line
+   for i = 1, #line do
+      if line:sub(i, i) == quote then
+         table.insert(quote_positions, i)
+      end
+   end
+
+   local quote_index = nil
+   for i, pos in ipairs(quote_positions) do
+      if pos == loc.cursor.col + 1 then  -- loc.cursor.col is 0-indexed
+         quote_index = i
+         break
+      end
+   end
+
+   if not quote_index then
+      vim.notify("could not find quote index", vim.log.levels.WARN)
+      return ""
+   end
+
+   -- odd = opening, insert inside (after the quote)
+   -- even = closing, append before the quote
+   if quote_index % 2 == 1 then return "open" else return "close" end
+end
+
+
+local function is_empty_pair(str, loc)
+
+   local pairs = {
+      ["{"] = "}", ["("] = ")", ["["] = "]",
+      ["}"] = "{", [")"] = "(", ["]"] = "[",
+   }
+
+   local quotes = {
+      ['"'] = '"', ["'"] = "'", ["`"] = "`",
+   }
+
+
+   local line = vim.api.nvim_buf_get_lines(0, loc.cursor.row - 1, loc.cursor.row, false)[1]
+   local col = loc.cursor.col
+   local kind = open_or_close(str, loc)
+
+   local pair = pairs[str]
+   local quote = quotes[str]
+
+   local char_before = line:sub(col, col)
+   local char_after = line:sub(col + 2, col + 2)
+
+   if pair then
+      if kind == "open" and char_after == pair then return true end
+      if kind == "close" and char_before == pair then return true end
+      return false
+   elseif quote then
+      if kind == "open" and char_after == quote then return true end
+      if kind == "close" and char_before == quote then return true end
+      return false
+   else
+      return(nil)
+   end
+
+end
+
+
+local cmds = {
+   v = function(str) return "vi" .. str .. "" end,
+   y = function(str) return "yi" .. str .. "" end,
+   c = function(str) return "vi" .. str .. "c" end,
+   i = function(str) return "i" end,
+   a = function(str) return "a" end,
+   p = function(str, loc)
+      local is_empty = is_empty_pair(str, loc)
+      if is_empty == nil then return end
+      if is_empty then return "p`["
+      else return "vi" .. str .. "p`[" end
+   end,
+}
+
+cmds.ii = function(str, loc)
+   local result = open_or_close(str, loc)
+   if result == "open" then return("a")
+   elseif result == "close" then return("i")
+   else return("") end
+end
+
+cmds.io = function(str, loc)
+   local result = open_or_close(str, loc)
+   if result == "open" then return("i")
+   elseif result == "close" then return("a")
+   else return("") end
+end
+
+local function _setup(f_name, matcher, opts, hopts)
+   return({
+      hop_f = f_name,
+      matcher = matcher,
+      opts = opts,
+      hopts = hopts
+   })
+end
+
+local function _setup_f(f_name, matcher, _opts, _hopts)
+   return function(opts, hopts)
+      opts = merge(_opts or {}, opts or {})
+      hopts = merge(_hopts or {}, hopts or {})
+      return _setup(f_name, matcher, opts, hopts)
+   end
+end
 
  -- match all spaces that aren't at the start of a line
 local spaces_regex = "\\S\\zs \\+"
 
-local pair_args = {
-   a = function(cmd, opts, hop_opts) opts = opts or {} return { "[\\[]", merge(opts, { highlight = "[\\]]", cmd = cmd, offset = -1 }), hop_opts } end,
-   b = function(cmd, opts, hop_opts) opts = opts or {} return { "[{]",   merge(opts, { highlight = "[{}]", cmd = cmd, offset = -1 }), hop_opts   } end,
-   p = function(cmd, opts, hop_opts) opts = opts or {} return { "[(]",   merge(opts, { highlight = "[()]", cmd = cmd, offset = -1 }), hop_opts   } end,
-   q = function(cmd, opts, hop_opts) opts = opts or {} return { merge(opts, { cmd = cmd }), hop_opts } end
+local _setups = {
+   a = _setup_f("regex", "[\\[\\]]", { highlight = "[\\]]" }),
+   b = _setup_f("regex", "[{}]",   { highlight = "[{}]" }),
+   p = _setup_f("regex", "[()]",   { highlight = "[()]" }),
+   q = _setup_f("regex", "[\"'`]"),
+   [" "] = _setup_f("regex", spaces_regex),
+   sa = _setup_f("regex", "[\\[]", { highlight = "[\\]]" }),
+   sb = _setup_f("regex", "[{]",   { highlight = "[{}]" }),
+   sp = _setup_f("regex", "[(]",   { highlight = "[()]" }),
+   ea = _setup_f("regex", "[\\]]", { highlight = "[\\]]" }),
+   eb = _setup_f("regex", "[}]",   { highlight = "[{}]" }),
+   ep = _setup_f("regex", "[)]",   { highlight = "[()]" }),
+   w = _setup_f("regex", jump_regex.regex_by_word_start()),
+   -- sw = _setup_f("regex", jump_regex.regex_by_word_start()),
+   -- ew = _setup_f("regex", jump_regex.regex_by_word_end())
 }
 
-local function v_cmd(str) return "vi" .. str .. "" end
-local function y_cmd(str) return "vi" .. str .. "y" end
-local function p_cmd(str) return "vi" .. str .. "p`[" end
-local function c_cmd(str) return "vi" .. str .. "c" end
-local function i_cmd(str) return "i" end
-local function a_cmd(str) return "a" end
 
-local moves = {
-   { "ta", "hop to []", "regex", pair_args.a() },
-   { "tb", "hop to {}", "regex", pair_args.b() },
-   { "tp", "hop to ()", "regex", pair_args.p() },
-   { "q", "hop to quotes", "quotes" },
-   { " ", "hop to spaces", "regex", { spaces_regex } },
-   ")", "]", "}",
-   ',', '.', ';', ':', "_", "-",
+local doubles = {
+   a = "[]", b = "{}", p = "()", q = "quotes",
+}
+-- local doubles_start = { sa = "[", sb = "{", sp = "(", sq = "quotes", sw = "word start" }
+-- local doubles_end = { ea = "]", eb = "}", ep = ")", eq = "quotes", ew = "word end" }
+
+local singles = {
+   [" "] = "spaces",
+   w = "word"
 }
 
-local edits = {
+local function add_chars(tbl, chars) for _, char in pairs(chars) do tbl[char] = char end end
 
-   -- { "va", "regex", pair_args.a(v_cmd) },
-   -- { "vb", "regex", pair_args.b(v_cmd) },
-   -- { "vp", "regex", pair_args.p(v_cmd) },
-   -- { "vq", "quotes", pair_args.q(v_cmd) },
+add_chars(singles, {
+   "'", '"', "`",
+   "(" ,")", "[", "]", "{", "}",
+   ',', '.', ';', ':', "_", "-", "="
+})
 
-   { "ya", "yank inside []", "regex", pair_args.a(y_cmd) },
-   { "yb", "yank inside {}", "regex", pair_args.b(y_cmd) },
-   { "yp", "yank inside {}", "regex", pair_args.p(y_cmd) },
-   { "yq", "yank inside quotes", "quotes", pair_args.q(y_cmd) },
+local function h(keys, desc, setup)
+   return { keys = keys, desc = desc, setup = setup }
+end
 
-   { "ca", "change inside []", "regex", pair_args.a(c_cmd) },
-   { "cb", "change inside {}", "regex", pair_args.b(c_cmd) },
-   { "cp", "change inside ()", "regex", pair_args.p(c_cmd) },
-   { "cq", "change inside quotes", "quotes", pair_args.q(c_cmd) },
+local function add(tbl, map, keys_prefix, desc_prefix, opts, hopts)
+   map = map or {}
 
-   { "pa", "paste inside []", "regex", pair_args.a(p_cmd) },
-   { "pb", "paste inside {}", "regex", pair_args.b(p_cmd) },
-   { "pp", "paste inside ()", "regex", pair_args.p(p_cmd) },
-   { "pq", "paste inside quotes", "quotes", pair_args.q(p_cmd) },
+   for key, desc in pairs(map) do
+      -- vim.print("key:", key)
+      -- vim.print("desc:", desc)
 
-}
+      local setup = { hop_f = "chars", matcher = key, opts = opts, hopts = hopts }
 
-setup_moves({ "n", "v" }, "m", moves)
-setup_moves({ "n" }, "m", edits)
+      if _setups[key] then setup = _setups[key](opts, hopts) end
 
-local on_line_after_cursor = {
+      table.insert(tbl, h(keys_prefix .. key, desc_prefix .. " " .. desc, setup))
+   end
+
+end
+
+local moves = {}
+
+add(moves, singles, "t", "hop to")
+add(moves, doubles, "t", "hop to")
+
+local edits = {}
+
+add(edits, doubles, "y", "yank inside",   { cmd = cmds.y })
+add(edits, doubles, "c", "change inside", { cmd = cmds.c })
+
+local pastes = {}
+add(pastes, merge(doubles, { [" "] = "spaces", }), "p", "paste inside",  { cmd = cmds.p })
+-- add(pastes, doubles, "p", "paste inside",  { cmd = cmds.p })
+
+local line_only = {
    current_line_only = true,
    -- direction = hint_dirs.AFTER_CURSOR,
 }
 
--- do inserts at all normal chars ,.-_, etc
-local inserts = {
-   { "iw", "insert at word", "regex", { jump_regex.regex_by_word_start(), { cmd = i_cmd } } },
-   { "ia", "insert inside []", "regex", pair_args.a(a_cmd, nil, on_line_after_cursor) },
-   { "ib", "insert inside {}", "regex", pair_args.b(a_cmd, nil, on_line_after_cursor) },
-   { "ip", "insert inside ()", "regex", pair_args.p(a_cmd, nil, on_line_after_cursor) },
-   { "iq", "insert inside quotes", "quotes", pair_args.q(a_cmd, nil, on_line_after_cursor) },
-   { "i ", "insert at space", "regex", { spaces_regex, { cmd = i_cmd }, on_line_after_cursor } },
-}
+local inserts = {}
+
+add(inserts, singles, "i", "insert at", { cmd = cmds.i })
+add(inserts, doubles, "i", "insert at", { cmd = cmds.ii })
+
+add(inserts, singles, "a", "append at", { cmd = cmds.a })
+add(inserts, doubles, "a", "append at", { cmd = cmds.io })
+
+-- add(inserts, singles, "is", "insert at start", { cmd = cmds.i })
+-- add(inserts, singles, "ie", "insert at end", { cmd = cmds.a })
+
+add(inserts, doubles, "io", "insert outside", { cmd = cmds.io })
+add(inserts, doubles, "ii", "insert inside", { cmd = cmds.ii })
+
 
 -- -- vim.keymap.set('n', 'i ', "f i", { desc = "insert at first space" })
 -- vim.keymap.set('n', 'ia', "f[a", { desc = "insert at first [" })
@@ -627,17 +710,38 @@ local inserts = {
 --    end
 -- end, { noremap = true, silent = true, desc = "insert at first non-leading space" })
 
-setup_moves({ "n" }, "", inserts)
+
+setup_hops({ "n" }, "m", edits, nil, line_only)
+setup_hops({ "n" }, "", edits)
+
+setup_hops({ "n" }, "m", pastes)
+
+setup_hops({ "n" }, "m", inserts, nil, line_only)
+setup_hops({ "n" }, "", inserts)
+
+setup_hops({ "n" }, "", {
+   h("im", "insert at char", _setup("chars", nil, { cmd = cmds.i })),
+   h("am", "insert at char", _setup("chars", nil, { cmd = cmds.a })),
+})
+
+setup_hops({ "n", "v" }, "m", moves)
 
 
-vim.keymap.set('', 'cfq', bind(hop_change_ft, "f", "[\"'`]"))
-vim.keymap.set('', 'ctq', bind(hop_change_ft, "t", "[\"'`]"))
-vim.keymap.set('', 'cf ', bind(hop_change_ft, "f", spaces_regex))
-vim.keymap.set('', 'ct ', bind(hop_change_ft, "t", spaces_regex))
--- vim.keymap.set('', 'cfv', bind(hop_change_ft, "f", jump_regex.regex_by_camel_case()))
--- vim.keymap.set('', 'ctv', bind(hop_change_ft, "t", jump_regex.regex_by_camel_case()))
-vim.keymap.set('', 'cf', bind(hop_change_ft, "t"))
-vim.keymap.set('', 'ct', bind(hop_change_ft, "t"))
+vim.keymap.set('n', 'cfa', bind(hop_change_ft, "f", "[\\[\\]]"))
+vim.keymap.set('n', 'cta', bind(hop_change_ft, "t", "[\\[\\]]"))
+vim.keymap.set('n', 'cfb', bind(hop_change_ft, "f", "[{}]"))
+vim.keymap.set('n', 'ctb', bind(hop_change_ft, "t", "[{}]"))
+vim.keymap.set('n', 'cfp', bind(hop_change_ft, "f", "[()]"))
+vim.keymap.set('n', 'ctp', bind(hop_change_ft, "t", "[()]"))
+vim.keymap.set('n', 'cfq', bind(hop_change_ft, "f", "[\"'`]"))
+vim.keymap.set('n', 'ctq', bind(hop_change_ft, "t", "[\"'`]"))
+vim.keymap.set('n', 'cf ', bind(hop_change_ft, "f", spaces_regex))
+vim.keymap.set('n', 'ct ', bind(hop_change_ft, "t", spaces_regex))
+vim.keymap.set('n', 'cfm', bind(hop_change_ft, "t"))
+vim.keymap.set('n', 'ctm', bind(hop_change_ft, "t"))
+vim.keymap.set('n', 'cf', bind(hop_change_ft, "t"))
+vim.keymap.set('n', 'ct', bind(hop_change_ft, "t"))
+
 
 -- linewise repeatable
 -- cmv -- (variable) camel case move forward

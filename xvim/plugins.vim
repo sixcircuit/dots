@@ -15,8 +15,8 @@ Plug 'stevearc/oil.nvim'
 Plug 'smoka7/hop.nvim'
 " Plug 'rlane/pounce.nvim'
 
-Plug 'junegunn/goyo.vim'
-Plug 'junegunn/limelight.vim'
+"Plug 'junegunn/goyo.vim'
+"Plug 'junegunn/limelight.vim'
 
 Plug 'ggvgc/vim-fuzzysearch'
 
@@ -58,6 +58,10 @@ autocmd FileType CommandTPrompt let b:loaded_delimitMate = 1
 " Plug 'jiangmiao/auto-pairs'
 " autocmd FileType CommandTPrompt let b:autopairs_loaded=1
 
+" i don't think this is working for me.
+"Plug 'wellle/targets.vim'
+"only consider targets fully contained in current line:
+"let g:targets_seekRanges = 'cc cr cb cB lc ac Ac lr rr ll'
 
 " no longer supported
 " Plug 'sjl/gundo.vim'

@@ -2,46 +2,22 @@
 
 = todo
 
-   - OVERNIGHT NOTES - 2025-04-15 00:40
-
-   . ok, you're still doing great.
-   . you should be proud of this
-   . soooo many great mappings.
-
-   . you need to wrap this up tomorrow.
-   . you have all the pieces, just finish it up
-   . you have all the pieces to make changes going forward if you don't like something
-   . at this point you're going to learn a lot more by using what you built and then circling back
-
-   . love you!
-
-   - write csa(b, p), csb(a, p), csp(a, b)
+   - write ,csa(b, p), ,csb(a, p), ,csp(a, b)
       - change from one surround to another
       - just write these by hand, there aren't that many permutations
 
-   - you need to write all the insert motions.
-      - i<whatever> work on the whole line
-      - mi<whatever> these work on the whole page.
-      - there should be total symmetry
-      - ii} i} im<char>
-      - see how good the matching bracket highlighting is.
-      - it's ok, decide about the offsets on brackets.
-      - i think not iq and iiq matching in comments is weird
-         - (maybe drop treesitter and just match individuals)
-         - try it and try highlighting all of them with an offset letter like brackets and see what you think
-
-   - you need to write all the change and tf motions.
-
-   - cut new plugin snapshot
-   - get rid of goyo
+= later
 
    - keep in mind: you can make all the insert motions repeatable
       / like f and t but i don't think you need to for right now.
 
-= later
+   - try to make arg manipulation commands dot repeatable.
 
    - figure out macros, i don't love what i'm doing now but it works ok
-   - try zenmode and twilight
+   - try (true-zen or zenmode) and twilight
+      - https://github.com/pocco81/true-zen.nvim?tab=readme-ov-file
+      - https://github.com/folke/zen-mode.nvim
+      - https://github.com/folke/twilight.nvim
 
 
 = whisper
@@ -275,4 +251,46 @@ x vim
       x remove ultisnip
       x look into snippet plugins (luasnip)
       x setup luasnip (implement old ultisnip snippets)
+
+   x try uppercase highlights. see what else is available
+   x vim make H and L move to start and end of the line.
+
+   standout = false,
+   underline = false,
+   undercurl = false,
+   sp defines the color of the underline/undercurl effect, not the text itself.
+
+   - OVERNIGHT NOTES - 2025-04-15 00:40
+
+   . ok, you're still doing great.
+   . you should be proud of this
+   . soooo many great mappings.
+
+   . you need to wrap this up tomorrow.
+   . you have all the pieces, just finish it up
+   . you have all the pieces to make changes going forward if you don't like something
+   . at this point you're going to learn a lot more by using what you built and then circling back
+
+   . love you!
+
+
+   x you need to write all the insert motions.
+      x i<whatever> work on the whole line
+      x mi<whatever> these work on the whole page.
+      x there should be total symmetry
+      x ii} i} im<char>
+      x see how good the matching bracket highlighting is.
+      x it's ok, decide about the offsets on brackets.
+      x i think not iq and iiq matching in comments is weird
+         x (maybe drop treesitter and just match individuals)
+         x try it and try highlighting all of them with an offset letter like brackets and see what you think
+
+   x you need to write all the change and tf motions.
+
+   x cut new plugin snapshot
+   x get rid of goyo
+
+
+   x match all commands that are e<> i<> c<> etc that use move on one line to also have
+      x mi<> me<> mc<> and those are global moves instead of 1 line
 
