@@ -454,10 +454,18 @@ vim.keymap.set('n', ',caa', "ca[", { desc = "change a array []", remap = true })
 vim.keymap.set('n', ',caq', with_nearest_quote_f("ca"), { desc = "change a quotes", remap = true })
 
 vim.keymap.set('n', ',cb', "cs{", { desc = "change surrounding braces", remap = true })
--- vim.keymap.set('n', ',csba', "cs{a", { desc = "change surrounding braces to array" })
+vim.keymap.set('n', ',cba', ",cb[", { desc = "change surrounding braces to array", remap = true })
+vim.keymap.set('n', ',cbp', ",cb(", { desc = "change surrounding braces to parens", remap = true })
 vim.keymap.set('n', ',cp', "cs(", { desc = "change surrounding parens", remap = true })
+vim.keymap.set('n', ',cpa', ",cp[", { desc = "change surrounding parens to array", remap = true })
+vim.keymap.set('n', ',cpb', ",cp{", { desc = "change surrounding parens to braces", remap = true })
 vim.keymap.set('n', ',ca', "cs[", { desc = "change surrounding array []", remap = true })
+vim.keymap.set('n', ',cap', ",ca( ", { desc = "change surrounding array to parens", remap = true })
+vim.keymap.set('n', ',cab', ",ca{", { desc = "change surrounding array to braces", remap = true })
 vim.keymap.set('n', ',cq', with_nearest_quote_f("cs"), { desc = "change surrounding quotes", remap = true })
+-- vim.keymap.set('n', ',cqa', with_nearest_quote_f(",cq["), { desc = "change surrounding quotes to array", remap = true })
+-- vim.keymap.set('n', ',cqb', with_nearest_quote_f(",cq{"), { desc = "change surrounding quotes to braces", remap = true })
+-- vim.keymap.set('n', ',cqp', with_nearest_quote_f(",cq("), { desc = "change surrounding quotes to parens", remap = true })
 
 vim.keymap.set({ 'n', 'v' }, ',sb', "<Plug>Ysurroundiw}", { desc = "surround with {", remap = true })
 vim.keymap.set({ 'n', 'v' }, ',sa', "<Plug>Ysurroundiw]", { desc = "surround with [", remap = true })
@@ -481,69 +489,68 @@ vim.keymap.set('n', 'cep', "ci) <left>", { desc = "delete inside parens ()" })
 vim.keymap.set('n', 'cea', "ci] <left>", { desc = "delete inside array []" })
 
 -- this whole thing is a . repeat plugin example
-   -- local function add_space_inside_quote()
-      -- vim.fn['repeat#set'](vim.api.nvim_replace_termcodes('<Plug>AddSpaceInsideQuotes', true, false, true), vim.v.count)
+-- local function add_space_inside_quote()
+   -- vim.fn['repeat#set'](vim.api.nvim_replace_termcodes('<Plug>AddSpaceInsideQuotes', true, false, true), vim.v.count)
    -- end
    -- _G.add_space_inside_quote = add_space_inside_quote
    -- this is so we can . repeat it. you need the plug for repeat#set
    -- vim.keymap.set('n', '<Plug>AddSpaceInsideQuotes', ":lua add_space_inside_quote()<cr>")
    -- vim.keymap.set("n", "siq", add_space_inside_quote, { desc = "add space inside closest quotes" })
 
--- change how macros work
--- vim.keymap.set('n', 'q', "<nop>", { desc = "recoup q, we're changing how macros work" })
+   -- change how macros work
+   -- vim.keymap.set('n', 'q', "<nop>", { desc = "recoup q, we're changing how macros work" })
 
--- easy macro
--- vim.keymap.set("n", ",,", "@@")
+   -- easy macro
+   -- vim.keymap.set("n", ",,", "@@")
 
--- vim.keymap.set('n', 'qq', "<plug>(Mac_RecordNew)")
--- vim.keymap.set('n', 'qh', "<cmd>DisplayMacroHistory<cr>")
+   -- vim.keymap.set('n', 'qq', "<plug>(Mac_RecordNew)")
+   -- vim.keymap.set('n', 'qh', "<cmd>DisplayMacroHistory<cr>")
 
--- vim.keymap.set('n', ',,', "<plug>(Mac_Play)")
--- vim.keymap.set('n', 'qq', "<plug>(Mac_RecordNew)")
+   -- vim.keymap.set('n', ',,', "<plug>(Mac_Play)")
+   -- vim.keymap.set('n', 'qq', "<plug>(Mac_RecordNew)")
 
-vim.keymap.set('n', ',,', "@q")
--- vim.keymap.set('n', 'qq', "<plug>(Mac_RecordNew)")
+   vim.keymap.set('n', ',,', "@q")
+   -- vim.keymap.set('n', 'qq', "<plug>(Mac_RecordNew)")
 
 
--- turns out I use "r" a fuck ton.
--- vim.keymap.set('n', 'r', "<nop>", { desc = "recoup r characters we don't use much" })
--- vim.keymap.set('n', 'rr', "r", { desc = "move r to rr" })
--- vim.keymap.set('n', 'rx', "rx", { desc = "rx is a thing you use a lot" })
+   -- turns out I use "r" a fuck ton.
+   -- vim.keymap.set('n', 'r', "<nop>", { desc = "recoup r characters we don't use much" })
+   -- vim.keymap.set('n', 'rr', "r", { desc = "move r to rr" })
+   -- vim.keymap.set('n', 'rx', "rx", { desc = "rx is a thing you use a lot" })
 
--- turns out I use "x" a fuck ton.
--- vim.keymap.set('n', 'x', "<nop>", { desc = "recoup x" })
--- vim.keymap.set('n', 'xx', "x", { desc = "move x to xx" })
+   -- turns out I use "x" a fuck ton.
+   -- vim.keymap.set('n', 'x', "<nop>", { desc = "recoup x" })
+   -- vim.keymap.set('n', 'xx', "x", { desc = "move x to xx" })
 
--- add some yanks to y
-vim.keymap.set('n', 'yl', 'y$', { desc = "yank to end of line" })
-vim.keymap.set('n', 'Y', 'y$', { desc = "yank to end of line" })
-vim.keymap.set('n', 'yh', 'y^', { desc = "yank to beginning of line" })
+   -- add some yanks to y
+   vim.keymap.set('n', 'yl', 'y$', { desc = "yank to end of line" })
+   vim.keymap.set('n', 'Y', 'y$', { desc = "yank to end of line" })
+   vim.keymap.set('n', 'yh', 'y^', { desc = "yank to beginning of line" })
 
--- i key, think "insert <somewhere>"
+   -- i key, think "insert <somewhere>"
 
--- these were cute but all of them moved to hop commands
-vim.keymap.set('n', 'i', "<nop>", { desc = "recoup i" })
+   -- these were cute but all of them moved to hop commands
+   vim.keymap.set('n', 'i', "<nop>", { desc = "recoup i" })
 
--- this is me trying to break a bad habit.
--- i should be moving and inserting at the same time
-vim.keymap.set('n', 'aaaa', "a", { desc = "move a to aaaa" })
-vim.keymap.set('n', 'iiii', "i", { desc = "move i to iiii" })
-vim.keymap.set('n', 'iiii', "i", { desc = "move i to iiii" })
-vim.keymap.set('n', 'eeee', "e", { desc = "move e to eeee" })
+   -- this is me trying to break a bad habit.
+   -- i should be moving and inserting at the same time
+   vim.keymap.set('n', 'aaaa', "a", { desc = "move a to aaaa" })
+   vim.keymap.set('n', 'iiii', "i", { desc = "move i to iiii" })
+   vim.keymap.set('n', 'eeee', "e", { desc = "move e to eeee" })
 
--- -- vim.keymap.set('n', 'i ', "f i", { desc = "insert at first space" })
--- vim.keymap.set('n', 'ia', "f[a", { desc = "insert at first [" })
--- vim.keymap.set('n', 'i[', "f[a", { desc = "insert at first [" })
--- vim.keymap.set('n', 'ib', "f{a", { desc = "insert at first {" })
--- vim.keymap.set('n', 'i{', "f{a", { desc = "insert at first {" })
--- vim.keymap.set('n', 'ip', "f(a", { desc = "insert at first (" })
--- vim.keymap.set('n', 'i(', "f(a", { desc = "insert at first (" })
--- vim.keymap.set('n', 'i]', "f]a", { desc = "insert at first ]" })
--- vim.keymap.set('n', 'i}', "f}a", { desc = "insert at first }" })
--- vim.keymap.set('n', 'ii]', "t]a", { desc = "insert at first ]" })
--- vim.keymap.set('n', 'ii}', "t}a", { desc = "insert at first }" })
--- vim.keymap.set('n', 'ii)', "t)a", { desc = "insert at first )" })
--- vim.keymap.set('n', 'i)', "f)a", { desc = "insert at first )" })
+   -- -- vim.keymap.set('n', 'i ', "f i", { desc = "insert at first space" })
+   -- vim.keymap.set('n', 'ia', "f[a", { desc = "insert at first [" })
+   -- vim.keymap.set('n', 'i[', "f[a", { desc = "insert at first [" })
+   -- vim.keymap.set('n', 'ib', "f{a", { desc = "insert at first {" })
+   -- vim.keymap.set('n', 'i{', "f{a", { desc = "insert at first {" })
+   -- vim.keymap.set('n', 'ip', "f(a", { desc = "insert at first (" })
+   -- vim.keymap.set('n', 'i(', "f(a", { desc = "insert at first (" })
+   -- vim.keymap.set('n', 'i]', "f]a", { desc = "insert at first ]" })
+   -- vim.keymap.set('n', 'i}', "f}a", { desc = "insert at first }" })
+   -- vim.keymap.set('n', 'ii]', "t]a", { desc = "insert at first ]" })
+   -- vim.keymap.set('n', 'ii}', "t}a", { desc = "insert at first }" })
+   -- vim.keymap.set('n', 'ii)', "t)a", { desc = "insert at first )" })
+   -- vim.keymap.set('n', 'i)', "f)a", { desc = "insert at first )" } ]
 -- vim.keymap.set('n', 'i.', "f.a", { desc = "insert at first ." })
 -- vim.keymap.set('n', 'i_', "f_a", { desc = "insert at first _" })
 -- vim.keymap.set('n', 'i=', "f=a", { desc = "insert at first =" })

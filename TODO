@@ -2,9 +2,7 @@
 
 = todo
 
-   - write ,csa(b, p), ,csb(a, p), ,csp(a, b)
-      - change from one surround to another
-      - just write these by hand, there aren't that many permutations
+   - eventually reenable ii, aa, ee (drop a for blocks, just use i / io)
 
 = later
 
@@ -293,4 +291,11 @@ x vim
 
    x match all commands that are e<> i<> c<> etc that use move on one line to also have
       x mi<> me<> mc<> and those are global moves instead of 1 line
+
+   x remove any aa and ii mappings you want to be able to reenabble them in the future.
+      x but don't reenabble them now.
+
+   x write ,ca(b, p), ,cb(a, p), ,cp(a, b)
+      x change from one surround to another
+      x just write these by hand, there aren't that many permutations
 

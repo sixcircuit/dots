@@ -405,7 +405,7 @@ vim.keymap.set('', 'mj', "<cmd>HopLineAC<cr>")
 vim.keymap.set('', '<leader>k', "<cmd>HopLineBC<cr>")
 vim.keymap.set('', '<leader>j', "<cmd>HopLineAC<cr>")
 
-vim.keymap.set('n', 'mm', '<cmd>HopChar1<cr>')
+-- vim.keymap.set('n', 'ml', '<cmd>HopChar1<cr>')
 -- vim.keymap.set({ 'n', 'v' }, 'mc', "<cmd>HopChar1<cr>")
 
 -- vim.keymap.set({ 'n', 'v' }, 'mw', "<cmd>HopWordAC<cr>")
@@ -524,17 +524,21 @@ end
 
 
 local cmds = {
-   v = function(str) return "vi" .. str .. "" end,
-   y = function(str) return "yi" .. str .. "" end,
-   c = function(str) return "vi" .. str .. "c" end,
    i = function(str) return "i" end,
    a = function(str) return "a" end,
-   p = function(str, loc)
+   s = function(str) return "s" end,
+   vi = function(str) return "vi" .. str .. "" end,
+   yi = function(str) return "yi" .. str .. "" end,
+   ci = function(str) return "vi" .. str .. "c" end,
+   ciw = function(str) return "ciw" end,
+   p = function(str, loc) return "p`[" end,
+   pi = function(str, loc)
       local is_empty = is_empty_pair(str, loc)
       if is_empty == nil then return end
       if is_empty then return "p`["
       else return "vi" .. str .. "p`[" end
    end,
+
 }
 
 cmds.ii = function(str, loc)
@@ -633,14 +637,18 @@ local moves = {}
 add(moves, singles, "t", "hop to")
 add(moves, doubles, "t", "hop to")
 
-local edits = {}
+local yanks = {}
 
-add(edits, doubles, "y", "yank inside",   { cmd = cmds.y })
-add(edits, doubles, "c", "change inside", { cmd = cmds.c })
+add(yanks, doubles, "y", "yank inside",   { cmd = cmds.yi })
+
+local changes = {}
+
+add(changes, doubles, "c", "change inside", { cmd = cmds.ci })
+add(changes, { w = "word" }, "c", "change a", { cmd = cmds.ciw })
 
 local pastes = {}
-add(pastes, merge(doubles, { [" "] = "spaces", }), "p", "paste inside",  { cmd = cmds.p })
--- add(pastes, doubles, "p", "paste inside",  { cmd = cmds.p })
+add(pastes, doubles, "p", "paste inside",  { cmd = cmds.pi })
+add(pastes, { [" "] = "spaces" }, "p", "paste at",  { cmd = cmds.p })
 
 local line_only = {
    current_line_only = true,
@@ -653,13 +661,17 @@ add(inserts, singles, "i", "insert at", { cmd = cmds.i })
 add(inserts, doubles, "i", "insert at", { cmd = cmds.ii })
 
 add(inserts, singles, "a", "append at", { cmd = cmds.a })
-add(inserts, doubles, "a", "append at", { cmd = cmds.io })
+-- you want aa for append eventually
+-- this does the same thing as io<a,b,p,q>
+-- add(inserts, doubles, "a", "append at", { cmd = cmds.io })
 
 -- add(inserts, singles, "is", "insert at start", { cmd = cmds.i })
 -- add(inserts, singles, "ie", "insert at end", { cmd = cmds.a })
 
 add(inserts, doubles, "io", "insert outside", { cmd = cmds.io })
-add(inserts, doubles, "ii", "insert inside", { cmd = cmds.ii })
+-- you want ii for insert eventually
+-- and this is the same thing as i<a,b,p,q>
+-- add(inserts, doubles, "ii", "insert inside", { cmd = cmds.ii })
 
 
 -- -- vim.keymap.set('n', 'i ', "f i", { desc = "insert at first space" })
@@ -711,20 +723,36 @@ add(inserts, doubles, "ii", "insert inside", { cmd = cmds.ii })
 -- end, { noremap = true, silent = true, desc = "insert at first non-leading space" })
 
 
-setup_hops({ "n" }, "m", edits, nil, line_only)
-setup_hops({ "n" }, "", edits)
+setup_hops({ "n" }, "m", changes, nil, line_only)
+setup_hops({ "n" }, "", changes)
+
+setup_hops({ "n" }, "m", yanks, nil, line_only)
+setup_hops({ "n" }, "", yanks)
 
 setup_hops({ "n" }, "m", pastes)
+setup_hops({ "n" }, "m", {
+   h("p", "paste at char", _setup("chars", nil, { cmd = cmds.p })),
+   h("pl", "paste at char", _setup("chars", nil, { cmd = cmds.p })),
+})
+
 
 setup_hops({ "n" }, "m", inserts, nil, line_only)
 setup_hops({ "n" }, "", inserts)
 
 setup_hops({ "n" }, "", {
-   h("im", "insert at char", _setup("chars", nil, { cmd = cmds.i })),
-   h("am", "insert at char", _setup("chars", nil, { cmd = cmds.a })),
+   h("ml", "move to char", _setup("chars", nil, {})),
+   h("il", "insert at char", _setup("chars", nil, { cmd = cmds.i })),
+   h("al", "append at char", _setup("chars", nil, { cmd = cmds.a })),
+   h("cl", "change a char", _setup("chars", nil, { cmd = cmds.s })),
 })
 
+setup_hops({ "n" }, "", changes)
+
 setup_hops({ "n", "v" }, "m", moves)
+
+vim.keymap.set('n', 'mp', "<cmd>HopPasteChar1<cr>")
+vim.keymap.set('n', 'mpl', "<cmd>HopPasteChar1<cr>")
+-- vim.keymap.set('n', 'mym', "<cmd>HopYankChar1<cr>")
 
 
 vim.keymap.set('n', 'cfa', bind(hop_change_ft, "f", "[\\[\\]]"))
@@ -737,10 +765,10 @@ vim.keymap.set('n', 'cfq', bind(hop_change_ft, "f", "[\"'`]"))
 vim.keymap.set('n', 'ctq', bind(hop_change_ft, "t", "[\"'`]"))
 vim.keymap.set('n', 'cf ', bind(hop_change_ft, "f", spaces_regex))
 vim.keymap.set('n', 'ct ', bind(hop_change_ft, "t", spaces_regex))
-vim.keymap.set('n', 'cfm', bind(hop_change_ft, "t"))
-vim.keymap.set('n', 'ctm', bind(hop_change_ft, "t"))
 vim.keymap.set('n', 'cf', bind(hop_change_ft, "t"))
 vim.keymap.set('n', 'ct', bind(hop_change_ft, "t"))
+vim.keymap.set('n', 'cfl', bind(hop_change_ft, "t"))
+vim.keymap.set('n', 'ctl', bind(hop_change_ft, "t"))
 
 
 -- linewise repeatable
@@ -757,8 +785,6 @@ vim.keymap.set('n', 'ct', bind(hop_change_ft, "t"))
 --   M.hint_with_regex(jump_regex.regex_by_camel_case(), opts)
 -- end
 
-vim.keymap.set('n', 'mpm', "<cmd>HopPasteChar1<cr>")
--- vim.keymap.set('n', 'mym', "<cmd>HopYankChar1<cr>")
 
 
 
