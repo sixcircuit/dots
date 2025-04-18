@@ -4,6 +4,10 @@
 
    - eventually reenable ii, aa, ee (drop a for blocks, just use i / io)
 
+   - setup ai.cli to take a visual block so you can highlight text and pass it to the llm with
+   - "this is the relevant portion: ```<text>```" and start the insert above it.
+
+
 = later
 
    - keep in mind: you can make all the insert motions repeatable

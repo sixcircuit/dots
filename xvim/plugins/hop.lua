@@ -11,6 +11,7 @@ hop.setup {
    jump_on_sole_occurrence = true,
    create_hl_autocmd = false,
    uppercase_labels = true,
+   teasing = false,
    -- hint_position = hint_pos.MIDDLE,
    -- keys = 'etovxqpdygfblzhckisuran',
    -- keys = 'asdfghjkl;qwertyuiopvbcnxmz,',
@@ -289,6 +290,18 @@ hop_to.regex = function(regex_str, opts, hop_opts, callback)
 
    local jump_target_gtr = jump_target.jump_target_generator(matcher)
 
+   if opts.hook then
+      local _jump_target_gtr = jump_target_gtr
+      local offset = opts.offset or 0
+      jump_target_gtr = function(_opts)
+         local raw = _jump_target_gtr(_opts)
+         vim.print(raw)
+         raw.indirect_jump_targets = nil
+         raw.jump_targets = opts.hook(raw.jump_targets)
+         return raw
+      end
+   end
+
    if opts.offset then
       local _jump_target_gtr = jump_target_gtr
       local offset = opts.offset or 0
@@ -335,8 +348,9 @@ local function wait_for_macro_finish(callback, interval)
    end))
 end
 
-local function hop_change_ft(f_or_t, regex)
+local function hop_ft(f_or_t, c_or_d, regex)
    assert(f_or_t == "f" or f_or_t == "t", "f_or_t must be 'f' or 't'")
+   assert(c_or_d == "c" or c_or_d == "d", "c_or_d must be 'c' or 'd'")
    if regex == nil then
       local char = get_char()
       if char == nil then return nil end
@@ -359,6 +373,15 @@ local function hop_change_ft(f_or_t, regex)
 
    local opts = {
       jump = false,
+      hook = function(targets)
+         local res = {}
+         for _, target in ipairs(targets) do
+            if target.cursor.col ~= start_col then
+               table.insert(res, target)
+            end
+         end
+         return res
+      end,
       cmd = function(matched_char, loc)
          matched = matched_char
 
@@ -376,9 +399,11 @@ local function hop_change_ft(f_or_t, regex)
          end
 
          if count == 0 and is_on_char then
-            if f_or_t == "f" then change = "xi" else change = "i" end
+            -- this is how vim works by default.
+            return ""
+            -- if f_or_t == "f" then change = "xi" else change = "i" end
          else
-            change = "c" .. count .. f_or_t .. matched_char
+            change = c_or_d .. count .. f_or_t .. matched_char
          end
 
          return change
@@ -386,16 +411,17 @@ local function hop_change_ft(f_or_t, regex)
    }
 
    hop_to.regex(regex, opts, hop_opts, function()
-      local recording_reg = vim.fn.reg_recording()
-      if recording_reg == "" then return end
-      wait_for_macro_finish(function()
-         local current_macro = vim.fn.getreg(recording_reg)
-         local updated_macro = current_macro:gsub("c[ft]q" .. escape_lua_pattern(matched), change, 1)
-         vim.fn.setreg(recording_reg, updated_macro)
-         -- print("recording_reg:", recording_reg)
-         -- print("current_macro:", current_macro)
-         -- print("updated_macro:", updated_macro)
-      end)
+      -- TODO: support macros somehow.
+      -- local recording_reg = vim.fn.reg_recording()
+      -- if recording_reg == "" then return end
+      -- wait_for_macro_finish(function()
+      --    local current_macro = vim.fn.getreg(recording_reg)
+      --    local updated_macro = current_macro:gsub("[cd][ft]q" .. escape_lua_pattern(matched), change, 1)
+      --    vim.fn.setreg(recording_reg, updated_macro)
+      --    -- print("recording_reg:", recording_reg)
+      --    -- print("current_macro:", current_macro)
+      --    -- print("updated_macro:", updated_macro)
+      -- end)
    end)
 end
 
@@ -527,6 +553,7 @@ local cmds = {
    i = function(str) return "i" end,
    a = function(str) return "a" end,
    s = function(str) return "s" end,
+   dot = function(str) return "." end,
    vi = function(str) return "vi" .. str .. "" end,
    yi = function(str) return "yi" .. str .. "" end,
    ci = function(str) return "vi" .. str .. "c" end,
@@ -637,6 +664,11 @@ local moves = {}
 add(moves, singles, "t", "hop to")
 add(moves, doubles, "t", "hop to")
 
+local dots = {}
+
+add(dots, singles, ".", "dot repeat at", { cmd = cmds.dot })
+add(dots, doubles, ".", "dot repeat at", { cmd = cmds.dot })
+
 local yanks = {}
 
 add(yanks, doubles, "y", "yank inside",   { cmd = cmds.yi })
@@ -722,9 +754,23 @@ add(inserts, doubles, "io", "insert outside", { cmd = cmds.io })
 --    end
 -- end, { noremap = true, silent = true, desc = "insert at first non-leading space" })
 
+setup_hops({ "n", "v" }, "m", moves)
+setup_hops({ "n", "v" }, "", {
+   h("m ", "move to space", _setup("regex", spaces_regex, {})),
+   h("ml", "move to char", _setup("chars", nil, {})),
+})
+
+setup_hops({ "n" }, "m", dots)
+setup_hops({ "n" }, "", {
+   h("m.", "repeat at char", _setup("chars", nil, { cmd = cmds.dot })),
+   h("m.l", "repeat at char", _setup("chars", nil, { cmd = cmds.dot })),
+})
 
 setup_hops({ "n" }, "m", changes, nil, line_only)
 setup_hops({ "n" }, "", changes)
+setup_hops({ "n" }, "", {
+   h("cl", "change a char", _setup("chars", nil, { cmd = cmds.s })),
+})
 
 setup_hops({ "n" }, "m", yanks, nil, line_only)
 setup_hops({ "n" }, "", yanks)
@@ -735,41 +781,47 @@ setup_hops({ "n" }, "m", {
    h("pl", "paste at char", _setup("chars", nil, { cmd = cmds.p })),
 })
 
-
 setup_hops({ "n" }, "m", inserts, nil, line_only)
 setup_hops({ "n" }, "", inserts)
-
 setup_hops({ "n" }, "", {
-   h("ml", "move to char", _setup("chars", nil, {})),
    h("il", "insert at char", _setup("chars", nil, { cmd = cmds.i })),
    h("al", "append at char", _setup("chars", nil, { cmd = cmds.a })),
-   h("cl", "change a char", _setup("chars", nil, { cmd = cmds.s })),
 })
 
-setup_hops({ "n" }, "", changes)
-
-setup_hops({ "n", "v" }, "m", moves)
-
-vim.keymap.set('n', 'mp', "<cmd>HopPasteChar1<cr>")
-vim.keymap.set('n', 'mpl', "<cmd>HopPasteChar1<cr>")
+-- vim.keymap.set('n', 'mp', "<cmd>HopPasteChar1<cr>")
+-- vim.keymap.set('n', 'mpl', "<cmd>HopPasteChar1<cr>")
 -- vim.keymap.set('n', 'mym', "<cmd>HopYankChar1<cr>")
 
 
-vim.keymap.set('n', 'cfa', bind(hop_change_ft, "f", "[\\[\\]]"))
-vim.keymap.set('n', 'cta', bind(hop_change_ft, "t", "[\\[\\]]"))
-vim.keymap.set('n', 'cfb', bind(hop_change_ft, "f", "[{}]"))
-vim.keymap.set('n', 'ctb', bind(hop_change_ft, "t", "[{}]"))
-vim.keymap.set('n', 'cfp', bind(hop_change_ft, "f", "[()]"))
-vim.keymap.set('n', 'ctp', bind(hop_change_ft, "t", "[()]"))
-vim.keymap.set('n', 'cfq', bind(hop_change_ft, "f", "[\"'`]"))
-vim.keymap.set('n', 'ctq', bind(hop_change_ft, "t", "[\"'`]"))
-vim.keymap.set('n', 'cf ', bind(hop_change_ft, "f", spaces_regex))
-vim.keymap.set('n', 'ct ', bind(hop_change_ft, "t", spaces_regex))
-vim.keymap.set('n', 'cf', bind(hop_change_ft, "t"))
-vim.keymap.set('n', 'ct', bind(hop_change_ft, "t"))
-vim.keymap.set('n', 'cfl', bind(hop_change_ft, "t"))
-vim.keymap.set('n', 'ctl', bind(hop_change_ft, "t"))
+vim.keymap.set('n', 'cfa', bind(hop_ft, "f", "c", "[\\[\\]]"))
+vim.keymap.set('n', 'cta', bind(hop_ft, "t", "c", "[\\[\\]]"))
+vim.keymap.set('n', 'cfb', bind(hop_ft, "f", "c", "[{}]"))
+vim.keymap.set('n', 'ctb', bind(hop_ft, "t", "c", "[{}]"))
+vim.keymap.set('n', 'cfp', bind(hop_ft, "f", "c", "[()]"))
+vim.keymap.set('n', 'ctp', bind(hop_ft, "t", "c", "[()]"))
+vim.keymap.set('n', 'cfq', bind(hop_ft, "f", "c", "[\"'`]"))
+vim.keymap.set('n', 'ctq', bind(hop_ft, "t", "c", "[\"'`]"))
+vim.keymap.set('n', 'cf ', bind(hop_ft, "f", "c", spaces_regex))
+vim.keymap.set('n', 'ct ', bind(hop_ft, "t", "c", spaces_regex))
+vim.keymap.set('n', 'cf',  bind(hop_ft, "f", "c"))
+vim.keymap.set('n', 'ct',  bind(hop_ft, "t", "c"))
+vim.keymap.set('n', 'cfl', bind(hop_ft, "f", "c"))
+vim.keymap.set('n', 'ctl', bind(hop_ft, "t", "c"))
 
+vim.keymap.set('n', 'dfa', bind(hop_ft, "f", "d", "[\\[\\]]"))
+vim.keymap.set('n', 'dta', bind(hop_ft, "t", "d", "[\\[\\]]"))
+vim.keymap.set('n', 'dfb', bind(hop_ft, "f", "d", "[{}]"))
+vim.keymap.set('n', 'dtb', bind(hop_ft, "t", "d", "[{}]"))
+vim.keymap.set('n', 'dfp', bind(hop_ft, "f", "d", "[()]"))
+vim.keymap.set('n', 'dtp', bind(hop_ft, "t", "d", "[()]"))
+vim.keymap.set('n', 'dfq', bind(hop_ft, "f", "d", "[\"'`]"))
+vim.keymap.set('n', 'dtq', bind(hop_ft, "t", "d", "[\"'`]"))
+vim.keymap.set('n', 'df ', bind(hop_ft, "f", "d", spaces_regex))
+vim.keymap.set('n', 'dt ', bind(hop_ft, "t", "d", spaces_regex))
+vim.keymap.set('n', 'df',  bind(hop_ft, "f", "d"))
+vim.keymap.set('n', 'dt',  bind(hop_ft, "t", "d"))
+vim.keymap.set('n', 'dfl', bind(hop_ft, "f", "d"))
+vim.keymap.set('n', 'dtl', bind(hop_ft, "t", "d"))
 
 -- linewise repeatable
 -- cmv -- (variable) camel case move forward
