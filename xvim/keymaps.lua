@@ -536,6 +536,8 @@ vim.keymap.set('n', 'cea', "ci] <left>", { desc = "delete inside array []" })
    -- i should be moving and inserting at the same time
    vim.keymap.set('n', 'aaaa', "a", { desc = "move a to aaaa" })
    vim.keymap.set('n', 'iiii', "i", { desc = "move i to iiii" })
+
+   --- e -- thing execute
    vim.keymap.set('n', 'eeee', "e", { desc = "move e to eeee" })
 
    -- -- vim.keymap.set('n', 'i ', "f i", { desc = "insert at first space" })
@@ -717,7 +719,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
       -- vim.keymap.set('n', 'sh', jump_into_hover_window, opts)
       vim.keymap.set('n', 'crn', vim.lsp.buf.rename, opts, { desc = "rename the thing under the cursor" })
-      vim.keymap.set({ 'n' }, '<leader>ca', vim.lsp.buf.code_action, opts, { desc = "do a code action" })
+      vim.keymap.set({ 'n' }, 'ea', vim.lsp.buf.code_action, opts, { desc = "do a code action" })
 
       -- can't use w slows down easymotions
       -- vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
