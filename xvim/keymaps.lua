@@ -137,39 +137,64 @@ end
 
 local function nearest_quote()
    local line = vim.api.nvim_get_current_line()
-   local cursor_col = vim.api.nvim_win_get_cursor(0)[2] + 1 -- 1-based indexing
+   local cursor_col = vim.api.nvim_win_get_cursor(0)[2] + 1
 
-   -- Look backward for the last quote before the cursor
-   local back_part = line:sub(1, cursor_col)
-   local start_quote, start_pos = nil, nil
+   local quotes = { ['"'] = true, ["'"] = true, ['`'] = true }
+   local in_quote = nil
+   local start_pos = nil
+   local quote_pairs = {}
 
-   for i = #back_part, 1, -1 do
-      local char = back_part:sub(i, i)
-      if char == '"' or char == "'" or char == "`" then
-         start_quote = char
-         start_pos = i
-         break
+   local i = 1
+   while i <= #line do
+      local char = line:sub(i, i)
+      local prev = line:sub(i - 1, i - 1)
+
+      if quotes[char] and prev ~= '\\' then
+         if in_quote == nil then
+            -- Open a quote
+            in_quote = char
+            start_pos = i
+         elseif char == in_quote then
+            -- Close current quote
+            table.insert(quote_pairs, {
+               quote = in_quote,
+               start_pos = start_pos,
+               end_pos = i,
+            })
+            in_quote = nil
+            start_pos = nil
+         end
+      end
+
+      i = i + 1
+   end
+
+   -- Find the enclosing pair nearest to the cursor
+   local best_pair = nil
+   local best_distance = math.huge
+
+   for _, pair in ipairs(quote_pairs) do
+      if cursor_col >= pair.start_pos and cursor_col <= pair.end_pos then
+         local dist = math.min(
+         math.abs(cursor_col - pair.start_pos),
+         math.abs(cursor_col - pair.end_pos)
+         )
+         if dist < best_distance then
+            best_distance = dist
+            best_pair = pair
+         end
       end
    end
 
-   if not start_pos then
-      vim.notify("no quote found before cursor", vim.log.levels.WARN)
-      return
+   if best_pair then
+      return best_pair.quote
+   else
+      vim.notify("no enclosing quote pair found", vim.log.levels.WARN)
+      return nil
    end
-
-   -- Look forward from the start quote to find the next match
-   local forward_part = line:sub(start_pos + 1)
-   local end_pos = forward_part:find(vim.pesc(start_quote), 1, true)
-
-   if not end_pos then
-      vim.notify("no matching closing quote found", vim.log.levels.WARN)
-      return
-   end
-
-   return start_quote
 end
 
-local function with_nearest_quote_f(cmd)
+local function with_nearest_quote_f(cmd, mode)
    return function()
       local start_quote = nearest_quote()
       if start_quote then
@@ -179,7 +204,7 @@ local function with_nearest_quote_f(cmd)
          else
             cmd_str = cmd .. start_quote
          end
-         vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(cmd_str, true, false, true), "m", false)
+         vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(cmd_str, true, false, true), mode or "n", false)
       end
    end
 end
@@ -470,21 +495,21 @@ vim.keymap.set('n', 'cip', "ci(", { desc = "change inside parens" })
 vim.keymap.set('n', 'cia', "ci[", { desc = "change inside array []" })
 vim.keymap.set('n', 'ciq', with_nearest_quote_f("ci"), { desc = "change inside quotes" })
 
-vim.keymap.set('n', ',cab', "ca{", { desc = "change a braces", remap = true })
-vim.keymap.set('n', ',cap', "ca(", { desc = "change a parens", remap = true })
-vim.keymap.set('n', ',caa', "ca[", { desc = "change a array []", remap = true })
-vim.keymap.set('n', ',caq', with_nearest_quote_f("ca"), { desc = "change a quotes", remap = true })
+-- vim.keymap.set('n', ',cab', "ca{", { desc = "change a braces" })
+-- vim.keymap.set('n', ',cap', "ca(", { desc = "change a parens" })
+-- vim.keymap.set('n', ',caa', "ca[", { desc = "change a array []" })
+-- vim.keymap.set('n', ',caq', with_nearest_quote_f("ca"), { desc = "change a quotes" })
 
 vim.keymap.set('n', ',cb', "cs{", { desc = "change surrounding braces", remap = true })
-vim.keymap.set('n', ',cba', ",cb[", { desc = "change surrounding braces to array", remap = true })
-vim.keymap.set('n', ',cbp', ",cb(", { desc = "change surrounding braces to parens", remap = true })
+vim.keymap.set('n', ',cba', ",cb]", { desc = "change surrounding braces to array", remap = true })
+vim.keymap.set('n', ',cbp', ",cb)", { desc = "change surrounding braces to parens", remap = true })
 vim.keymap.set('n', ',cp', "cs(", { desc = "change surrounding parens", remap = true })
-vim.keymap.set('n', ',cpa', ",cp[", { desc = "change surrounding parens to array", remap = true })
-vim.keymap.set('n', ',cpb', ",cp{", { desc = "change surrounding parens to braces", remap = true })
+vim.keymap.set('n', ',cpa', ",cp]", { desc = "change surrounding parens to array", remap = true })
+vim.keymap.set('n', ',cpb', ",cp}", { desc = "change surrounding parens to braces", remap = true })
 vim.keymap.set('n', ',ca', "cs[", { desc = "change surrounding array []", remap = true })
-vim.keymap.set('n', ',cap', ",ca( ", { desc = "change surrounding array to parens", remap = true })
-vim.keymap.set('n', ',cab', ",ca{", { desc = "change surrounding array to braces", remap = true })
-vim.keymap.set('n', ',cq', with_nearest_quote_f("cs"), { desc = "change surrounding quotes", remap = true })
+vim.keymap.set('n', ',cap', ",ca)", { desc = "change surrounding array to parens", remap = true })
+vim.keymap.set('n', ',cab', ",ca}", { desc = "change surrounding array to braces", remap = true })
+vim.keymap.set('n', ',cq', with_nearest_quote_f("cs", "m"), { desc = "change surrounding quotes", remap = true })
 -- vim.keymap.set('n', ',cqa', with_nearest_quote_f(",cq["), { desc = "change surrounding quotes to array", remap = true })
 -- vim.keymap.set('n', ',cqb', with_nearest_quote_f(",cq{"), { desc = "change surrounding quotes to braces", remap = true })
 -- vim.keymap.set('n', ',cqp', with_nearest_quote_f(",cq("), { desc = "change surrounding quotes to parens", remap = true })
@@ -496,7 +521,7 @@ vim.keymap.set({ 'n', 'v' }, ',sp', "<Plug>Ysurroundiw)", { desc = "surround wit
 vim.keymap.set('n', ', b', "cs}{", { desc = "add space inside braces", remap = true })
 vim.keymap.set('n', ', p', "cs)(", { desc = "add space inside parens" , remap = true })
 vim.keymap.set('n', ', a', "cs][", { desc = "add space inside array []" , remap = true })
-vim.keymap.set('n', ', q', with_nearest_quote_f(function(quote) return("cs" .. quote .. " " .. quote) end), { desc = "add space inside quotes" , remap = true })
+vim.keymap.set('n', ', q', with_nearest_quote_f(function(quote) return("cs" .. quote .. " " .. quote) end, "m"), { desc = "add space inside quotes" , remap = true })
 
 vim.keymap.set('n', 'deb', "ct} <esc>", { desc = "delete till }" })
 vim.keymap.set('n', 'dep', "ci) <esc>", { desc = "delete till )" })
