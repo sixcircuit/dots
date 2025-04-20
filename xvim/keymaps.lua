@@ -323,9 +323,17 @@ local function comma_list_action(open_char, close_char, mode)
    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
    local line = vim.api.nvim_get_current_line()
    local open_idx, close_idx = find_enclosing_block(open_char, close_char, line, col + 1)
+
+   local fallback = false
    if not open_idx or not close_idx then
-      vim.notify("Could not find enclosing block", vim.log.levels.WARN)
-      return
+      if line:find(",") then
+         open_idx = 0
+         close_idx = #line + 1
+         fallback = true
+      else
+         vim.notify("could not find enclosing block or comma-separated list", vim.log.levels.WARN)
+         return
+      end
    end
 
    local args_str = line:sub(open_idx + 1, close_idx - 1)
@@ -370,18 +378,31 @@ local function comma_list_action(open_char, close_char, mode)
    end
 
    local function set_new_args()
-      local leading_ws = args_str:match("^(%s*)") or ""
-      local trailing_ws = args_str:match("(%s*)$") or ""
+      local raw_args_str = line:sub(open_idx + 1, close_idx - 1)
+      local leading_ws = raw_args_str:match("^(%s*)") or ""
+      local trailing_ws = raw_args_str:match("(%s*)$") or ""
 
-      local use_compact = not args_str:find(",%s")
+      local use_compact = not raw_args_str:find(",%s")
       local separator = use_compact and "," or ", "
 
-      local trimmed_args = vim.tbl_map(function(arg) return (vim.trim(arg.raw)) end, args)
+      local trimmed_args = vim.tbl_map(function(arg) return vim.trim(arg.raw) end, args)
 
-      local new_args = leading_ws .. table.concat(trimmed_args, separator) .. trailing_ws
-      local new_line = line:sub(1, open_idx) .. new_args .. line:sub(close_idx)
+      -- Detect if original string had a trailing comma before trailing whitespace
+      local has_trailing_comma = raw_args_str:find(",%s*$")
+
+      local new_args = table.concat(trimmed_args, separator)
+      if has_trailing_comma and #trimmed_args > 0 then
+         new_args = new_args .. separator:sub(1,1) -- just the "," part
+      end
+
+      local final = leading_ws .. new_args .. trailing_ws
+      local new_line = fallback
+          and final
+          or (line:sub(1, open_idx) .. final .. line:sub(close_idx))
+
       vim.api.nvim_set_current_line(new_line)
-      return({ lead = #leading_ws, trail = #trailing_ws, delim = #separator })
+
+      return { lead = #leading_ws, trail = #trailing_ws, delim = #separator }
    end
 
    local function set_new_cursor_col(spacing)

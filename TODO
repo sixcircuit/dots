@@ -7,7 +7,6 @@
    - setup ai.cli to take a visual block so you can highlight text and pass it to the llm with
    - "this is the relevant portion: ```<text>```" and start the insert above it.
 
-
 = later
 
    - keep in mind: you can make all the insert motions repeatable
@@ -302,4 +301,7 @@ x vim
    x write ,ca(b, p), ,cb(a, p), ,cp(a, b)
       x change from one surround to another
       x just write these by hand, there aren't that many permutations
+
+   x vim: add linewise fallback ,aph etc.
+
 
