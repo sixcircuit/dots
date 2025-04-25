@@ -21,14 +21,12 @@ SPACESHIP_TIME_COLOR="${SPACESHIP_TIME_COLOR="yellow"}"
 spaceship_time() {
   [[ $SPACESHIP_TIME_SHOW == false ]] && return
 
-  local 'time_str'
+  local 'time_format'
 
   if [[ $SPACESHIP_TIME_FORMAT != false ]]; then
-    time_str="${SPACESHIP_TIME_FORMAT}"
-  elif [[ $SPACESHIP_TIME_12HR == true ]]; then
-    time_str="%D{%r}"
+    time_format="${SPACESHIP_TIME_FORMAT}"
   else
-    time_str="%D{%T}"
+    time_format="%T"
   fi
 
   local 'hour'
@@ -37,10 +35,10 @@ spaceship_time() {
   hour=$(($hour+0))
 
   local 'color'
-  
+
   color=$SPACESHIP_TIME_COLOR
 
-  # TODO: I THINK THIS LOGIC IS STRAIGHT UP GARBAGE? IT MAY ONLY WORK FOR THE 
+  # TODO: I THINK THIS LOGIC IS STRAIGHT UP GARBAGE? IT MAY ONLY WORK FOR THE
   # NUMBERS I HAVE. IT MIGHT NOT EVEN WORK FOR THAT. FIX IT UP. IT'S A GOOD IDEA.
 
   if [[ ($hour -lt $SPACESHIP_TIME_TOO_LATE_DAY_START_HOUR) ]]; then
@@ -49,11 +47,29 @@ spaceship_time() {
      color=$SPACESHIP_TIME_TOO_LATE_RED_COLOR
   elif [[ ($hour -ge $SPACESHIP_TIME_TOO_LATE_YELLOW_HOUR) ]]; then
      color=$SPACESHIP_TIME_TOO_LATE_YELLOW_COLOR
-  fi 
+  fi
+
+  local local_time=$(date +"$time_format")
+  local utc_time=$(TZ="UTC" date +"$time_format")
+  local local_hour=$(date +"%H")
+  local local_hour=$(date +"%-I")
+  local local_am_pm=$(date +"%p")
+  local utc_hour=$(TZ="UTC" date +"%H")
+  local utc_hour=$(TZ="UTC" date +"%-I")
+  local utc_am_pm=$(TZ="UTC" date +"%p")
+  local any_minute=$(TZ="UTC" date +"%M")
+  local any_second=$(TZ="UTC" date +"%S")
+
+    # "([$utc_hour]$local_time)" \
+    # "($local_time)[$utc_time]" \
+    # "[$utc_hour,$local_hour]:$any_minute" \
+    # "loc[$local_time] utc[$utc_hour]" \
+    # "($local_hour:$any_minute$local_am_pm | $utc_hour:$any_minute$utc_am_pm)" \
+    # "($local_time | $utc_time)" \
 
   spaceship::section \
     "$color" \
     "$SPACESHIP_TIME_PREFIX" \
-    "$time_str" \
+    "($local_time)" \
     "$SPACESHIP_TIME_SUFFIX"
 }
