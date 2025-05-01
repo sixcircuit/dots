@@ -363,9 +363,19 @@ local function comma_list_action(open_char, close_char, mode)
       return
    end
 
+   local removed = args[cursor_arg_index].raw
+
+   local function update_registers()
+      vim.fn.setreg('"', removed)
+      vim.fn.setreg('+', removed)
+      vim.fn.setreg('*', removed)
+   end
+
    if mode == "change" then
+      update_registers()
       args[cursor_arg_index].raw = ""
    elseif mode == "delete" then
+      update_registers()
       table.remove(args, cursor_arg_index)
    elseif mode == "left" and cursor_arg_index > 1 then
       args[cursor_arg_index], args[cursor_arg_index - 1] =
@@ -448,7 +458,7 @@ end
 
 -- d,b c,b ,bh ,bl for b, p, a
 setup_comma_list_actions("p", "(", ")")
-setup_comma_list_actions("a", "[", "]")
+setup_comma_list_actions("k", "[", "]")
 setup_comma_list_actions("b", "{", "}")
 
 
@@ -488,68 +498,107 @@ vim.keymap.set('n', 'g#', "<Plug>(asterisk-gz#)<Plug>(is-nohl-1)", { desc = "fan
 
 vim.keymap.set('n', 'dib', "di{", { desc = "delete inside braces {}" })
 vim.keymap.set('n', 'dip', "di(", { desc = "delete inside parens ()" })
-vim.keymap.set('n', 'dia', "di[", { desc = "delete inside array []" })
+vim.keymap.set('n', 'dik', "di[", { desc = "delete inside brakets []" })
 vim.keymap.set('n', 'diq', with_nearest_quote_f("di"), { desc = "delete inside quotes" })
 
 vim.keymap.set('n', 'dab', "da{", { desc = "delete a braces {}" })
 vim.keymap.set('n', 'dap', "da(", { desc = "delete a parens ()" })
-vim.keymap.set('n', 'daa', "da[", { desc = "delete a array []" })
-vim.keymap.set('n', 'daq', with_nearest_quote_f("da"), { desc = "delete a quote []" })
+vim.keymap.set('n', 'dak', "da[", { desc = "delete a brakets []" })
+vim.keymap.set('n', 'daq', with_nearest_quote_f("da"), { desc = "delete a quote" })
 
 vim.keymap.set('n', 'dsb', "<Plug>Dsurround{", { desc = "delete surrounding braces {}", remap = true })
 vim.keymap.set('n', 'dsp', "<Plug>Dsurround(", { desc = "delete surrounding parens ()", remap = true })
-vim.keymap.set('n', 'dsa', "<Plug>Dsurround[", { desc = "delete surrounding array []", remap = true })
+vim.keymap.set('n', 'dsk', "<Plug>Dsurround[", { desc = "delete surrounding brakets []", remap = true })
 vim.keymap.set('n', 'ds<space>', "F<space>xf<space>x", { desc = "delete surrounding spaces" })
 
-vim.keymap.set('n', 'yib', "yi{", { desc = "yank inside braces {}" })
-vim.keymap.set('n', 'yip', "yi(", { desc = "yank inside parens ()" })
-vim.keymap.set('n', 'yia', "yi[", { desc = "yank inside array []" })
-vim.keymap.set('n', 'yiq', with_nearest_quote_f("yi"), { desc = "yank inside nearest matching quote [\"'`]" })
+-- vim.keymap.set('n', 'yib', "yi{", { desc = "yank inside braces {}" })
+-- vim.keymap.set('n', 'yip', "yi(", { desc = "yank inside parens ()" })
+-- vim.keymap.set('n', 'yik', "yi[", { desc = "yank inside brakets []" })
+-- vim.keymap.set('n', 'yiq', with_nearest_quote_f("yi"), { desc = "yank inside nearest matching quote [\"'`]" })
 
-vim.keymap.set('n', 'yab', "ya{", { desc = "yank a braces {}" })
-vim.keymap.set('n', 'yap', "ya(", { desc = "yank a parens ()" })
-vim.keymap.set('n', 'yaa', "ya[", { desc = "yank a array []" })
-vim.keymap.set('n', 'yaq', with_nearest_quote_f("ya"), { desc = "yank a nearest matching quote [\"'`]" })
+-- vim.keymap.set('n', 'yab', "ya{", { desc = "yank a braces {}" })
+-- vim.keymap.set('n', 'yap', "ya(", { desc = "yank a parens ()" })
+-- vim.keymap.set('n', 'yak', "ya[", { desc = "yank a brakets []" })
+-- vim.keymap.set('n', 'yaq', with_nearest_quote_f("ya"), { desc = "yank a nearest matching quote [\"'`]" })
 
 vim.keymap.set('n', 'cib', "ci{", { desc = "change inside braces" })
 vim.keymap.set('n', 'cip', "ci(", { desc = "change inside parens" })
-vim.keymap.set('n', 'cia', "ci[", { desc = "change inside array []" })
+vim.keymap.set('n', 'cik', "ci[", { desc = "change inside brakets" })
 vim.keymap.set('n', 'ciq', with_nearest_quote_f("ci"), { desc = "change inside quotes" })
 
--- vim.keymap.set('n', ',cab', "ca{", { desc = "change a braces" })
--- vim.keymap.set('n', ',cap', "ca(", { desc = "change a parens" })
--- vim.keymap.set('n', ',caa', "ca[", { desc = "change a array []" })
+vim.keymap.set('n', 'cab', "ca{", { desc = "change a braces" })
+vim.keymap.set('n', 'cap', "ca(", { desc = "change a parens" })
+vim.keymap.set('n', 'cak', "ca[", { desc = "change a brakets []" })
+vim.keymap.set('n', 'caq', with_nearest_quote_f("ca"), { desc = "change a quotes" })
+
+-- vim.keymap.set('n', ',cab', "ca{", { desc = "change a braces {}" })
+-- vim.keymap.set('n', ',cap', "ca(", { desc = "change a parens ()" })
+-- vim.keymap.set('n', ',cak', "ca[", { desc = "change a brackets []" })
 -- vim.keymap.set('n', ',caq', with_nearest_quote_f("ca"), { desc = "change a quotes" })
 
 vim.keymap.set('n', ',cb', "cs{", { desc = "change surrounding braces", remap = true })
-vim.keymap.set('n', ',cba', ",cb]", { desc = "change surrounding braces to array", remap = true })
+vim.keymap.set('n', ',cbk', ",cb]", { desc = "change surrounding braces to brakets", remap = true })
 vim.keymap.set('n', ',cbp', ",cb)", { desc = "change surrounding braces to parens", remap = true })
 vim.keymap.set('n', ',cp', "cs(", { desc = "change surrounding parens", remap = true })
-vim.keymap.set('n', ',cpa', ",cp]", { desc = "change surrounding parens to array", remap = true })
+vim.keymap.set('n', ',cpk', ",cp]", { desc = "change surrounding parens to brakets", remap = true })
 vim.keymap.set('n', ',cpb', ",cp}", { desc = "change surrounding parens to braces", remap = true })
-vim.keymap.set('n', ',ca', "cs[", { desc = "change surrounding array []", remap = true })
-vim.keymap.set('n', ',cap', ",ca)", { desc = "change surrounding array to parens", remap = true })
-vim.keymap.set('n', ',cab', ",ca}", { desc = "change surrounding array to braces", remap = true })
+vim.keymap.set('n', ',ca', "cs[", { desc = "change surrounding brakets", remap = true })
+vim.keymap.set('n', ',ckp', ",ca)", { desc = "change surrounding brakets to parens", remap = true })
+vim.keymap.set('n', ',ckb', ",ca}", { desc = "change surrounding brakets to braces", remap = true })
 vim.keymap.set('n', ',cq', with_nearest_quote_f("cs", "m"), { desc = "change surrounding quotes", remap = true })
--- vim.keymap.set('n', ',cqa', with_nearest_quote_f(",cq["), { desc = "change surrounding quotes to array", remap = true })
+-- vim.keymap.set('n', ',cqk', with_nearest_quote_f(",cq["), { desc = "change surrounding quotes to brakets", remap = true })
 -- vim.keymap.set('n', ',cqb', with_nearest_quote_f(",cq{"), { desc = "change surrounding quotes to braces", remap = true })
 -- vim.keymap.set('n', ',cqp', with_nearest_quote_f(",cq("), { desc = "change surrounding quotes to parens", remap = true })
 
-vim.keymap.set({ 'n', 'v' }, ',sb', "<Plug>Ysurroundiw}", { desc = "surround with {", remap = true })
-vim.keymap.set({ 'n', 'v' }, ',sa', "<Plug>Ysurroundiw]", { desc = "surround with [", remap = true })
-vim.keymap.set({ 'n', 'v' }, ',sp', "<Plug>Ysurroundiw)", { desc = "surround with (", remap = true })
+vim.keymap.set({ 'n', 'v' }, ',sb', "<Plug>Ysurroundiw}", { desc = "surround with braces {}", remap = true })
+vim.keymap.set({ 'n', 'v' }, ',sk', "<Plug>Ysurroundiw]", { desc = "surround with brakets []", remap = true })
+vim.keymap.set({ 'n', 'v' }, ',sp', "<Plug>Ysurroundiw)", { desc = "surround with parens ()", remap = true })
 
 vim.keymap.set('n', ', b', "cs}{", { desc = "add space inside braces", remap = true })
 vim.keymap.set('n', ', p', "cs)(", { desc = "add space inside parens" , remap = true })
-vim.keymap.set('n', ', a', "cs][", { desc = "add space inside array []" , remap = true })
+vim.keymap.set('n', ', k', "cs][", { desc = "add space inside brakets []" , remap = true })
 vim.keymap.set('n', ', q', with_nearest_quote_f(function(quote) return("cs" .. quote .. " " .. quote) end, "m"), { desc = "add space inside quotes" , remap = true })
 
 vim.keymap.set('n', 'deb', "ct} <esc>", { desc = "delete till }" })
 vim.keymap.set('n', 'dep', "ci) <esc>", { desc = "delete till )" })
-vim.keymap.set('n', 'dea', "ci] <esc>", { desc = "delete till ]" })
+vim.keymap.set('n', 'dek', "ci] <esc>", { desc = "delete till ]" })
 vim.keymap.set('n', 'ceb', "ct} <left>", { desc = "delete inside braces {}" })
 vim.keymap.set('n', 'cep', "ci) <left>", { desc = "delete inside parens ()" })
-vim.keymap.set('n', 'cea', "ci] <left>", { desc = "delete inside array []" })
+vim.keymap.set('n', 'cek', "ci] <left>", { desc = "delete inside brakets []" })
+
+local function make_slash_textobj(include_start_delim, include_trail_delim)
+   return function()
+      local save_cursor = vim.api.nvim_win_get_cursor(0)
+
+      -- Search backward for opening slash
+      if vim.fn.search("/", "bW") == 0 then return end
+      local start_pos = vim.api.nvim_win_get_cursor(0)
+
+      -- Search forward for closing slash
+      if vim.fn.search("/", "W") == 0 then
+         vim.api.nvim_win_set_cursor(0, save_cursor)
+         return
+      end
+      local end_pos = vim.api.nvim_win_get_cursor(0)
+
+      if include_start_delim then
+         vim.api.nvim_win_set_cursor(0, start_pos)
+      else
+         vim.api.nvim_win_set_cursor(0, {start_pos[1], start_pos[2] + 1})
+      end
+
+      vim.cmd("normal! v")
+
+      if include_trail_delim then
+         vim.api.nvim_win_set_cursor(0, end_pos)
+      else
+         vim.api.nvim_win_set_cursor(0, {end_pos[1], end_pos[2] - 1})
+      end
+   end
+end
+
+vim.keymap.set({ "o", "x" }, "i/", make_slash_textobj(false, false), { desc = "inside /.../" })
+vim.keymap.set({ "o", "x" }, "a/", make_slash_textobj(false, true), { desc = "a .../" })
 
 -- this whole thing is a . repeat plugin example
 -- local function add_space_inside_quote()
@@ -666,8 +715,8 @@ end, { desc = "insert date marker with =" })
 -- rework how marks / links work
 vim.keymap.set('n', '`', "<nop>", { desc = "disable '" })
 vim.keymap.set('n', "'", "<nop>", { desc = "disable `" })
-vim.keymap.set('n', ',m', "m", { desc = "make a link (mark) '" })
-vim.keymap.set('n', 'gm', "`", { desc = "jump to link (mark) '" })
+vim.keymap.set('n', 'L', "m", { desc = "make a link (mark) '" })
+vim.keymap.set('n', 'gl', "`", { desc = "jump to link (mark) '" })
 
 
 -- i always want linewise to start, but can switch to charwise with one more "v".
@@ -761,6 +810,40 @@ vim.keymap.set('n', 'sl', toggle_virtual_text)
 vim.keymap.set('n', 'sh', show_hover, { desc = "show hover window" })
 
 vim.keymap.set('n', 'so', ':w | source %<CR>', { desc = "save and source current file" })
+
+vim.keymap.set("n", ",bo", function()
+   local cur_row = vim.api.nvim_win_get_cursor(0)[1]
+   local line = vim.api.nvim_get_current_line()
+
+   local before, body, after = line:match("^(.-){(.-)}(.*)$")
+   if not body then return end
+
+   -- Split statements
+   local statements = {}
+   for stmt in body:gmatch("([^;]+)") do
+      local trimmed = vim.trim(stmt)
+      if trimmed ~= "" then
+         table.insert(statements, trimmed .. ";")
+      end
+   end
+   if #statements == 0 then return end
+
+   -- Replace current line with multiline block (unindented for now)
+   local new_lines = { before .. "{" }
+   for _, stmt in ipairs(statements) do
+      table.insert(new_lines, stmt)
+   end
+   table.insert(new_lines, "}" .. after)
+
+   vim.api.nvim_buf_set_lines(0, cur_row - 1, cur_row, false, new_lines)
+
+   -- Reselect the block and auto-indent it
+   -- vim.api.nvim_win_set_cursor(0, { cur_row, 0 })
+   vim.cmd("normal! va{=j")
+
+end, { desc = "open single-line { } block into multi-line" })
+
+vim.keymap.set("n", ",bc", "va{J", { desc = "close multi-line { } block to one line" })
 
 
 vim.api.nvim_create_autocmd('LspAttach', {

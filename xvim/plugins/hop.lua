@@ -448,7 +448,7 @@ vim.keymap.set({ 'n', 'v' }, '<leader>b', "<cmd>HopWordBC<cr>")
 -- vim.keymap.set('n', 'mll', "<cmd>HopAnywhereCurrentLineAC<cr>")
 -- vim.keymap.set('n', 'mls', "<cmd>HopCamelCaseCurrentLineAC<cr>")
 
--- vim.keymap.set('n', 'ms', "<cmd>HopCamelCaseCurrentLine<cr>")
+-- vim.keymap.set('n', 'mv', "<cmd>HopCamelCase<cr>")
 -- vim.keymap.set('n', 'mms', "<cmd>HopCamelCase<cr>")
 
 -- vim.keymap.set('n', 'm/', "<cmd>HopPatternAC<cr>")
@@ -557,6 +557,8 @@ local cmds = {
    vi = function(str) return "vi" .. str .. "" end,
    yi = function(str) return "yi" .. str .. "" end,
    ci = function(str) return "vi" .. str .. "c" end,
+   cw = function(str) return "cw" end,
+   dw = function(str) return "dw" end,
    ciw = function(str) return "ciw" end,
    p = function(str, loc) return "p`[" end,
    pi = function(str, loc)
@@ -601,9 +603,11 @@ end
 
  -- match all spaces that aren't at the start of a line
 local spaces_regex = "\\S\\zs \\+"
+-- local  = jump_regex.regex_by_camel_case()
+local variable_regex = "_"
 
 local _setups = {
-   a = _setup_f("regex", "[\\[\\]]", { highlight = "[\\]]" }),
+   k = _setup_f("regex", "[\\[\\]]", { highlight = "[\\]]" }),
    b = _setup_f("regex", "[{}]",   { highlight = "[{}]" }),
    p = _setup_f("regex", "[()]",   { highlight = "[()]" }),
    q = _setup_f("regex", "[\"'`]"),
@@ -615,20 +619,22 @@ local _setups = {
    eb = _setup_f("regex", "[}]",   { highlight = "[{}]" }),
    ep = _setup_f("regex", "[)]",   { highlight = "[()]" }),
    w = _setup_f("regex", jump_regex.regex_by_word_start()),
+   v = _setup_f("regex", variable_regex),
    -- sw = _setup_f("regex", jump_regex.regex_by_word_start()),
    -- ew = _setup_f("regex", jump_regex.regex_by_word_end())
 }
 
 
 local doubles = {
-   a = "[]", b = "{}", p = "()", q = "quotes",
+   k = "[]", b = "{}", p = "()", q = "quotes",
 }
 -- local doubles_start = { sa = "[", sb = "{", sp = "(", sq = "quotes", sw = "word start" }
 -- local doubles_end = { ea = "]", eb = "}", ep = ")", eq = "quotes", ew = "word end" }
 
 local singles = {
    [" "] = "spaces",
-   w = "word"
+   w = "word",
+   v = "variable name"
 }
 
 local function add_chars(tbl, chars) for _, char in pairs(chars) do tbl[char] = char end end
@@ -636,7 +642,7 @@ local function add_chars(tbl, chars) for _, char in pairs(chars) do tbl[char] = 
 add_chars(singles, {
    "'", '"', "`",
    "(" ,")", "[", "]", "{", "}",
-   ',', '.', ';', ':', "_", "-", "="
+   ',', '.', ';', ':', "_", "-", "=", "/", "\\"
 })
 
 local function h(keys, desc, setup)
@@ -694,7 +700,7 @@ add(inserts, doubles, "i", "insert at", { cmd = cmds.ii })
 
 add(inserts, singles, "a", "append at", { cmd = cmds.a })
 -- you want aa for append eventually
--- this does the same thing as io<a,b,p,q>
+-- this does the same thing as io<k,b,p,q>
 -- add(inserts, doubles, "a", "append at", { cmd = cmds.io })
 
 -- add(inserts, singles, "is", "insert at start", { cmd = cmds.i })
@@ -702,12 +708,12 @@ add(inserts, singles, "a", "append at", { cmd = cmds.a })
 
 add(inserts, doubles, "io", "insert outside", { cmd = cmds.io })
 -- you want ii for insert eventually
--- and this is the same thing as i<a,b,p,q>
+-- and this is the same thing as i<k,b,p,q>
 -- add(inserts, doubles, "ii", "insert inside", { cmd = cmds.ii })
 
 
 -- -- vim.keymap.set('n', 'i ', "f i", { desc = "insert at first space" })
--- vim.keymap.set('n', 'ia', "f[a", { desc = "insert at first [" })
+-- vim.keymap.set('n', 'ik', "f[a", { desc = "insert at first [" })
 -- vim.keymap.set('n', 'i[', "f[a", { desc = "insert at first [" })
 -- vim.keymap.set('n', 'ib', "f{a", { desc = "insert at first {" })
 -- vim.keymap.set('n', 'i{', "f{a", { desc = "insert at first {" })
@@ -758,18 +764,22 @@ setup_hops({ "n", "v" }, "m", moves)
 setup_hops({ "n", "v" }, "", {
    h("m ", "move to space", _setup("regex", spaces_regex, {})),
    h("ml", "move to char", _setup("chars", nil, {})),
+   h("mv", "move to variable", _setup("regex", variable_regex, {})),
 })
 
 setup_hops({ "n" }, "m", dots)
 setup_hops({ "n" }, "", {
    h("m.", "repeat at char", _setup("chars", nil, { cmd = cmds.dot })),
    h("m.l", "repeat at char", _setup("chars", nil, { cmd = cmds.dot })),
+   h("m.v", "repeat at variable", _setup("regex", variable_regex, { cmd = cmds.dot })),
 })
 
 setup_hops({ "n" }, "m", changes, nil, line_only)
 setup_hops({ "n" }, "", changes)
 setup_hops({ "n" }, "", {
    h("cl", "change a char", _setup("chars", nil, { cmd = cmds.s })),
+   h("cv", "chage a variable", _setup("regex", variable_regex, { cmd = cmds.cw })),
+   h("dv", "delete a variable", _setup("regex", variable_regex, { cmd = cmds.dw })),
 })
 
 setup_hops({ "n" }, "m", yanks, nil, line_only)
@@ -786,6 +796,8 @@ setup_hops({ "n" }, "", inserts)
 setup_hops({ "n" }, "", {
    h("il", "insert at char", _setup("chars", nil, { cmd = cmds.i })),
    h("al", "append at char", _setup("chars", nil, { cmd = cmds.a })),
+   h("iv", "insert at variable", _setup("regex", variable_regex, { cmd = cmds.i })),
+   h("av", "append at variable", _setup("regex", variable_regex, { cmd = cmds.a })),
 })
 
 -- vim.keymap.set('n', 'mp', "<cmd>HopPasteChar1<cr>")

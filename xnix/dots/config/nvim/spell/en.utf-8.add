@@ -208,3 +208,11 @@ nvim
 fsync
 fstats
 ds9
+deps
+mongodb
+nodejs
+devbox
+percona
+kubectl
+redpanda
+proc

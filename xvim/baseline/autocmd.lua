@@ -1,0 +1,16 @@
+
+-- local i = 0
+-- local function print_cmd(cmd)
+--    return function ()
+--       i = i + 1
+--       print("cmd: " .. cmd .. " " .. i)
+--    end
+-- end
+--
+-- vim.api.nvim_create_autocmd({ "BufEnter" }, {
+--   callback = print_cmd("BufEnter")
+-- })
+--
+-- vim.api.nvim_create_autocmd({ "FocusGained" }, {
+--   callback = print_cmd("FocusGained")
+-- })

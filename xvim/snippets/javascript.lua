@@ -239,6 +239,7 @@ insert(autosnippets, {
    s(";rbf", fmt( "return(false);", {})),
    s(";rt", fmt( "return(this);", {})),
    s(";rn", fmt( "return(null);", {})),
+   s(";rp", fmt( "return(new Promise(function(resolve, reject){{\n   {}\n}}));", { i(0) })),
 });
 
 insert(autosnippets, {
