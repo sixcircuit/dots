@@ -11,7 +11,11 @@ local function try_autosave()
    if not vim.bo.modifiable or not vim.bo.modified then return end
    if vim.api.nvim_get_mode().mode ~= "n" then return end -- only in normal mode
 
-   vim.cmd("silent! write")
+   vim.cmd("doautocmd BufWritePre")
+   vim.cmd("write")
+   vim.cmd("doautocmd BufWritePost")
+   -- i want BufWritePre to fire, it doesn't if i just do this.
+   -- vim.cmd("silent! write")
 end
 
 -- this one will also save on undo and redo,
