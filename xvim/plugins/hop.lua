@@ -778,17 +778,20 @@ setup_hops({ "n" }, "m", changes, nil, line_only)
 setup_hops({ "n" }, "", changes)
 setup_hops({ "n" }, "", {
    h("cl", "change a char", _setup("chars", nil, { cmd = cmds.s })),
-   h("cv", "chage a variable", _setup("regex", variable_regex, { cmd = cmds.cw })),
+   h("cv", "chage a variable", _setup("regex", variable_regex, { cmd = function () return("<right>cw") end })),
    h("dv", "delete a variable", _setup("regex", variable_regex, { cmd = cmds.dw })),
 })
 
 setup_hops({ "n" }, "m", yanks, nil, line_only)
 setup_hops({ "n" }, "", yanks)
 
-setup_hops({ "n" }, "m", pastes)
-setup_hops({ "n" }, "m", {
+setup_hops({ "n" }, "", pastes)
+setup_hops({ "n" }, "", {
    h("p", "paste at char", _setup("chars", nil, { cmd = cmds.p })),
    h("pl", "paste at char", _setup("chars", nil, { cmd = cmds.p })),
+   h("pk", "paste at line", _setup("regex", jump_regex.by_line_start(), { cmd = cmds.p }, { direction = hint_dirs.BEFORE_CURSOR })),
+   h("pj", "paste at line", _setup("regex", jump_regex.by_line_start(), { cmd = cmds.p }, { direction = hint_dirs.AFTER_CURSOR })),
+   h("pp", "paste at line", _setup("regex", jump_regex.by_line_start(), { cmd = cmds.p })),
 })
 
 setup_hops({ "n" }, "m", inserts, nil, line_only)

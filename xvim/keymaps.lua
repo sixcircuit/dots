@@ -643,6 +643,8 @@ vim.keymap.set('n', 'yh', 'y^', { desc = "yank to beginning of line" })
 
 -- these were cute but all of them moved to hop commands
 vim.keymap.set('n', 'i', "<nop>", { desc = "recoup i" })
+vim.keymap.set('n', 'p', "<nop>", { desc = "recoup p" })
+vim.keymap.set('n', 'P', "p", { desc = "p" })
 
 -- this is me trying to break a bad habit.
 -- i should be moving and inserting at the same time
@@ -728,9 +730,18 @@ vim.keymap.set('n', 'vv', "v", { desc = "change v to charwise with extra v" })
 -- this only works because i have <c-/> mapped to $ in carabiner
 vim.keymap.set('n', '$', fuzzy_search, { desc = "fuzzy search with <c-/> (if you have <c-/> mapped to $)" })
 
+local function commandt_f(cmd)
+   -- if highlight is on it makes the searched word
+   -- invisible in the cursor line of the command t window
+   return function()
+      vim.cmd('nohlsearch')
+      vim.cmd(cmd)
+   end
+end
 
 -- CommandT excludes no files, CommandTFind excludes some files. see the code in command-t.lua
-vim.keymap.set('n', '<leader>o', ':CommandTFind<cr>')
+vim.keymap.set('n', '<leader>o', commandt_f('CommandTFind'))
+-- vim.keymap.set('n', '<leader>o', ':CommandTFind<cr>')
 -- vim.keymap.set('n', '<leader>ll', ':CommandT<cr>')
 -- vim.keymap.set('n', '<leader>lb', ':CommandTBuffer<cr>')
 -- vim.keymap.set('n', '<leader>a', toggle_autocomplete)

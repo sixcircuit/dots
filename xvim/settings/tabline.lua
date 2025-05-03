@@ -476,7 +476,15 @@ function _G.TablinePagedStack()
 
          else
             local label = item.label
-            self:prepend({ label = fill_chars(self:cols_left(strlen(label))) })
+            if last_page then
+               self:prepend({ label = fill_chars(self:cols_left(strlen(label))) })
+            else
+               self:prepend({ label = fill_chars(self:cols_left(strlen(label)), "~") })
+               -- self:prepend({ label = fill_chars(self:cols_left(strlen(label)), "\\") })
+               -- self:prepend({ label = fill_chars(self:cols_left(strlen(label)), ".") })
+               -- self:prepend({ label = fill_chars(self:cols_left(strlen(label)), "<") })
+               -- self:prepend({ label = fill_chars(self:cols_left(strlen(label)), "·") })
+            end
             self:prepend({ label = string.rep(" ", self:cols_left(strlen(label))) })
             self:prepend({ label = '%#TabLineFill#', len = 0 })
             self:prepend({ label = label })
