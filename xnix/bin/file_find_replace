@@ -1,0 +1,72 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+
+function print_usage() {
+   console.log("usage: file_find_replace [-p] [-n] <filename> <find_regex> <replace_regex>");
+   console.log("   <find_regex> can be a raw string or /pattern/flags (e.g. /foo/i)");
+   process.exit(1);
+}
+
+function parse_regex(input) {
+   if(input.startsWith('/') && input.lastIndexOf('/') > 0){
+      const last_slash = input.lastIndexOf('/');
+      const pattern = input.slice(1, last_slash);
+      const flags = input.slice(last_slash + 1);
+      try{ return new RegExp(pattern, flags); }
+      catch(err){
+         console.error(`invalid regex: ${err.message}`);
+         process.exit(1);
+      }
+   }else{ return new RegExp(input, 'g'); }
+}
+
+const args = process.argv.slice(2);
+let print = false;
+let no_act = false;
+
+if(args[0] === "-n"){ no_act = true; args.shift(); }
+if(args[0] === "-p"){ print = true; args.shift(); }
+if(args[1] === "-n"){ no_act = true; args.shift(); }
+if(args[1] === "-p"){ print = true; args.shift(); }
+
+const file_name = args.shift();
+const find_raw = args.shift();
+const replace_regex = args.shift();
+
+if(!file_name || !find_raw || !replace_regex){ print_usage(); process.exit(1); }
+
+const regex = parse_regex(find_raw);
+
+let text;
+
+try{ text = fs.readFileSync(file_name, 'utf8'); }
+catch(err){
+   console.log(`error reading file: ${err.message}`);
+   process.exit(1);
+}
+
+const lines = text.split("\n");
+let is_changed = false;
+
+for(let i = 0; i < lines.length; i++) {
+   const original = lines[i];
+   const replaced = original.replace(regex, replace_regex);
+
+   if(replaced === original){ continue; }
+   is_changed = true;
+   lines[i] = replaced;
+
+   if(print){
+      console.log(`${file_name} (${i + 1}):`, original);
+      console.log(`${file_name} (${i + 1}):`, replaced);
+   }
+}
+
+if(!no_act && is_changed){
+   try{ fs.writeFileSync(file_name, lines.join("\n")); }
+   catch(err){
+      console.log(`error writing file: ${err.message}`);
+      process.exit(1);
+   }
+}

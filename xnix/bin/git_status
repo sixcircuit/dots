@@ -1,0 +1,38 @@
+#!/usr/bin/env node
+
+const _parse_status = function(stdout){
+
+   const map = {
+      " ": "unmodified", "M": "modified", "A": "added", "D": "deleted",
+      "R": "renamed", "C": "copied", "U": "unmerged", "?": "untracked", "!": "ignored"
+   };
+
+   const list = [];
+
+   list.index = { modified: [], added: [], deleted: [], renamed: [], copied: [], unmerged: [], untracked: [], ignored: [] };
+   list.worktree = { modified: [], added: [], deleted: [], renamed: [], copied: [], unmerged: [], untracked: [], ignored: [] };
+
+   if(stdout === ""){ return(list); }
+
+   const lines = stdout.split("\0");
+
+   while(lines.length){
+      const line = lines.shift();
+      if(!line){ continue; }
+
+      const index = line[0]; const worktree = line[1]; const path = line.slice(3);
+
+      const item = { status: [map[index], map[worktree]], path };
+
+      if(index === "R"){ item.from = lines.shift(); }
+
+      list.push(item);
+
+      if(index !== " "){ list.index[map[index]].push(item); }
+      if(worktree !== " "){ list.worktree[map[worktree]].push(item); }
+   }
+
+   return(list);
+};
+
+

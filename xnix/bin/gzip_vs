@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# Check argument
+if [ $# -ne 1 ]; then
+   echo "Usage: $0 <filename>" >&2
+   exit 1
+fi
+
+FILE="$1"
+PADDING=1
+
+# Check file existence
+if [ ! -f "$FILE" ]; then
+   echo "Error: File '$FILE' not found." >&2
+   exit 1
+fi
+
+# Get raw size (in bytes) using stat
+RAW_SIZE=$(stat -c %s "$FILE")
+
+# Get gzipped size using process substitution
+GZ_SIZE=$(gzip -c "$FILE" | wc -c)
+
+# Format both
+RAW_FMT=$(gnumfmt --to=iec-i --suffix=B --padding=$PADDING <<< "$RAW_SIZE")
+GZ_FMT=$(gnumfmt --to=iec-i --suffix=B --padding=$PADDING <<< "$GZ_SIZE")
+
+# Output result
+echo "$FILE: $GZ_FMT (gzip) vs $RAW_FMT (raw)"

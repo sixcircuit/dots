@@ -550,9 +550,30 @@ vim.keymap.set('n', ',cq', with_nearest_quote_f("cs", "m"), { desc = "change sur
 -- vim.keymap.set('n', ',cqb', with_nearest_quote_f(",cq{"), { desc = "change surrounding quotes to braces", remap = true })
 -- vim.keymap.set('n', ',cqp', with_nearest_quote_f(",cq("), { desc = "change surrounding quotes to parens", remap = true })
 
-vim.keymap.set({ 'n', 'v' }, ',sb', "<Plug>Ysurroundiw}", { desc = "surround with braces {}", remap = true })
-vim.keymap.set({ 'n', 'v' }, ',sk', "<Plug>Ysurroundiw]", { desc = "surround with brakets []", remap = true })
-vim.keymap.set({ 'n', 'v' }, ',sp', "<Plug>Ysurroundiw)", { desc = "surround with parens ()", remap = true })
+-- vim.keymap.set({ 'n' }, ',sb', "<Plug>Ysurroundiw}", { desc = "surround with braces {}", remap = true })
+-- vim.keymap.set({ 'n' }, ',sk', "<Plug>Ysurroundiw]", { desc = "surround with brakets []", remap = true })
+-- vim.keymap.set({ 'n' }, ',sp', "<Plug>Ysurroundiw)", { desc = "surround with parens ()", remap = true })
+-- vim.keymap.set({ 'v' }, ',sb', "<Plug>Ysurround}", { desc = "surround with braces {}", remap = true })
+-- vim.keymap.set({ 'v' }, ',sk', "<Plug>Ysurround]", { desc = "surround with brakets []", remap = true })
+-- vim.keymap.set({ 'v' }, ',sp', "<Plug>Ysurround)", { desc = "surround with parens ()", remap = true })
+-- vim.keymap.set({ 'v' }, ',s`', "<Plug>Ysurround`", { desc = "surround with braces {}", remap = true })
+-- vim.keymap.set({ 'v' }, ',s"', "<Plug>Ysurround\"", { desc = "surround with brakets []", remap = true })
+-- vim.keymap.set({ 'v' }, ',s\'', "<Plug>Ysurround'", { desc = "surround with parens ()", remap = true })
+
+vim.keymap.set("n", "<space>l", "a <esc>")
+vim.keymap.set("n", "<space>h", "i <esc>")
+vim.keymap.set("n", "<leader>u", ":MundoToggle<cr>")
+
+vim.keymap.set("x", ",lo", [[:s/\([.!?]\)\s\+/\1\r/g | s/(/\\r(/g<CR>]], { desc = "turn a long line into a bunch of sentences on new lines." })
+vim.keymap.set("x", ".", ":'<,'>normal .<CR>", { desc = "run . on all lines in a selection" })
+
+vim.keymap.set("n", ",sc", function()
+  local line = vim.api.nvim_get_current_line()
+  local indent = line:match("^%s*") or ""
+  local content = line:match("^%s*(.-)%s*$") or ""
+  content = content:gsub("`", "\\`")
+  vim.api.nvim_set_current_line(indent .. 'code.push(`' .. content .. '`)')
+end, { desc = "wrap current line with code.push(`...`)" })
 
 vim.keymap.set('n', ', b', "cs}{", { desc = "add space inside braces", remap = true })
 vim.keymap.set('n', ', p', "cs)(", { desc = "add space inside parens" , remap = true })
@@ -565,6 +586,10 @@ vim.keymap.set('n', 'dek', "ci] <esc>", { desc = "delete till ]" })
 vim.keymap.set('n', 'ceb', "ct} <left>", { desc = "delete inside braces {}" })
 vim.keymap.set('n', 'cep', "ci) <left>", { desc = "delete inside parens ()" })
 vim.keymap.set('n', 'cek', "ci] <left>", { desc = "delete inside brakets []" })
+
+vim.keymap.set("n", "ph", "p", { desc = "paste here" })
+vim.keymap.set("n", "pf", "p=`]", { desc = "paste after and indent" })
+vim.keymap.set("n", ",fb", "vi{=", { desc = "indent block" })
 
 local function make_slash_textobj(include_start_delim, include_trail_delim)
    return function()
@@ -644,7 +669,7 @@ vim.keymap.set('n', 'yh', 'y^', { desc = "yank to beginning of line" })
 -- these were cute but all of them moved to hop commands
 vim.keymap.set('n', 'i', "<nop>", { desc = "recoup i" })
 vim.keymap.set('n', 'p', "<nop>", { desc = "recoup p" })
-vim.keymap.set('n', 'P', "p", { desc = "p" })
+vim.keymap.set('n', 'pp', "p", { desc = "p" })
 
 -- this is me trying to break a bad habit.
 -- i should be moving and inserting at the same time

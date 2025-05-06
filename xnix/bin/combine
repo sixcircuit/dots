@@ -1,4 +1,46 @@
 #!/bin/bash
-cat "$1" >> "$2"
-echo "" > "$1"
-mv "$1" "$1.empty"
+
+# Exit on error and undefined variables
+set -euo pipefail
+
+# Check argument count
+if [ "$#" -ne 2 ]; then
+  echo "Usage: $0 <source-file> <destination-file>" >&2
+  exit 1
+fi
+
+SRC="$1"
+DST="$2"
+
+# Check source file existence and readability
+if [ ! -f "$SRC" ]; then
+  echo "Error: Source file '$SRC' does not exist." >&2
+  exit 1
+fi
+
+if [ ! -r "$SRC" ]; then
+  echo "Error: Source file '$SRC' is not readable." >&2
+  exit 1
+fi
+
+# Check destination file is writable or can be created
+if [ -e "$DST" ] && [ ! -w "$DST" ]; then
+  echo "Error: Destination file '$DST' is not writable." >&2
+  exit 1
+fi
+
+# Prevent source and destination from being the same file
+if [ "$(realpath "$SRC")" = "$(realpath "$DST")" ]; then
+  echo "Error: Source and destination must be different files." >&2
+  exit 1
+fi
+
+# Perform append and delete
+cat "$SRC" >> "$DST"
+rm "$SRC"
+
+# Optional: leave a stub file or record it
+# echo "" > "$SRC"
+# mv "$SRC" "$SRC.empty"
+
+echo "Appended '$SRC' to '$DST' and deleted the source file."

@@ -5,6 +5,7 @@ export PATH="$PATH:$HOME/.fzf/bin"
 # export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 # export FZF_DEFAULT_OPTS='--layout=reverse --border'
 export FZF_DEFAULT_OPTS='--layout=reverse --cycle'
+export FZF_TMUX_HEIGHT='80%'
 
 # export FZF_DEFAULT_COMMAND="rg --files --hidden "
 
@@ -97,15 +98,37 @@ fzf-file-widget() {
 }
 
 # ALT-C - cd into the selected directory
+# fzf-cd-widget() {
+#   local cmd="${FZF_ALT_C_COMMAND:-"command find -L . -mindepth 1 \\( -path '*/.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune \
+#     -o -type d -print 2> /dev/null | cut -b3-"}"
+#   setopt localoptions pipefail no_aliases 2> /dev/null
+#   local dir="$(eval "$cmd" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --scheme=path --bind=ctrl-z:ignore ${FZF_DEFAULT_OPTS-} ${FZF_ALT_C_OPTS-}" $(__fzfcmd) +m)"
+#   if [[ -z "$dir" ]]; then
+#     zle redisplay
+#     return 0
+#   fi
+#   zle push-line # Clear buffer. Auto-restored on next prompt.
+#   BUFFER="cd ${(q)dir}"
+#   zle accept-line
+#   local ret=$?
+#   unset dir # ensure this doesn't end up appearing in prompt expansion
+#   zle reset-prompt
+#   return $ret
+# }
+
+# ALT-C - cd into the selected directory
 fzf-cd-widget() {
-  local cmd="${FZF_ALT_C_COMMAND:-"command find -L . -mindepth 1 \\( -path '*/.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune \
-    -o -type d -print 2> /dev/null | cut -b3-"}"
+  local cmd="command find_bfs -ls 250 . ."
   setopt localoptions pipefail no_aliases 2> /dev/null
-  local dir="$(eval "$cmd" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --scheme=path --bind=ctrl-z:ignore ${FZF_DEFAULT_OPTS-} ${FZF_ALT_C_OPTS-}" $(__fzfcmd) +m)"
+   local dir="$(eval "$cmd" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --ansi --reverse --scheme=path \
+     --bind=.:reload\\(find_bfs\\ -ls\\ 250\\)+change-query:.\
+     --bind=ctrl-z:ignore ${FZF_DEFAULT_OPTS-} ${FZF_ALT_C_OPTS-}" $(__fzfcmd) +m)"
   if [[ -z "$dir" ]]; then
     zle redisplay
     return 0
   fi
+  # Strip symlink target if present
+  dir="${dir%% -> *}"
   zle push-line # Clear buffer. Auto-restored on next prompt.
   BUFFER="cd ${(q)dir}"
   zle accept-line

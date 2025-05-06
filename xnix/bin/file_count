@@ -1,0 +1,55 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const path = require('path');
+
+const base_dir = process.argv[2] || '.';
+
+if (!fs.existsSync(base_dir) || !fs.statSync(base_dir).isDirectory()) {
+   console.error(`Error: '${base_dir}' is not a valid directory.`);
+   process.exit(1);
+}
+
+const counts = new Map();
+let max_len = 0;
+
+function walk(dir){
+   for (const name of fs.readdirSync(dir)) {
+      const full_path = path.join(dir, name);
+
+      let stat;
+      try{ stat = fs.statSync(full_path); }
+      catch(err){
+         console.warn(`skipping unreadable item: "${full_path}" error: ${err.message}`);
+         continue;
+      }
+
+      if(stat.isDirectory()){
+         walk(full_path);
+      }else if (stat.isFile()){
+         const rel_path = path.relative(base_dir, full_path);
+         const parts = rel_path.split(path.sep);
+         const top = parts.length > 1 ? parts[0] : '.';
+         const new_count = ((counts.get(top) || 0) + 1 )
+         max_len = Math.max(new_count, max_len);
+         counts.set(top, new_count);
+      }
+   }
+}
+
+walk(base_dir);
+
+const sorted = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
+
+const formatter = new Intl.NumberFormat('en-US');
+
+const print_dir = function(dir, count){
+   console.log(`${formatter.format(count).padStart(max_len.toString().length)}  ${dir}`);
+};
+
+print_dir(".", counts.get(".") || 0);
+
+for(const [dir, count] of sorted){
+   if(dir === "."){ continue; }
+   print_dir(dir, count);
+}

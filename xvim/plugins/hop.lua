@@ -560,6 +560,7 @@ local cmds = {
    cw = function(str) return "cw" end,
    dw = function(str) return "dw" end,
    ciw = function(str) return "ciw" end,
+   diw = function(str) return "diw" end,
    p = function(str, loc) return "p`[" end,
    pi = function(str, loc)
       local is_empty = is_empty_pair(str, loc)
@@ -567,8 +568,14 @@ local cmds = {
       if is_empty then return "p`["
       else return "vi" .. str .. "p`[" end
    end,
-
 }
+
+cmds.pp = function(str, loc)
+   local result = open_or_close(str, loc)
+   if result == "open" then return("p")
+   elseif result == "close" then return("P")
+   else return("") end
+end
 
 cmds.ii = function(str, loc)
    local result = open_or_close(str, loc)
@@ -607,17 +614,18 @@ local spaces_regex = "\\S\\zs \\+"
 local variable_regex = "_"
 
 local _setups = {
-   k = _setup_f("regex", "[\\[\\]]", { highlight = "[\\]]" }),
+   k = _setup_f("regex", "[[\\]]", { highlight = "[[\\]]" }),
    b = _setup_f("regex", "[{}]",   { highlight = "[{}]" }),
    p = _setup_f("regex", "[()]",   { highlight = "[()]" }),
+   g = _setup_f("regex", "[<>]",   { highlight = "[<>]" }),
    q = _setup_f("regex", "[\"'`]"),
    [" "] = _setup_f("regex", spaces_regex),
-   sa = _setup_f("regex", "[\\[]", { highlight = "[\\]]" }),
-   sb = _setup_f("regex", "[{]",   { highlight = "[{}]" }),
-   sp = _setup_f("regex", "[(]",   { highlight = "[()]" }),
-   ea = _setup_f("regex", "[\\]]", { highlight = "[\\]]" }),
-   eb = _setup_f("regex", "[}]",   { highlight = "[{}]" }),
-   ep = _setup_f("regex", "[)]",   { highlight = "[()]" }),
+   -- sa = _setup_f("regex", "[\\[]", { highlight = "[\\]]" }),
+   -- sb = _setup_f("regex", "[{]",   { highlight = "[{}]" }),
+   -- sp = _setup_f("regex", "[(]",   { highlight = "[()]" }),
+   -- ea = _setup_f("regex", "[\\]]", { highlight = "[\\]]" }),
+   -- eb = _setup_f("regex", "[}]",   { highlight = "[{}]" }),
+   -- ep = _setup_f("regex", "[)]",   { highlight = "[()]" }),
    w = _setup_f("regex", jump_regex.regex_by_word_start()),
    v = _setup_f("regex", variable_regex),
    -- sw = _setup_f("regex", jump_regex.regex_by_word_start()),
@@ -626,7 +634,7 @@ local _setups = {
 
 
 local doubles = {
-   k = "[]", b = "{}", p = "()", q = "quotes",
+   k = "[]", b = "{}", p = "()", q = "quotes", g = "<>"
 }
 -- local doubles_start = { sa = "[", sb = "{", sp = "(", sq = "quotes", sw = "word start" }
 -- local doubles_end = { ea = "]", eb = "}", ep = ")", eq = "quotes", ew = "word end" }
@@ -641,7 +649,7 @@ local function add_chars(tbl, chars) for _, char in pairs(chars) do tbl[char] = 
 
 add_chars(singles, {
    "'", '"', "`",
-   "(" ,")", "[", "]", "{", "}",
+   "(" ,")", "[", "]", "{", "}", "<", ">",
    ',', '.', ';', ':', "_", "-", "=", "/", "\\"
 })
 
@@ -683,9 +691,11 @@ local changes = {}
 
 add(changes, doubles, "c", "change inside", { cmd = cmds.ci })
 add(changes, { w = "word" }, "c", "change a", { cmd = cmds.ciw })
+add(changes, { w = "word" }, "d", "delete a", { cmd = cmds.diw })
 
 local pastes = {}
-add(pastes, doubles, "p", "paste inside",  { cmd = cmds.pi })
+add(pastes, doubles, "p", "paste at",  { cmd = cmds.pp })
+add(pastes, doubles, "pi", "paste inside",  { cmd = cmds.pi })
 add(pastes, { [" "] = "spaces" }, "p", "paste at",  { cmd = cmds.p })
 
 local line_only = {
@@ -770,14 +780,14 @@ setup_hops({ "n", "v" }, "", {
 setup_hops({ "n" }, "m", dots)
 setup_hops({ "n" }, "", {
    h("m.", "repeat at char", _setup("chars", nil, { cmd = cmds.dot })),
-   h("m.l", "repeat at char", _setup("chars", nil, { cmd = cmds.dot })),
+   h("m.c", "repeat at char", _setup("chars", nil, { cmd = cmds.dot })),
    h("m.v", "repeat at variable", _setup("regex", variable_regex, { cmd = cmds.dot })),
 })
 
 setup_hops({ "n" }, "m", changes, nil, line_only)
 setup_hops({ "n" }, "", changes)
 setup_hops({ "n" }, "", {
-   h("cl", "change a char", _setup("chars", nil, { cmd = cmds.s })),
+   h("cc", "change a char", _setup("chars", nil, { cmd = cmds.s })),
    h("cv", "chage a variable", _setup("regex", variable_regex, { cmd = function () return("<right>cw") end })),
    h("dv", "delete a variable", _setup("regex", variable_regex, { cmd = cmds.dw })),
 })
@@ -788,17 +798,17 @@ setup_hops({ "n" }, "", yanks)
 setup_hops({ "n" }, "", pastes)
 setup_hops({ "n" }, "", {
    h("p", "paste at char", _setup("chars", nil, { cmd = cmds.p })),
-   h("pl", "paste at char", _setup("chars", nil, { cmd = cmds.p })),
-   h("pk", "paste at line", _setup("regex", jump_regex.by_line_start(), { cmd = cmds.p }, { direction = hint_dirs.BEFORE_CURSOR })),
-   h("pj", "paste at line", _setup("regex", jump_regex.by_line_start(), { cmd = cmds.p }, { direction = hint_dirs.AFTER_CURSOR })),
-   h("pp", "paste at line", _setup("regex", jump_regex.by_line_start(), { cmd = cmds.p })),
+   h("pc", "paste at char", _setup("chars", nil, { cmd = cmds.p })),
+   -- h("pk", "paste at line", _setup("regex", jump_regex.by_line_start(), { cmd = cmds.p }, { direction = hint_dirs.BEFORE_CURSOR })),
+   -- h("pj", "paste at line", _setup("regex", jump_regex.by_line_start(), { cmd = cmds.p }, { direction = hint_dirs.AFTER_CURSOR })),
+   h("pj", "paste at line", _setup("regex", jump_regex.by_line_start(), { cmd = cmds.p })),
 })
 
 setup_hops({ "n" }, "m", inserts, nil, line_only)
 setup_hops({ "n" }, "", inserts)
 setup_hops({ "n" }, "", {
-   h("il", "insert at char", _setup("chars", nil, { cmd = cmds.i })),
-   h("al", "append at char", _setup("chars", nil, { cmd = cmds.a })),
+   h("ic", "insert at char", _setup("chars", nil, { cmd = cmds.i })),
+   h("ac", "append at char", _setup("chars", nil, { cmd = cmds.a })),
    h("iv", "insert at variable", _setup("regex", variable_regex, { cmd = cmds.i })),
    h("av", "append at variable", _setup("regex", variable_regex, { cmd = cmds.a })),
 })
@@ -814,6 +824,8 @@ vim.keymap.set('n', 'cfb', bind(hop_ft, "f", "c", "[{}]"))
 vim.keymap.set('n', 'ctb', bind(hop_ft, "t", "c", "[{}]"))
 vim.keymap.set('n', 'cfp', bind(hop_ft, "f", "c", "[()]"))
 vim.keymap.set('n', 'ctp', bind(hop_ft, "t", "c", "[()]"))
+vim.keymap.set('n', 'cfg', bind(hop_ft, "f", "c", "[<>]"))
+vim.keymap.set('n', 'ctg', bind(hop_ft, "t", "c", "[<>]"))
 vim.keymap.set('n', 'cfq', bind(hop_ft, "f", "c", "[\"'`]"))
 vim.keymap.set('n', 'ctq', bind(hop_ft, "t", "c", "[\"'`]"))
 vim.keymap.set('n', 'cf ', bind(hop_ft, "f", "c", spaces_regex))
@@ -829,6 +841,8 @@ vim.keymap.set('n', 'dfb', bind(hop_ft, "f", "d", "[{}]"))
 vim.keymap.set('n', 'dtb', bind(hop_ft, "t", "d", "[{}]"))
 vim.keymap.set('n', 'dfp', bind(hop_ft, "f", "d", "[()]"))
 vim.keymap.set('n', 'dtp', bind(hop_ft, "t", "d", "[()]"))
+vim.keymap.set('n', 'dfg', bind(hop_ft, "f", "d", "[<>]"))
+vim.keymap.set('n', 'dtg', bind(hop_ft, "t", "d", "[<>]"))
 vim.keymap.set('n', 'dfq', bind(hop_ft, "f", "d", "[\"'`]"))
 vim.keymap.set('n', 'dtq', bind(hop_ft, "t", "d", "[\"'`]"))
 vim.keymap.set('n', 'df ', bind(hop_ft, "f", "d", spaces_regex))

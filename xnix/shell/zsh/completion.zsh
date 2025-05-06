@@ -197,3 +197,6 @@ compdef _tux_completion tux
 
 # COMPLETION END
 
+# Disable fzf-tab's built-in cd completion
+# zstyle ':fzf-tab:complete:cd:*' disabled-on any
+

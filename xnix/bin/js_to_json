@@ -1,15 +1,14 @@
 #!/usr/bin/env node
 
-var path = require('path');
+const path = require('path');
 
-var args = process.argv;
-if(args.length !== 3){ process.stderr.write("usage: js_to_json <file.js>\n"); process.exit(1); }
+const args = process.argv.slice(2);
+const path = args.shift();
 
-var js_path = path.join(process.cwd(), process.argv[2]);
+if(!path){ process.stderr.write("usage: js_to_json <file.js>"); process.exit(1); }
 
-var js = require(js_path);
+const abs_path = path.join(process.cwd(), path);
 
-process.stdout.write(JSON.stringify(js, null, 2));
+const js = require(abs_path);
 
-process.exit(0);
-
+process.stdout.write(JSON.stringify(js, null, 3));

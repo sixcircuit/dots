@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+
+const args = process.argv.slice(2);
+
+let duration = args[0] || null;
+
+if(duration){
+   duration = parseFloat(duration);
+   if(isNaN(duration) || duration <= 0){
+      console.error("error: duration must be a positive number.");
+      process.exit(1);
+   }
+}
+
+const start = Date.now();
+
+const loop = function(ms, f){
+   if(!ms){ return; }
+   setTimeout(function(){
+      const ms = f();
+      loop(ms, f);
+   }, ms);
+};
+
+const stdout = process.stdout.write.bind(process.stdout);
+
+const elapsed_ms = function(){ return(Date.now() - start); }
+let last_sec = "";
+const print = function(reset, sec, label){ stdout(`${ reset ? '\r' : '' }${label || ""}${sec}${ reset ? " ".repeat(last_sec.length - sec.length) : "" }`); last_sec = sec; }
+
+if(duration === null){
+   const time_str = function(){ return((elapsed_ms() / 1000).toFixed(1)); }
+   const label = "sec: ";
+   print(false, "0.0", label);
+   return loop(1_000, function(){ print(true, time_str(), label); return(1_000); });
+}else{
+
+   const label = "sec: ";
+   const duration_ms = (duration * 1_000);
+   const left_ms = function(){ return(duration_ms - elapsed_ms()); };
+
+   const next_ms = function(){
+      if(left_ms() < 100){ return(left_ms()); }
+      if(left_ms() < 1_000){ return(100); }
+      else{ return(1_000); }
+   };
+
+   const time_str = function(){ return((left_ms() / 1_000).toFixed(1)); p}
+
+   print(false, time_str(), label);
+
+   return loop(next_ms(), function(){
+
+      if(left_ms() <= 0){ print(true, "0.0", label); stdout("\n"); return(0); }
+
+      print(true, time_str(), label);
+
+      return(next_ms());
+   });
+}

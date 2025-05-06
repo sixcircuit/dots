@@ -12,8 +12,8 @@ alias ter='terraform'
 alias kc='kubectl'
 alias cpr='cp -R'
 
-alias td='tagd'
-alias tl="tagl"
+alias ta='tag_add'
+alias tl="tag_ls"
 
 small_llm="llama-3.1-8b"
 big_llm="llama-3.3-70b"
@@ -27,7 +27,7 @@ alias lsj="llm $small_llm jsfun"
 alias lbj="llm $big_llm jsfun"
 
 c() {
-   local result=`cdf "$@"`
+   local result=`dir_first_fuzzy "$@"`
    if [ $? -eq 0 ]; then
       # echo "cd $result"
       cd "$result"
@@ -35,6 +35,9 @@ c() {
 }
 
 alias rgl='rg -F'
+
+alias ff='file_find'
+alias fff='file_find_fuzzy'
 
 alias wget='curl -L -O'
 
@@ -61,7 +64,7 @@ alias gbl='git branch -v'
 alias gbd='git branch -d'
 alias gg='git checkout'
 alias ga='git add'
-alias gl='git lg'
+alias gl='git_log'
 alias gm='git merge'
 alias gc='git commit'
 alias gca='git commit -am'
@@ -79,3 +82,18 @@ alias gco='git checkout'
 #   git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
 # }
 
+
+ew() {
+   local cmd=$1
+   if ! command -v "$cmd" > /dev/null; then
+      echo "error: '$cmd' not found"
+      return 1
+   fi
+
+   local target=$(command -v "$cmd")
+   if [[ "$target" = /* && -f "$target" ]]; then
+      "$EDITOR" "$target"
+   else
+      which "$cmd"
+   fi
+}

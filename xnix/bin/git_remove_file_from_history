@@ -1,0 +1,12 @@
+#!/bin/bash
+if [ "$#" -ne 2 ]; then
+    echo "usage: remove_from_repo <files_list> <repo>"
+    exit
+fi
+echo "file list: $1"
+echo "repo: $2"
+while read -u 10 p || [[ -n $p ]]; do
+    echo "----------------------------------------------------------------------"
+    echo "removing: $p"
+    bfg --delete-files "$p" $2
+done 10<$1

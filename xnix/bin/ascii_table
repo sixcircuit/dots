@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+
+//const char_map = {
+//   0: '"\\x00"',  1: '"\\x01"',  2: '"\\x02"',  3: '"\\x03"',  4: '"\\x04"',
+//   5: '"\\x05"',  6: '"\\x06"',  7: '"\\x07"', 11: '"\\x0b"', 14: '"\\x0e"',
+//  15: '"\\x0f"', 16: '"\\x10"', 17: '"\\x11"', 18: '"\\x12"', 19: '"\\x13"',
+//  20: '"\\x14"', 21: '"\\x15"', 22: '"\\x16"', 23: '"\\x17"', 24: '"\\x18"',
+//  25: '"\\x19"', 26: '"\\x1a"', 27: '"\\x1b"', 28: '"\\x1c"', 29: '"\\x1d"',
+//  30: '"\\x1e"', 31: '"\\x1f"'
+//};
+
+const char_map = {
+   '0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5',
+   '6': '6', '7': '7', '8': '8', '9': '9', '10': '10', '11': '11',
+   '12': '12', '13': '13', '14': '14', '15': '15', '16': '16', '17': '17',
+   '18': '18', '19': '19', '20': '20', '21': '21', '22': '22', '23': '23',
+   '24': '24', '25': '25', '26': '26', '27': '27', '28': '28', '29': '29',
+   '30': '30', '31': '31', 173: '" "'
+};
+
+
+const args = process.argv.slice(2);
+
+const char_code = function(i){
+   let c = String.fromCharCode(i)
+   if(char_map[i]){ c = char_map[i]; }
+   else if(c === '"'){ c = `'"'`; }
+   else{ c = JSON.stringify(c); }
+   return(c);
+};
+
+if(args.length){
+
+   for(let i = 0; i < args.length; i++){
+      const chars = args[i].split("");
+      for(let i = 0; i < chars.length; i++){
+         const char = chars[i];
+         console.log(char, ":", char.charCodeAt(0));
+      }
+   }
+
+}else{
+   const strs = [];
+
+   for(let i = 0; i < 255; i++){
+      const c = char_code(i);
+      strs.push((i + "").padStart(4, " ") + ": " + c.padStart(4, " ") + "  ");
+   }
+
+   for(let i = 0; i < 255; i += 8){
+      console.log(strs.slice(i, i+8).join(" "));
+   }
+}

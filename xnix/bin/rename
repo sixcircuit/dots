@@ -1,144 +1,139 @@
-#!/usr/bin/perl -w
-#
-#  This script was developed by Robin Barker (Robin.Barker@npl.co.uk),
-#  from Larry Wall's original script eg/rename from the perl source.
-#
-#  This script is free software; you can redistribute it and/or modify it
-#  under the same terms as Perl itself.
-#
-# Larry(?)'s RCS header:
-#  RCSfile: rename,v   Revision: 4.1   Date: 92/08/07 17:20:30 
-#
-# $RCSfile: rename,v $$Revision: 1.5 $$Date: 1998/12/18 16:16:31 $
-#
-# $Log: rename,v $
-# Revision 1.5  1998/12/18 16:16:31  rmb1
-# moved to perl/source
-# changed man documentation to POD
-#
-# Revision 1.4  1997/02/27  17:19:26  rmb1
-# corrected usage string
-#
-# Revision 1.3  1997/02/27  16:39:07  rmb1
-# added -v
-#
-# Revision 1.2  1997/02/27  16:15:40  rmb1
-# *** empty log message ***
-#
-# Revision 1.1  1997/02/27  15:48:51  rmb1
-# Initial revision
-#
+#!/usr/bin/env node
 
-use strict;
+const fs = require('fs');
+const readline = require('readline');
 
-use Getopt::Long;
-Getopt::Long::Configure('bundling');
+const setup = function(){
 
-my ($verbose, $no_act, $force, $op);
+   const args = process.argv.slice(2);
 
-die "Usage: rename [-v] [-n] [-f] perlexpr [filenames]\n"
-    unless GetOptions(
-	'v|verbose' => \$verbose,
-	'n|no-act'  => \$no_act,
-	'f|force'   => \$force,
-    ) and $op = shift;
+   const options = {
+      no_act: false,
+      force: false,
+      eval: null,
+      regex: null,
+      assume_yes: false
+   };
 
-$verbose++ if $no_act;
+   while(args.length > 0){
+      const arg = args.shift();
+      if(arg === '-n' || arg === '--no-act'){ options.no_act = true; }
+      else if(arg === '-f' || arg === '--force'){ options.force = true; }
+      else if(arg === '-y' || arg === '--yes'){ options.assume_yes = true; }
+      else if(arg === '-e'){ options.eval = args.shift(); }
+      else if(arg === '-r'){
+         const match = args.shift();
+         const replace = args.shift();
+         if(!match || replace === undefined){
+            console.log("error: -r requires two arguments: <pattern> <replacement>");
+            process.exit(1);
+         }
+         options.regex = { match, replace };
+      }
+      else if(arg.startsWith('-')){
+         console.log(`unknown option: ${arg}`);
+         process.exit(1);
+      }else{
+         args.unshift(arg);
+         break;
+      }
+   }
 
-if (!@ARGV) {
-    print "reading filenames from STDIN\n" if $verbose;
-    @ARGV = <STDIN>;
-    chop(@ARGV);
+   return({ options, paths: args });
+};
+
+const { options, paths } = setup();
+
+// YOU GOT TO HERE!!!!!
+
+if(!options.eval && !options.regex){
+   console.log(`usage: rename [-n] [-f] [-y] (-e <js_eval> (eg: "name = name.toLowerCase()") | -r <pattern> <replacement>) [files...]`);
+   process.exit(1);
 }
 
-for (@ARGV) {
-    my $was = $_;
-    eval $op;
-    die $@ if $@;
-    next if $was eq $_; # ignore quietly
-    if (-e $_ and !$force)
-    {
-	warn  "$was not renamed: $_ already exists\n";
-    }
-    elsif ($no_act or rename $was, $_)
-    {
-	print "$was renamed as $_\n" if $verbose;
-    }
-    else
-    {
-	warn  "Can't rename $was $_: $!\n";
-    }
+function transform_name(name){
+   if(options.eval){
+      try{
+         const f = (new Function(`return (function(name){ ${ options.eval } return(name); })`))();
+         name = f(name);
+      }catch(err){
+         console.log(`error in eval: ${err.message}`);
+         process.exit(1);
+      }
+   }else if(options.regex){
+      try{
+         const re = new RegExp(options.regex.match);
+         name = name.replace(re, options.regex.replace);
+      }catch(err){
+         console.log(`error in regex: ${err.message}`);
+         process.exit(1);
+      }
+   }
+   return(name);
 }
 
-__END__
+function rename_files(file_list){
+   const rename_plan = [];
 
-=head1 NAME
+   for(const original of file_list){
+      const target = transform_name(original);
+      if(target === original){ continue; }
+      rename_plan.push({ from: original, to: target });
+   }
 
-rename - renames multiple files
+   if(rename_plan.length === 0){ console.log("no changes to apply."); return; }
 
-=head1 SYNOPSIS
+   console.log("planned renames:");
 
-B<rename> S<[ B<-v> ]> S<[ B<-n> ]> S<[ B<-f> ]> I<perlexpr> S<[ I<files> ]>
+   for(const { from, to } of rename_plan){
+      console.log(`${from} -> ${to}`);
+   }
 
-=head1 DESCRIPTION
+   if(options.no_act){ return; }
 
-C<rename>
-renames the filenames supplied according to the rule specified as the
-first argument.
-The I<perlexpr> 
-argument is a Perl expression which is expected to modify the C<$_>
-string in Perl for at least some of the filenames specified.
-If a given filename is not modified by the expression, it will not be
-renamed.
-If no filenames are given on the command line, filenames will be read
-via standard input.
+   if(options.assume_yes){ apply_renames(rename_plan); }
+   else{
+      const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+      rl.question("proceed with renaming? (y/N) ", function(answer){
+         rl.close();
+         if(answer.trim().toLowerCase() === 'y'){
+            apply_renames(rename_plan);
+         }else{ console.log("aborted."); }
+      });
+   }
+}
 
-For example, to rename all files matching C<*.bak> to strip the extension,
-you might say
+function apply_renames(rename_plan){
+   for(const { from, to } of rename_plan){
+      if(fs.existsSync(to) && !options.force){
+         console.warn(`${from} not renamed: ${to} already exists`);
+         continue;
+      }
 
-	rename 's/\.bak$//' *.bak
+      try {
+         fs.renameSync(from, to);
+         console.log(`${from} renamed as ${to}`);
+      }catch (err){
+         console.warn(`can't rename ${from} to ${to}: ${err.message}`);
+      }
+   }
+}
 
-To translate uppercase names to lower, you'd use
+if(paths.length > 0){ rename_files(paths); }
+else{
+   console.log('reading paths from STDIN...');
 
-	rename 'y/A-Z/a-z/' *
+   const rl = readline.createInterface({
+      input: process.stdin,
+      terminal: false
+   });
 
-=head1 OPTIONS
+   const input_files = [];
 
-=over 8
+   rl.on('line', function(line){
+      const trimmed = line.trim();
+      if(trimmed){ input_files.push(trimmed); }
+   });
 
-=item B<-v>, B<--verbose>
-
-Verbose: print names of files successfully renamed.
-
-=item B<-n>, B<--no-act>
-
-No Action: show what files would have been renamed.
-
-=item B<-f>, B<--force>
-
-Force: overwrite existing files.
-
-=back
-
-=head1 ENVIRONMENT
-
-No environment variables are used.
-
-=head1 AUTHOR
-
-Larry Wall
-
-=head1 SEE ALSO
-
-mv(1), perl(1)
-
-=head1 DIAGNOSTICS
-
-If you give an invalid Perl expression you'll get a syntax error.
-
-=head1 BUGS
-
-The original C<rename> did not check for the existence of target filenames,
-so had to be used with care.  I hope I've fixed that (Robin Barker).
-
-=cut
+   rl.on('close', function(){ rename_files(input_files) });
+}

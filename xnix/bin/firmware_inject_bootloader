@@ -1,0 +1,55 @@
+
+#!/bin/bash
+
+# Usage:
+# ./combine_binaries.sh firmware_offset bootloader.bin firmware.bin output.bin
+
+set -e
+
+FIRMWARE_OFFSET="$1"
+BOOTLOADER="$2"
+FIRMWARE="$3"
+OUTPUT="$4"
+
+if [ $# -lt 4 ]; then
+  echo "Usage: $0 firmware_offset bootloader.bin firmware.bin output.bin"
+  exit 1
+fi
+
+if [ ! -f "$BOOTLOADER" ]; then
+  echo "Bootloader file '$BOOTLOADER' not found!"
+  exit 1
+fi
+
+if [ ! -f "$FIRMWARE" ]; then
+  echo "Firmware file '$FIRMWARE' not found!"
+  exit 1
+fi
+
+BOOTLOADER_SIZE=$(stat -c %s "$BOOTLOADER")
+PAD_SIZE=$((FIRMWARE_OFFSET - BOOTLOADER_SIZE))
+
+echo "Bootloader size   : $BOOTLOADER_SIZE bytes"
+echo "Firmware offset   : $FIRMWARE_OFFSET bytes"
+echo "Padding required  : $PAD_SIZE bytes"
+
+if [ $PAD_SIZE -lt 0 ]; then
+  echo "Error: Bootloader is larger than firmware offset!"
+  exit 1
+fi
+
+# Start fresh
+rm -f "$OUTPUT"
+
+# Write bootloader
+cat "$BOOTLOADER" > "$OUTPUT"
+
+# Pad with 0xFF if needed
+if [ $PAD_SIZE -gt 0 ]; then
+  printf '\xFF%.0s' $(seq 1 $PAD_SIZE) >> "$OUTPUT"
+fi
+
+# Append firmware
+cat "$FIRMWARE" >> "$OUTPUT"
+
+echo "Combined output written to '$OUTPUT'"

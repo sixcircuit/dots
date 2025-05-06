@@ -1,0 +1,171 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const path = require('path');
+const args = process.argv.slice(2);
+
+const ls = (args[0] === "-ls");
+if(ls){ args.shift(); }
+
+const use_null = (args[0] === "-0");
+const delim = (use_null ? "\0" : "\n");
+
+if(use_null){ args.shift(); }
+
+const concurrency = 50;
+//const concurrency = args.shift();
+const timeout_ms = parseInt(args.shift());
+const root = (args.shift() || ".")
+const start_ms = Date.now();
+const ignore = args;
+
+const color = 136;
+
+const ignore_dot = (ignore[0] === ".");
+
+if(ignore_dot){ ignore.shift(); }
+
+const usage = function(){
+   console.log("usage: find_bfs [-ls] [-0] <timeout_ms> <root_path> [.] [...ignore]");
+}
+
+const ms_left = function(){
+   const elapsed_ms = (Date.now() - start_ms);
+   return(timeout_ms - elapsed_ms);
+};
+
+const maybe_record_entry = async function (full_path, dirent, results){
+
+   if(dirent.isDirectory()){ return results.push(full_path); }
+   if(!dirent.isSymbolicLink()){ return; }
+
+   try{
+      const stat = await fs.promises.stat(full_path);
+      if(stat.isDirectory()){
+         const link_target = await fs.promises.readlink(full_path);
+         results.push({ from: full_path, to: link_target });
+      }
+   }catch{ return; }
+
+}
+
+const process_dir = async function(dir, results){
+
+   let entries;
+
+   try{ entries = await fs.promises.readdir(dir, { withFileTypes: true }); }
+   catch{ return; }
+
+   for(const entry of entries){
+      if(ignore_dot && entry.name.startsWith('.')){ continue; }
+      if(ignore.includes(entry.name)){ continue; }
+
+      const full_path = path.join(dir, entry.name);
+
+      await maybe_record_entry(full_path, entry, results);
+   }
+};
+
+const jobs = {};
+
+jobs.count = 0;
+jobs.concurrency = concurrency;
+jobs.queue = [];
+jobs.error = null;
+jobs.timeout = false;
+
+jobs.add = function(job){ this.queue.push(job); this.schedule(); };
+
+jobs.schedule = function(){
+   const self = this;
+   if(self.error){ return(false); }
+   if(ms_left() <= 0){ self.timeout = true; return(false); }
+   if(jobs.count < jobs.concurrency && self.queue.length){
+      self.count++;
+      const job = self.queue.pop();
+      const prom = job();
+      prom.then(function(){ self.on_job_end(); }, function(error){ self.on_job_error(error); });
+      return(true);
+   }
+   return(false);
+};
+
+jobs.on_job_error = function(error){ this.error = error; };
+
+jobs.on_job_end = function(){
+   this.count--;
+   this.schedule();
+   this.try_end();
+}
+
+jobs.try_end = function(){
+   const result = {
+      timeout: this.timeout, error: this.error,
+      complete: (jobs.queue.length === 0 && jobs.count === 0)
+   };
+
+   if(result.timeout || result.complete || result.error){
+      if(this._on_end){
+         const f = this._on_end;
+         this._on_end = null;
+         f(result);
+      }
+   }
+};
+
+jobs.on_end = function(f){ this._on_end = f; this.try_end(); };
+
+jobs.wait = async function(){
+   const self = this;
+   return(new Promise(function(resolve, reject){
+      self.on_end(function(result){ return resolve(result); });
+   }));
+}
+
+const next_layer = async function(layer){
+
+   const next = [];
+   const promises = [];
+
+   while(layer.length){
+
+      const dir = layer.shift();
+
+      jobs.add(function(){ return process_dir(dir, next); });
+   }
+
+   const result = await jobs.wait();
+
+   if(result.error){ console.log("error: ", error); return(null); }
+   if(result.timeout){ return(null); }
+
+   return(next.length ? next : null);
+};
+
+
+(async function bfs(){
+
+   let layer = [root];
+
+   while((layer = await next_layer(layer))){
+
+      for(const path of layer){
+         if(ls){
+            process.stdout.write(`\x1b[38;5;${ color }m`);
+            if(typeof path === "string"){
+               process.stdout.write(path + delim);
+            }else{
+               process.stdout.write(path.from + " -> " + path.to + delim);
+            }
+            process.stdout.write(`\x1b[0m`);
+         }else{
+            if(typeof path === "string"){
+               process.stdout.write(path + delim);
+            }else{
+               process.stdout.write(path.from + delim);
+            }
+         }
+      }
+   }
+
+})();

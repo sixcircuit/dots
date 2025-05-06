@@ -71,24 +71,25 @@ ctrl-d() { return 1 }
 zle -N ctrl-d
 bindkey '^D' ctrl-d
 
-zle     -N            fzf-cd-widget
-bindkey -M emacs '^J' fzf-cd-widget
-bindkey -M vicmd '^J' fzf-cd-widget
-bindkey -M viins '^J' fzf-cd-widget
-
 zle     -N            fzf-history-widget
 bindkey -M emacs '^H' fzf-history-widget
 bindkey -M vicmd '^H' fzf-history-widget
 bindkey -M viins '^H' fzf-history-widget
 
-zle     -N            fzf-history-widget
-bindkey -M emacs '^R' fzf-history-widget
-bindkey -M vicmd '^R' fzf-history-widget
-bindkey -M viins '^R' fzf-history-widget
-
-
 zle     -N            fzf-file-widget
-bindkey -M emacs '^K' fzf-file-widget
-bindkey -M vicmd '^K' fzf-file-widget
-bindkey -M viins '^K' fzf-file-widget
+bindkey -M emacs '^J' fzf-file-widget
+bindkey -M vicmd '^J' fzf-file-widget
+bindkey -M viins '^J' fzf-file-widget
+
+zle     -N            fzf-cd-widget
+bindkey -M emacs '^K' fzf-cd-widget
+bindkey -M vicmd '^K' fzf-cd-widget
+bindkey -M viins '^K' fzf-cd-widget
+
+
+# zle     -N            fzf-history-widget
+# bindkey -M emacs '^R' fzf-history-widget
+# bindkey -M vicmd '^R' fzf-history-widget
+# bindkey -M viins '^R' fzf-history-widget
+
 

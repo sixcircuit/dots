@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+
+const http = require('http');
+
+const args = process.argv.slice(2);
+const port = parseInt(args[0] === "-p" ? (args.shift(), args.shift()) : 8080);
+const response = args.join(" ")
+
+if(args.length === 0){
+   console.error("usage: http_echo [-p port] [...response]");
+   process.exit(1);
+}
+
+if(isNaN(port)){ console.error("invalid port: " + port); process.exit(1); }
+
+const server = http.createServer(function(req, res){
+   res.writeHead(200, { "content-type": "text/plain" });
+   res.end(response);
+});
+
+server.listen(port, function(){ console.log("http_echo running on port: " + port); });
+
