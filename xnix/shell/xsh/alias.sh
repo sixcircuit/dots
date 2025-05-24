@@ -5,6 +5,7 @@ plat=$2
 alias x='exit'
 alias v='vim'
 alias vd='vimdiff'
+alias rt='retry'
 alias t='\tux'
 alias tt='tree'
 alias tux='echo "USE Ctrl+O to open sessions."'
@@ -34,7 +35,8 @@ c() {
    fi
 }
 
-alias rgl='rg -F'
+alias rg='rg -i'
+alias rgl='rg -i -F'
 
 alias ff='file_find'
 alias fff='file_find_fuzzy'

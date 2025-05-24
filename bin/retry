@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -e
+
+INTERVAL=5
+VERBOSE=false
+
+while getopts ":pw:" opt; do
+   case "$opt" in
+      p)
+         VERBOSE=true
+         ;;
+      w)
+         INTERVAL="$OPTARG"
+         ;;
+      \?)
+         echo "Unknown option: -$OPTARG" >&2
+         exit 1
+         ;;
+      :)
+         echo "Option -$OPTARG requires an argument." >&2
+         exit 1
+         ;;
+   esac
+done
+shift $((OPTIND - 1))
+
+if [[ $# -eq 0 ]]; then
+   echo "usage: $0 [-p] [-w seconds] <command> [args...]"
+   exit 1
+fi
+
+CMD=("$@")
+
+# first attempt
+if "${CMD[@]}"; then
+   exit 0
+fi
+
+while true; do
+   if $VERBOSE; then
+      "${CMD[@]}" && exit 0
+   else
+      if "${CMD[@]}" > /dev/null 2>&1; then
+         exit 0
+      fi
+   fi
+
+   for ((i=INTERVAL; i>0; i--)); do
+      printf "\r\033[K"
+      printf "(retry in%2ds): %s" "$i" "$*"
+      sleep 1
+   done
+   printf "\r\033[K"
+   printf "(retrying...): %s" "$*"
+   sleep 0.75
+done
