@@ -64,10 +64,50 @@ commandt.setup({
    },
    mappings = {
       i = {
-         ['<C-o>'] = 'open_split',
+         ['<m-o>'] = 'open_split',
+         ['<m-a>'] = '<Home>',
+         ['<m-c>'] = 'close',
+         ['<m-e>'] = '<End>',
+         ['<m-h>'] = '<Left>',
+         ['<m-j>'] = 'select_next',
+         ['<m-k>'] = 'select_previous',
+         ['<m-l>'] = '<Right>',
+         ['<m-n>'] = 'select_next',
+         ['<m-p>'] = 'select_previous',
+         ['<m-s>'] = 'open_split',
+         ['<m-t>'] = 'open_tab',
+         ['<m-v>'] = 'open_vsplit',
+         ['<m-w>'] = '<C-S-w>',
+         ['<CR>'] = 'open',
+         ['<Down>'] = 'select_next',
+         ['<Up>'] = 'select_previous',
       },
       n = {
-         ['<C-o>'] = 'open_split',
+         ['<m-o>'] = 'open_split',
+         ['<m-a>'] = '<Home>',
+         ['<m-c>'] = 'close',
+         ['<m-e>'] = '<End>',
+         ['<m-h>'] = '<Left>',
+         ['<m-j>'] = 'select_next',
+         ['<m-k>'] = 'select_previous',
+         ['<m-l>'] = '<Right>',
+         ['<m-n>'] = 'select_next',
+         ['<m-p>'] = 'select_previous',
+         ['<m-s>'] = 'open_split',
+         ['<m-t>'] = 'open_tab',
+         ['<m-u>'] = 'clear', -- Not needed in insert mode.
+         ['<m-v>'] = 'open_vsplit',
+         ['<CR>'] = 'open',
+         ['<Down>'] = 'select_next',
+         ['<Esc>'] = 'close', -- Only in normal mode.
+         ['<Up>'] = 'select_previous',
+         ['H'] = 'select_first', -- Only in normal mode.
+         ['M'] = 'select_middle', -- Only in normal mode.
+         ['G'] = 'select_last', -- Only in normal mode.
+         ['L'] = 'select_last', -- Only in normal mode.
+         ['gg'] = 'select_first', -- Only in normal mode.
+         ['j'] = 'select_next', -- Only in normal mode.
+         ['k'] = 'select_previous', -- Only in normal mode.
       },
    },
    finders = {

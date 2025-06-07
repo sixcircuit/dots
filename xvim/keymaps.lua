@@ -1,4 +1,8 @@
 
+vim.keymap.set('n', '<m-r>', "<c-r>")
+vim.keymap.set('n', '<m-i>', "<c-i>")
+vim.keymap.set('n', '<m-o>', "<c-o>")
+
 local function bind(func, ...)
    local args = { ... }
    return function()
@@ -458,12 +462,12 @@ end
 
 -- d,b c,b ,bh ,bl for b, p, a
 setup_comma_list_actions("p", "(", ")")
-setup_comma_list_actions("k", "[", "]")
+setup_comma_list_actions("x", "[", "]")
 setup_comma_list_actions("b", "{", "}")
 
 
 
-vim.keymap.set({ "n", "i" }, '<C-q>', '<cmd>wqall<cr>', { desc = "write quit all with <c-q>" })
+vim.keymap.set({ "n", "i" }, '<m-q>', '<cmd>wqall<cr>', { desc = "write quit all with <m-q>" })
 
 -- one less key for command mode
 vim.keymap.set({ "n", "v" }, ":", ";")
@@ -481,6 +485,10 @@ vim.keymap.set({ "n", "i" }, '<up>', '<nop>', { desc = "prevent bad habits, disa
 vim.keymap.set({ "n", "i" }, '<down>', '<nop>', { desc = "prevent bad habits, disable down arrow" })
 vim.keymap.set({ "n", "i" }, '<left>', '<nop>', { desc = "prevent bad habits, disable left arrow" })
 vim.keymap.set({ "n", "i" }, '<right>', '<nop>', { desc = "prevent bad habits, disable right arrow" })
+
+vim.keymap.set("n", "<m-s>", "<Cmd>update<CR>")
+vim.keymap.set("i", "<m-s>", "<C-o><Cmd>update<CR>")
+
 
 -- Resize windows with arrow keys
 vim.keymap.set('n', '<down>', ':vertical resize -3<CR>', { silent = true, desc = "move split left" })
@@ -564,20 +572,45 @@ vim.keymap.set("n", "<space>l", "a <esc>")
 vim.keymap.set("n", "<space>h", "i <esc>")
 vim.keymap.set("n", "<leader>u", ":MundoToggle<cr>")
 
+vim.keymap.set("n", ",lo", "V,lo", { desc = "turn a long line into a bunch of sentences on new lines.", remap = true })
 vim.keymap.set("x", ",lo", [[:s/\([.!?]\)\s\+/\1\r/g | s/(/\\r(/g<CR>]], { desc = "turn a long line into a bunch of sentences on new lines." })
 vim.keymap.set("x", ".", ":'<,'>normal .<CR>", { desc = "run . on all lines in a selection" })
 
-vim.keymap.set("n", ",sc", function()
-  local line = vim.api.nvim_get_current_line()
-  local indent = line:match("^%s*") or ""
-  local content = line:match("^%s*(.-)%s*$") or ""
-  content = content:gsub("`", "\\`")
-  vim.api.nvim_set_current_line(indent .. 'code.push(`' .. content .. '`)')
+vim.keymap.set("n", ",wc", function()
+   local line = vim.api.nvim_get_current_line()
+   local indent = line:match("^%s*") or ""
+   local content = line:match("^%s*(.-)%s*$") or ""
+   content = content:gsub("`", "\\`")
+   vim.api.nvim_set_current_line(indent .. 'code.push(`' .. content .. '`);')
+   vim.fn["repeat#set"](",wc")
 end, { desc = "wrap current line with code.push(`...`)" })
+
+vim.keymap.set("n", ",fa", function()
+   local line = vim.api.nvim_get_current_line()
+
+   -- Match: function name(args)
+   local indent, name, args = line:match("^(%s*)function%s+([_%w]+)%s*%((.-)%)")
+   -- Or: name(args)
+   if not name then
+      indent, name, args = line:match("^(%s*)([_%w]+)%s*%((.-)%)")
+   end
+
+   if name and args then
+      -- Preserve rest of the line after argument list
+      local suffix = line:match("%)%s*(.*)")
+      local new_line = string.format("%s%s = function(%s)%s", indent, name, args, suffix or "")
+         vim.api.nvim_set_current_line(new_line)
+   else
+      print("no matching function pattern found.")
+   end
+
+   vim.fn["repeat#set"](",fa")
+
+end, { desc = "reformat function declaration to assigned form" })
 
 vim.keymap.set('n', ', b', "cs}{", { desc = "add space inside braces", remap = true })
 vim.keymap.set('n', ', p', "cs)(", { desc = "add space inside parens" , remap = true })
-vim.keymap.set('n', ', k', "cs][", { desc = "add space inside brakets []" , remap = true })
+vim.keymap.set('n', ', x', "cs][", { desc = "add space inside brakets []" , remap = true })
 vim.keymap.set('n', ', q', with_nearest_quote_f(function(quote) return("cs" .. quote .. " " .. quote) end, "m"), { desc = "add space inside quotes" , remap = true })
 
 vim.keymap.set('n', 'deb', "ct} <esc>", { desc = "delete till }" })
@@ -587,8 +620,6 @@ vim.keymap.set('n', 'ceb', "ct} <left>", { desc = "delete inside braces {}" })
 vim.keymap.set('n', 'cep', "ci) <left>", { desc = "delete inside parens ()" })
 vim.keymap.set('n', 'cek', "ci] <left>", { desc = "delete inside brakets []" })
 
-vim.keymap.set("n", "ph", "p", { desc = "paste here" })
-vim.keymap.set("n", "pf", "p=`]", { desc = "paste after and indent" })
 vim.keymap.set("n", ",fb", "vi{=", { desc = "indent block" })
 
 local function make_slash_textobj(include_start_delim, include_trail_delim)
@@ -667,14 +698,27 @@ vim.keymap.set('n', 'yh', 'y^', { desc = "yank to beginning of line" })
 -- i key, think "insert <somewhere>"
 
 -- these were cute but all of them moved to hop commands
-vim.keymap.set('n', 'i', "<nop>", { desc = "recoup i" })
-vim.keymap.set('n', 'p', "<nop>", { desc = "recoup p" })
-vim.keymap.set('n', 'pp', "p", { desc = "p" })
+-- vim.keymap.set('n', 'i', "<nop>", { desc = "recoup i" })
+-- vim.keymap.set('n', 'p', "<nop>", { desc = "recoup p" })
+-- vim.keymap.set('n', 'p', "p", { desc = "p" })
+-- vim.keymap.set('n', '<leader><leader>', "p", { desc = "p" })
+-- vim.keymap.set('n', '<leader>p', "p", { desc = "p" })
+-- vim.keymap.set("n", "ph", "p", { desc = "paste here" })
+-- vim.keymap.set('', '<m-k>', "y", { desc = "yank", remap = true })
+-- vim.keymap.set('', '<m-k><m-l>', "yl", { desc = "yank right", remap = true })
+-- vim.keymap.set('', '<m-k><m-h>', "yh", { desc = "yank left", remap = true })
+-- vim.keymap.set('', '<m-k><m-k>', "yy", { desc = "yy" })
+vim.keymap.set('i', "<m-p>", "p", { desc = "paste" })
+vim.keymap.set('n', "ph", "p", { desc = "paste" })
+vim.keymap.set("n", "pf", "p=`]", { desc = "paste after and indent" })
+vim.keymap.set("x", "pf", "p=`]", { desc = "paste after and indent" })
+vim.keymap.set("x", "pp", "p", { desc = "paste" })
+vim.keymap.set("x", "ph", "p", { desc = "paste" })
 
 -- this is me trying to break a bad habit.
 -- i should be moving and inserting at the same time
-vim.keymap.set('n', 'aaaa', "a", { desc = "move a to aaaa" })
-vim.keymap.set('n', 'iiii', "i", { desc = "move i to iiii" })
+vim.keymap.set('n', 'ah', "a", { desc = "move a to aaaa" })
+vim.keymap.set('n', 'ih', "i", { desc = "move i to iiii" })
 
 --- e -- thing execute
 vim.keymap.set('n', 'eeee', "e", { desc = "move e to eeee" })
@@ -752,8 +796,8 @@ vim.keymap.set('n', 'v', "V", { desc = "start v linewise" })
 vim.keymap.set('n', 'vv', "v", { desc = "change v to charwise with extra v" })
 
 
--- this only works because i have <c-/> mapped to $ in carabiner
-vim.keymap.set('n', '$', fuzzy_search, { desc = "fuzzy search with <c-/> (if you have <c-/> mapped to $)" })
+-- this only works because i have <m-/> mapped to $ in carabiner
+vim.keymap.set('n', '$', fuzzy_search, { desc = "fuzzy search with <m-/> (if you have <c-/> mapped to $)" })
 
 local function commandt_f(cmd)
    -- if highlight is on it makes the searched word
@@ -807,9 +851,9 @@ vim.keymap.set("n", "<leader>ft", function()
    vim.fn["ChangeSoftTabs"](from, to)
 end, { desc = "fix tabs from one width to another" })
 
-vim.keymap.set("n", "<leader>fq", function()
-   vim.fn["FixQuotes"]()
-end, { desc = "turn unicode quotes into ansi quotes" })
+vim.keymap.set("n", "<leader>fq", function() vim.fn["FixQuotes"]() end, { desc = "turn unicode quotes into ansi quotes" })
+vim.keymap.set("n", "<leader>fc", function() vim.fn["FixChars"]() end, { desc = "turn fancy unicode chars like quotes and dashes into ansi chars" })
+vim.keymap.set("n", "<leader>fw", function() vim.fn["FixTrailingWhitespace"]() end, { desc = "fix trailing whitespace" })
 
 vim.keymap.set("n", "<leader>z", function()
    vim.fn["ToggleWrap"]()
@@ -827,8 +871,8 @@ vim.keymap.set('n', 'ss', "s", { desc = "enable s as ss" })
 -- vim.keymap.set('n', '[f', cprev_rollover)
 -- vim.keymap.set('n', ']f', cnext_rollover)
 vim.keymap.set('n', 'sq', toggle_quickfix, { desc = "toggle quickfix" })
-vim.keymap.set('n', 'sp', cprev_rollover, { desc = "skip to previous quickfix" })
-vim.keymap.set('n', 'sn', cnext_rollover, { desc = "skip to next quickfix" })
+vim.keymap.set('n', 'sk', cprev_rollover, { desc = "skip to previous quickfix" })
+vim.keymap.set('n', 'sj', cnext_rollover, { desc = "skip to next quickfix" })
 
 vim.keymap.set('n', 'sff', bind(rg_and_open_first, "rg"), { desc = "search files with pattern, rg, open in new tab, jump to first result" })
 vim.keymap.set('n', 'sfl', bind(rg_and_open_first, "rgl"), { desc = "search files with literal, rgl, open in new tab, jump to first result" })
@@ -845,41 +889,48 @@ vim.keymap.set('n', 'sl', toggle_virtual_text)
 
 vim.keymap.set('n', 'sh', show_hover, { desc = "show hover window" })
 
-vim.keymap.set('n', 'so', ':w | source %<CR>', { desc = "save and source current file" })
+vim.keymap.set('n', ',so', ':w | source %<CR>', { desc = "save and source current file" })
 
-vim.keymap.set("n", ",bo", function()
-   local cur_row = vim.api.nvim_win_get_cursor(0)[1]
-   local line = vim.api.nvim_get_current_line()
+local function block_open_f(open_char, close_char, split_char)
+   return function()
+      local cur_row = vim.api.nvim_win_get_cursor(0)[1]
+      local line = vim.api.nvim_get_current_line()
 
-   local before, body, after = line:match("^(.-){(.-)}(.*)$")
-   if not body then return end
+      local before, body, after = line:match("^(.-)" .. open_char .. "(.-)" .. close_char .. "(.*)$")
+      if not body then return end
 
-   -- Split statements
-   local statements = {}
-   for stmt in body:gmatch("([^;]+)") do
-      local trimmed = vim.trim(stmt)
-      if trimmed ~= "" then
-         table.insert(statements, trimmed .. ";")
+      -- Split statements
+      local statements = {}
+      for stmt in body:gmatch("([^" .. split_char .. "]+)") do
+         local trimmed = vim.trim(stmt)
+         if trimmed ~= "" then
+            table.insert(statements, trimmed .. split_char)
+         end
       end
+      if #statements == 0 then return end
+
+      -- Replace current line with multiline block (unindented for now)
+      local new_lines = { before .. open_char }
+      for _, stmt in ipairs(statements) do
+         table.insert(new_lines, stmt)
+      end
+      table.insert(new_lines, close_char .. after)
+
+      vim.api.nvim_buf_set_lines(0, cur_row - 1, cur_row, false, new_lines)
+
+      -- Reselect the block and auto-indent it
+      -- vim.api.nvim_win_set_cursor(0, { cur_row, 0 })
+      vim.cmd("normal! va{=j")
+
    end
-   if #statements == 0 then return end
+end
 
-   -- Replace current line with multiline block (unindented for now)
-   local new_lines = { before .. "{" }
-   for _, stmt in ipairs(statements) do
-      table.insert(new_lines, stmt)
-   end
-   table.insert(new_lines, "}" .. after)
+vim.keymap.set("n", ",oo", block_open_f("{", "}", ","), { desc = "open single-line { } object block into multi-line" })
+vim.keymap.set("n", ",ob", block_open_f("{", "}", ";"), { desc = "open single-line { } function block into multi-line" })
+vim.keymap.set("n", ",bb", "f}a<cr><esc>", { desc = "break a block, useful for puting else on a newline }else{" })
 
-   vim.api.nvim_buf_set_lines(0, cur_row - 1, cur_row, false, new_lines)
-
-   -- Reselect the block and auto-indent it
-   -- vim.api.nvim_win_set_cursor(0, { cur_row, 0 })
-   vim.cmd("normal! va{=j")
-
-end, { desc = "open single-line { } block into multi-line" })
-
-vim.keymap.set("n", ",bc", "va{J", { desc = "close multi-line { } block to one line" })
+vim.keymap.set("n", ",co", "va{J", { desc = "close multi-line { } block to one line" })
+vim.keymap.set("n", ",cb", "va{J", { desc = "close multi-line { } function block to one line" })
 
 
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -917,4 +968,158 @@ vim.api.nvim_create_autocmd('LspAttach', {
       -- end, opts)
    end,
 })
+
+local function wrap_current_line_control_statement()
+   local row = vim.fn.line('.') - 1
+   local line = vim.api.nvim_get_current_line()
+
+   local last_paren = line:find("%)[^)]*$") -- find last `)`
+   if not last_paren then return end
+
+   local before = line:sub(1, last_paren)
+   local after = vim.trim(line:sub(last_paren + 1))
+
+   if after ~= "" then
+      -- Inline form like: if (x) doSomething()
+      local new_line = before .. "{ " .. after .. " }"
+      vim.api.nvim_set_current_line(new_line)
+   else
+      -- Multiline form like: if (x)\n  something
+      vim.api.nvim_set_current_line(line .. "{")
+      vim.cmd("normal! j")         -- move down
+      vim.cmd("normal! o}")        -- insert new line below with `}`
+      vim.cmd("normal! k==")       -- reindent the closing brace
+   end
+
+end
+
+vim.keymap.set("n", ",wb", function ()
+   wrap_current_line_control_statement()
+   vim.fn["repeat#set"](",wb")
+end, { desc = "wrap control blocks with {}" })
+
+vim.keymap.set("n", ",wd", function()
+   local api = vim.api
+   local fn = vim.fn
+
+   -- Save cursor position
+   local mark = api.nvim_win_get_cursor(0)
+
+   -- Search for "function" in the current buffer from the cursor position
+   local start_line = mark[1] - 1
+   local lines = api.nvim_buf_get_lines(0, start_line, -1, false)
+   local func_row, func_col = nil, nil
+
+   for i, line in ipairs(lines) do
+      local col = line:find("function")
+      if col then
+         func_row = start_line + i - 1
+         func_col = col - 1
+         break
+      end
+   end
+
+   if not func_row then
+      print("No 'function' found.")
+      return
+   end
+
+   -- Insert "_(" before the word "function"
+   api.nvim_buf_set_text(0, func_row, func_col, func_row, func_col, { "_(" })
+
+   -- Find the next "{" after the function word
+   local rest_lines = api.nvim_buf_get_lines(0, func_row, -1, false)
+   local brace_row, brace_col = nil, nil
+   for i, line in ipairs(rest_lines) do
+      local col = line:find("{")
+      if col then
+         brace_row = func_row + i - 1
+         brace_col = col
+         break
+      end
+   end
+
+   if not brace_row then
+      print("No '{' found after function.")
+      return
+   end
+
+   -- Use '%' to find matching '}' and insert ')' just after it
+   api.nvim_win_set_cursor(0, { brace_row + 1, brace_col - 1 })
+   vim.cmd("normal! %")
+   local close_row, close_col = unpack(api.nvim_win_get_cursor(0))
+
+   api.nvim_buf_set_text(0, close_row - 1, close_col + 1, close_row - 1, close_col + 1, { ")" })
+
+   -- Restore original position
+   api.nvim_win_set_cursor(0, mark)
+
+   vim.fn["repeat#set"](",wd")
+
+end, { desc = "wrap function block with _(...)" })
+
+vim.keymap.set("x", ",fcol", function()
+   -- Normalize selection range
+   local start_row = math.min(vim.fn.line("v"), vim.fn.line("."))
+   local end_row = math.max(vim.fn.line("v"), vim.fn.line("."))
+
+   -- Convert to 0-based for nvim API
+   start_row = start_row - 1
+
+   -- Get lines in selection
+   local lines = vim.api.nvim_buf_get_lines(0, start_row, end_row, false)
+
+   local parsed = {}
+   local col_widths = {}
+
+   -- Parse each line
+   for _, line in ipairs(lines) do
+      local indent, content = line:match("^(%s*)(.-)$")
+      local cols = vim.split(content, ",", true)
+      for i, col in ipairs(cols) do
+         local trimmed = vim.trim(col)
+         cols[i] = trimmed
+         col_widths[i] = math.max(col_widths[i] or 0, #trimmed)
+      end
+      table.insert(parsed, { indent = indent, cols = cols })
+   end
+
+   -- Pad columns and reassemble
+   local output = {}
+   for _, row in ipairs(parsed) do
+      local padded = {}
+      for i, col in ipairs(row.cols) do
+         padded[i] = col .. string.rep(" ", col_widths[i] - #col)
+      end
+      local line = row.indent .. table.concat(padded, " , ")
+      line = line:gsub("%s+$", "") -- remove trailing whitespace
+      table.insert(output, line)
+      -- table.insert(output, row.indent .. table.concat(padded, " , "))
+   end
+
+   -- Write back to buffer
+   vim.api.nvim_buf_set_lines(0, start_row, end_row, false, output)
+
+   vim.fn["repeat#set"](",fcol")
+
+end, { desc = "Align comma-separated values visually with indentation" })
+
+
+
+-- TODO: meta m,./ is: out start, in start, in end, out end, of any matching pairs on the current line in insert mode?
+-- might not actually need this
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

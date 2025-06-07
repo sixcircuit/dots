@@ -36,6 +36,13 @@ local function create_function_mappings(snips, is_async)
         fmt = "<async>function {}({}){{{}}}{}",
         args = { i(1, "name"), i(2), i(3), i(0) }
       },
+
+      { trigger = ";<trigger>l",
+        description = "literal <type>",
+        fmt = "<async>function{}",
+        args = { i(0) }
+      },
+
    }
 
    local values;
@@ -231,7 +238,7 @@ end
 create_type_check_ifs(autosnippets)
 
 insert(autosnippets, {
-   s(";rr", fmt( "return {}", { i(0) })),
+   s(";rr", fmt( "return{}", { i(0) })),
    s(";rf", fmt( "return(function({}){{{}}});", { i(1), i(0) })),
    s(";raf", fmt( "return(async function({}){{{}}});", { i(1), i(0) })),
    s(";re", fmt( "return({});", { i(0, "value") })),
@@ -311,6 +318,13 @@ insert(autosnippets, {
 insert(autosnippets, {
    s(";aw", fmt(
       "await {};",
+      { i(0) }
+   )),
+})
+
+insert(autosnippets, {
+   s(";cp", fmt(
+      "code.push(`{}`);",
       { i(0) }
    )),
 })

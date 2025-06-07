@@ -30,6 +30,9 @@ set nu
 
 set ruler
 
+ "lines for ctrl-u and ctrl-d
+"set scroll=5
+
 " minimum lines above/below cursor
 set scrolloff=5
 

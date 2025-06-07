@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+if [[ $# -eq 0 ]]; then
+   echo "usage: $0 <commands>"
+   exit 1
+fi
+
+cmd="$*"
+
+DOT="\033[38;5;33m∙\033[0m"
+
+
+while true; do
+   echo
+   eval "$cmd"
+   echo
+   echo -e "$DOT $cmd"
+   echo -e "$DOT [press <enter> or <space> to rerun, <q> or <ctrl-c> to quit] "
+   # clear errant key presses
+   while true; do
+      read -rsn1 key
+      if [[ $key == "q" ]]; then
+         exit 0
+      elif [[ $key == " " || $key == "" ]]; then
+         break  # continue the outer loop
+      fi
+   done
+   echo
+done
+

@@ -40,9 +40,9 @@ bindkey -M vicmd 'u' undo
 
 dateclear() { clear -x; date; zle reset-prompt; }
 zle -N dateclear
-bindkey '^l' dateclear
+bindkey '^[l' dateclear
 
-bindkey -s '^O' 't fzf^M'
+bindkey -s '^[o' 't fzf^M'
 # bindkey -s '^I' 'llm^M'
 
 # bindkey '^L' clear -x && ls
@@ -54,11 +54,11 @@ bindkey -s '^O' 't fzf^M'
 # bindkey '\e[2~' overwrite-mode
 
 # Rebind the delete key. Again, useless.
-bindkey '\e[3~' delete-char
+# bindkey '\e[3~' delete-char
 
 # Who doesn't want home and end to work?
-bindkey '\e[1~' beginning-of-line
-bindkey '\e[4~' end-of-line
+# bindkey '\e[1~' beginning-of-line
+# bindkey '\e[4~' end-of-line
 
 # bindkey -M vicmd '!' edit-command-output
 
@@ -72,24 +72,29 @@ zle -N ctrl-d
 bindkey '^D' ctrl-d
 
 zle     -N            fzf-history-widget
-bindkey -M emacs '^H' fzf-history-widget
-bindkey -M vicmd '^H' fzf-history-widget
-bindkey -M viins '^H' fzf-history-widget
+bindkey -M emacs '^[h' fzf-history-widget
+bindkey -M vicmd '^[h' fzf-history-widget
+bindkey -M viins '^[h' fzf-history-widget
+
+zle     -N            fzf-history-widget
+bindkey -M emacs '^[r' fzf-history-widget
+bindkey -M vicmd '^[r' fzf-history-widget
+bindkey -M viins '^[r' fzf-history-widget
 
 zle     -N            fzf-file-widget
-bindkey -M emacs '^J' fzf-file-widget
-bindkey -M vicmd '^J' fzf-file-widget
-bindkey -M viins '^J' fzf-file-widget
+bindkey -M emacs '^[j' fzf-file-widget
+bindkey -M vicmd '^[j' fzf-file-widget
+bindkey -M viins '^[j' fzf-file-widget
 
 zle     -N            fzf-cd-widget
-bindkey -M emacs '^K' fzf-cd-widget
-bindkey -M vicmd '^K' fzf-cd-widget
-bindkey -M viins '^K' fzf-cd-widget
+bindkey -M emacs '^[k' fzf-cd-widget
+bindkey -M vicmd '^[K' fzf-cd-widget
+bindkey -M viins '^[k' fzf-cd-widget
 
 
 # zle     -N            fzf-history-widget
-# bindkey -M emacs '^R' fzf-history-widget
-# bindkey -M vicmd '^R' fzf-history-widget
-# bindkey -M viins '^R' fzf-history-widget
+# bindkey -M emacs '^[r' fzf-history-widget
+# bindkey -M vicmd '^[r' fzf-history-widget
+# bindkey -M viins '^[r' fzf-history-widget
 
 

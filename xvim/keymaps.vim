@@ -11,9 +11,6 @@ noremap M %
 " add lines easily with + and -
 nnoremap + myO<esc>`y
 
-" move line to top middle. (on a big screen)
-noremap zz zz10<c-e>
-
 nmap <leader>c gcc
 vmap <leader>c gc
 " map <leader>n :cnext<cr>

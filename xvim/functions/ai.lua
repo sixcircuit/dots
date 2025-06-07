@@ -98,11 +98,11 @@ llm_map("ejb", "llama-3.3-70b jsfun")
 
 -- whisper.cpp stuff.
 
-vim.api.nvim_set_keymap('i', '<C-f>', [[<C-\><C-o>:lua do_whisper()<CR>]], { desc = "insert text to speech", noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-f>', [[i<C-o>:lua do_whisper()<CR>]], { desc = "insert text to speech", noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<m-f>', [[<C-\><C-o>:lua do_whisper()<CR>]], { desc = "insert text to speech", noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<m-f>', [[i<C-o>:lua do_whisper()<CR>]], { desc = "insert text to speech", noremap = true, silent = true })
 
--- vim.api.nvim_set_keymap('i', '<C-i>', [[<C-\><C-o>:lua do_llm("")<CR>]], {noremap = true, silent = true})
--- vim.api.nvim_set_keymap('n', '<C-i>', [[i<C-o>:lua do_llm("")<CR>]], {noremap = true, silent = true})
+-- vim.api.nvim_set_keymap('i', '<m-i>', [[<C-\><C-o>:lua do_llm("")<CR>]], {noremap = true, silent = true})
+-- vim.api.nvim_set_keymap('n', '<m-i>', [[i<C-o>:lua do_llm("")<CR>]], {noremap = true, silent = true})
 
 function _G.do_whisper()
 

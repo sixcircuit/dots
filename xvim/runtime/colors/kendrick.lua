@@ -514,7 +514,8 @@ hl("HopMatchingQuote", color.hop, { bold = true })
 
 hl("ScopeHighlight_Default", color.gray.l)
 hl("ScopeHighlight_Selected", color.gray.ml)
-hl("IblWhitespace", color.bg)
+-- hl("IblWhitespace", color.bg)
+-- hl("IblWhitespace", color.gold)
 
 require("ibl").setup({
    debounce = -1,

@@ -14,13 +14,13 @@ local function set_js_abbreviations()
    -- })
    --
 
-   local wrong = {
-      'function', 'if', 'else', 'for', 'return'
-   }
-
-   for index, value in ipairs(wrong) do
-      vim.keymap.set("ia", value, "WRONG", { buffer = true })
-   end
+   -- local wrong = {
+   --    'function', 'if', 'else', 'for', 'return'
+   -- }
+   --
+   -- for index, value in ipairs(wrong) do
+   --    vim.keymap.set("ia", value, "WRONG", { buffer = true })
+   -- end
 
    -- for lhs, rhs in pairs(abbreviations) do
    --    vim.keymap.set("ia", lhs, rhs)

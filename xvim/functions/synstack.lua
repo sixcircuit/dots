@@ -84,7 +84,7 @@ local function syn_stack()
 end
 
 vim.keymap.set("n", "<leader>H", syn_stack, { desc = "print the highlight stack of thing under the cursor" })
--- vim.keymap.set("n", "<c-i>", syn_stack)
+-- vim.keymap.set("n", "<m-i>", syn_stack)
 
 -- local function syn_stack()
 --    echo "SynStack"

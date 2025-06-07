@@ -40,6 +40,7 @@ local function resize_window(win_index, size)
     vim.api.nvim_set_current_win(cur_win)
 end
 
+
 -- first split is math.ceil(columns * 0.29)
 local function layout_windows(adjust_left)
    if adjust_left == nil then
@@ -136,15 +137,37 @@ vim.keymap.set('n', '<leader>r', rotate_windows_keep_cursor, { silent = true })
 vim.keymap.set('n', '\\', layout_windows, { silent = true })
 
 -- Tab navigation
-vim.keymap.set('n', '<C-h>', ':tabp<CR>')
-vim.keymap.set('n', '<C-l>', ':tabn<CR>')
-vim.keymap.set('n', '<C-p>', ':tabm -1<CR>')
-vim.keymap.set('n', '<C-t>', ':tabm +1<CR>')
-
--- scroll the viewport faster with ctrl-j and ctrl-k
-vim.keymap.set('n', '<C-j>', '5<C-e>')
-vim.keymap.set('n', '<C-k>', '5<C-y>')
+vim.keymap.set('n', '<m-h>', ':tabp<CR>')
+vim.keymap.set('n', '<m-l>', ':tabn<CR>')
+vim.keymap.set('n', '<m-p>', ':tabm -1<CR>')
+vim.keymap.set('n', '<m-t>', ':tabm +1<CR>')
 
 -- navigate windows easily
-vim.keymap.set('n', '<C-n>', '<C-w>w')
+vim.keymap.set('n', '<m-n>', '<C-w>w')
+
+-- scroll setup
+
+-- scroll the viewport faster with ctrl-j and ctrl-k
+vim.keymap.set('n', '<m-k>', '5<C-y>')
+vim.keymap.set('n', '<m-j>', '5<C-e>')
+vim.keymap.set('n', '<m-u>', "5<c-u>")
+vim.keymap.set('n', '<m-d>', "5<c-d>")
+
+local function comfy_cursor()
+   local n_rows = vim.api.nvim_win_get_height(0)
+   -- the weird execute normal thing does it all before a draw (which feedkeys doesn't)
+   -- so we don't get a flicker if we just hammer on zz like we would with feedkeys
+   if n_rows < 20 then
+      vim.cmd('execute "normal! zz"')
+   elseif n_rows <= 50 then
+      vim.cmd('execute "normal! zz8\\<c-e>"') -- move line to top middle. (on a laptop screen)
+   else
+      vim.cmd('execute "normal! zz10\\<c-e>"') -- move line to top middle. (on a big screen)
+   end
+end
+
+
+vim.keymap.set('n', 'zz', comfy_cursor)
+
+
 

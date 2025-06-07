@@ -24,10 +24,10 @@ require('nvim-treesitter.configs').setup({
   incremental_selection = {
      enable = true,
      keymaps = {
-        init_selection = '<CR>',
-        scope_incremental = '<CR>',
-        node_incremental = '<TAB>',
-        node_decremental = '<S-TAB>',
+        -- init_selection = '<CR>',
+        -- scope_incremental = '<CR>',
+        -- node_incremental = '<TAB>',
+        -- node_decremental = '<S-TAB>',
      },
   }
 })
@@ -74,18 +74,24 @@ end
 local function jump_back()
    if luasnip.jumpable(-1) then
       luasnip.jump(-1)
+   else
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<left>", true, false, true), "n", false)
    end
 end
 
 local function jump_forward()
    if luasnip.jumpable(1) then
       luasnip.jump(1)
+   else
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<right>", true, false, true), "n", false)
    end
 end
 
-vim.keymap.set('i', '<c-l>', jump_forward, { noremap = true, silent = true })
-vim.keymap.set('i', '<c-h>', jump_back, { noremap = true, silent = true })
-vim.keymap.set('i', '<c-space>', try_jump_many, { noremap = true, silent = true })
+vim.keymap.set('i', '<m-l>', jump_forward)
+vim.keymap.set('i', '<m-h>', jump_back)
+vim.keymap.set('i', '<m-k>', "<up>")
+vim.keymap.set('i', '<m-j>', "<down>")
+vim.keymap.set('i', '<m-space>', try_jump_many)
 
 -- i have <s-space> mapped to page up in my terminal, <s-space> may work in some guis
 -- i don't have it mapped that way anymore. it was super annoying.
@@ -95,8 +101,8 @@ vim.keymap.set('i', '<c-space>', try_jump_many, { noremap = true, silent = true 
 local mapping = {
    -- accept currently selected item. set `select` to `false` to only confirm explicitly selected items.
    -- ['<cr>'] = cmp.mapping.confirm({ select = true }),
-   ['<c-e>'] = cmp.mapping.abort(),
-   -- ['<c-space>'] = cmp.mapping.complete(),
+   ['<m-e>'] = cmp.mapping.abort(),
+   -- ['<m-space>'] = cmp.mapping.complete(),
    ["<tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
          if #cmp.get_entries() == 1 then
@@ -134,9 +140,9 @@ local mapping = {
 -- },
 
 -- mapping = cmp.mapping.preset.insert({
---    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
---    ['<C-f>'] = cmp.mapping.scroll_docs(4),
---    ['<C-e>'] = cmp.mapping.abort(),
+--    ['<m-b>'] = cmp.mapping.scroll_docs(-4),
+--    ['<m-f>'] = cmp.mapping.scroll_docs(4),
+--    ['<m-e>'] = cmp.mapping.abort(),
 --    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 -- }),
 
@@ -227,7 +233,9 @@ lspconfig.tsserver.setup({
    init_options = {
       hostInfo = "neovim",
       preferences = {
-         disableSuggestions = true
+         disableSuggestions = true,
+         -- includeCompletionsForModuleExports = false,
+         -- includeCompletionsWithInsertText = false,
       },
    },
    settings = {

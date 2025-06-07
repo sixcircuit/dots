@@ -17,8 +17,11 @@ if [ ! -f "$FILE" ]; then
    exit 1
 fi
 
-# Get raw size (in bytes) using stat
-RAW_SIZE=$(stat -c %s "$FILE")
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    RAW_SIZE=$(stat -f %z "$FILE")  # macOS
+else
+    RAW_SIZE=$(stat -c %s "$FILE")  # Linux
+fi
 
 # Get gzipped size using process substitution
 GZ_SIZE=$(gzip -c "$FILE" | wc -c)
