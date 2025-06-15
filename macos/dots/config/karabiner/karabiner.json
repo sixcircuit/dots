@@ -57,6 +57,24 @@
                         ]
                     },
                     {
+                        "description": "Convert <m-c> to <c-c>",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "c",
+                                    "modifiers": { "mandatory": ["left_option"] }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "c",
+                                        "modifiers": ["left_control"]
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
                         "description": "Convert <m-/> to $ - make $ easier to get to",
                         "manipulators": [
                             {
