@@ -11,13 +11,13 @@ noremap M %
 " add lines easily with + and -
 nnoremap + myO<esc>`y
 
-nmap <leader>c gcc
-vmap <leader>c gc
+nmap ;a gcc
+vmap ;a gc
 " map <leader>n :cnext<cr>
 
 " move things to the bottom and come back up think: 'done'
-nnoremap <leader>d dapGpGmd<C-o><C-o>
-vnoremap <leader>d dGo<esc>GpGmd<C-o><C-o>
+nnoremap <space>d dapGpGmd<C-o><C-o>
+vnoremap <space>d dGo<esc>GpGmd<C-o><C-o>
 
 " noremap 0 ^
 

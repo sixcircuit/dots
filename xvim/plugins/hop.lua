@@ -429,7 +429,7 @@ local function hop_ft(f_or_t, action, regex)
    }
 
    hop_to.regex(regex, opts, hop_opts, function()
-      -- TODO: support macros somehow.
+      -- TODO: support macros somehow. or turn off during macros
       -- local recording_reg = vim.fn.reg_recording()
       -- if recording_reg == "" then return end
       -- wait_for_macro_finish(function()
@@ -443,16 +443,19 @@ local function hop_ft(f_or_t, action, regex)
    end)
 end
 
-vim.keymap.set('', '<leader>k', "mk", { remap = true })
-vim.keymap.set('', '<leader>j', "mj", { remap = true })
+vim.keymap.set('', '<space>k', "mk", { remap = true })
+vim.keymap.set('', '<space>j', "mj", { remap = true })
+-- vim.keymap.set('', ';w', "mk", { remap = true })
+-- vim.keymap.set('', ';b', "mj", { remap = true })
 
 -- vim.keymap.set('n', 'ml', '<cmd>HopChar1<cr>')
 -- vim.keymap.set({ 'n', 'v' }, 'mc', "<cmd>HopChar1<cr>")
 
+-- vim.keymap.set({ 'n', 'v' }, ';w', "<cmd>HopWordAC<cr>")
 -- vim.keymap.set({ 'n', 'v' }, 'mw', "<cmd>HopWordAC<cr>")
 -- vim.keymap.set({ 'n', 'v' }, 'mb', "<cmd>HopWordBC<cr>")
-vim.keymap.set({ 'n', 'v' }, '<leader>w', "<cmd>HopWordAC<cr>")
-vim.keymap.set({ 'n', 'v' }, '<leader>b', "<cmd>HopWordBC<cr>")
+-- vim.keymap.set({ 'n', 'v' }, '<leader>w', "<cmd>HopWordAC<cr>")
+-- vim.keymap.set({ 'n', 'v' }, '<leader>b', "<cmd>HopWordBC<cr>")
 
 -- vim.keymap.set({ 'n', 'v' }, '<leader>j', "<cmd>HopLineAC<cr>")
 -- vim.keymap.set({ 'n', 'v' }, '<leader>k', "<cmd>HopLineBC<cr>")
@@ -575,13 +578,19 @@ end
 local cmds = {
    i = function(str) return "i" end,
    a = function(str) return "a" end,
+   o = function(str) return "o" end,
    v = function(str)
       vim.cmd("normal! v")
+      return nil  -- prevent fallback key feeding
+   end,
+   V = function(str)
+      vim.cmd("normal! V")
       return nil  -- prevent fallback key feeding
    end,
    x = function(str) return "x" end,
    s = function(str) return "s" end,
    dot = function(str) return "." end,
+   star = function(str) return "*" end,
    vi = function(str) return "vi" .. str .. "" end,
    yi = function(str) return "yi" .. str .. "" end,
    y = function(str) return "y" end,
@@ -653,6 +662,7 @@ local _setups = {
    p = _setup_f("regex", "[()]",   { highlight = "[()]" }),
    g = _setup_f("regex", "[<>]",   { highlight = "[<>]" }),
    q = _setup_f("regex", "[\"'`]"),
+   s = _setup_f("regex", "[!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]"),
    [" "] = _setup_f("regex", spaces_regex),
    -- sa = _setup_f("regex", "[\\[]", { highlight = "[\\]]" }),
    -- sb = _setup_f("regex", "[{]",   { highlight = "[{}]" }),
@@ -673,7 +683,7 @@ local vertical_matcher = {
       local win = vim.api.nvim_get_current_win()
       local cursor_row, cursor_col = unpack(vim.api.nvim_win_get_cursor(win))
 
-      if jctx.line_ctx.row == cursor_row then return end
+      if not opts.current and jctx.line_ctx.row == cursor_row then return end
 
       local type = opts.vertical or "start"
 
@@ -681,6 +691,10 @@ local vertical_matcher = {
 
       if type == "start" then
          target_col = (s:find("%S") or 1) - 1
+      elseif type == "end" then
+         target_col = #s-1
+      elseif type == "column" then
+         target_col = cursor_col
       end
 
       if -1 < target_col and target_col < #s then
@@ -705,6 +719,7 @@ local doubles = {
 local singles = {
    [" "] = "spaces",
    w = "word",
+   s = "symbols",
    W = "Word",
    v = "variable name",
    j = "line start down",
@@ -799,6 +814,8 @@ local changes = {}
 add(changes, doubles, "c", "change inside", { cmd = cmds.ci })
 add(changes, { w = "word" }, "c", "change a", { cmd = cmds.ciw })
 add(changes, { w = "word" }, "d", "delete a", { cmd = cmds.diw })
+add(changes, { s = "symbol" }, "c", "change a", { cmd = cmds.ciw })
+add(changes, { s = "symbol" }, "d", "delete a", { cmd = cmds.diw })
 add(changes, { W = "Word" }, "c", "change a", { cmd = cmds.ciW })
 add(changes, { W = "Word" }, "d", "delete a", { cmd = cmds.diW })
 add(changes, { l = "" }, "d", "delete magic on this line", { cmd = cmds.diW })
@@ -831,6 +848,9 @@ add(inserts, singles, "a", "append at", { cmd = cmds.a })
 -- add(inserts, singles, "is", "insert at start", { cmd = cmds.i })
 -- add(inserts, singles, "ie", "insert at end", { cmd = cmds.a })
 
+add(inserts, { k = "line up" }, "a", "append at end of line", { cmd = cmds.a }, { vertical = "end" })
+add(inserts, { j = "line down" }, "a", "append at end of line", { cmd = cmds.a }, { vertical = "end" })
+
 add(inserts, doubles, "io", "insert outside", { cmd = cmds.io })
 -- you want ii for insert eventually
 -- and this is the same thing as i<x,b,p,q>
@@ -849,6 +869,7 @@ setup_hops({ "n" }, "", {
    h("m.", "repeat at char", _setup("chars", nil, { cmd = cmds.dot })),
    h("m.c", "repeat at char", _setup("chars", nil, { cmd = cmds.dot })),
    h("m.v", "repeat at variable", _setup("regex", variable_regex, { cmd = cmds.dot })),
+   h("m*", "* a word", _setups.w({ cmd = cmds.star })),
 })
 
 -- setup_hops({ "n" }, "m", changes, nil, line_only)
@@ -889,11 +910,20 @@ setup_hops({ "n" }, "", {
    h("av", "append at variable", _setup("regex", variable_regex, { cmd = cmds.a })),
 })
 
+_setups.k = _setup_f("regex", vertical_matcher, {}, { direction = hint_dirs.BEFORE_CURSOR })
+_setups.j = _setup_f("regex", vertical_matcher, {}, { direction = hint_dirs.AFTER_CURSOR })
+
+setup_hops({ "n" }, "", {
+   h("ok", "o at line", _setup("regex", vertical_matcher, { cmd = cmds.o }, { direction = hint_dirs.BEFORE_CURSOR })),
+   h("oj", "o at line", _setup("regex", vertical_matcher, { cmd = cmds.o }, { direction = hint_dirs.AFTER_CURSOR }))
+})
+
 -- vim.keymap.set('n', 'mp', "<cmd>HopPasteChar1<cr>")
 -- vim.keymap.set('n', 'mpl', "<cmd>HopPasteChar1<cr>")
 -- vim.keymap.set('n', 'mym', "<cmd>HopYankChar1<cr>")
 
 vim.keymap.set('n', 'yy', 'yy')
+vim.keymap.set('n', 'yiw', 'yiw')
 
 local magic_regex = "[\\[\\]{}()<>\"'` ]"
 
@@ -949,8 +979,21 @@ vim.keymap.set('n', 'dtc', bind(hop_ft, "t", "d"))
 --    }
 --   M.hint_with_regex(jump_regex.regex_by_camel_case(), opts)
 -- end
+local function visual_move()
+   local hops = { current = true }
+   hop_to.regex(vertical_matcher, {}, hops, function(loc)
+      if not loc then return end
+      local timer = vim.loop.new_timer()
+      timer:start(10, 0, vim.schedule_wrap(function()
+         -- run_keys("V")
+         hop_to.regex(vertical_matcher, { precmd = cmds.V }, hops)
+      end))
+   end)
+end
 
-
+vim.keymap.set('n', "mv", visual_move)
+vim.keymap.set('n', "vm", visual_move)
+vim.keymap.set('n', "sw", "m*", { remap = true, desc = "hop * a word" })
 
 
 -- -- This part is the important one for `ct`, `dt`, etc.

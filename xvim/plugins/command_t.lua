@@ -65,6 +65,7 @@ commandt.setup({
    mappings = {
       i = {
          ['<m-o>'] = 'open_split',
+         ['<m-bs>'] = "<bs>",
          ['<m-a>'] = '<Home>',
          ['<m-c>'] = 'close',
          ['<m-e>'] = '<End>',

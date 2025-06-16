@@ -24,7 +24,8 @@ let g:rg_map_keys = 0
 "Plug 'jremmen/vim-ripgrep'
 Plug 'duane9/nvim-rg'
 
-Plug 'tpope/vim-surround'
+"Plug 'tpope/vim-surround'
+Plug 'echasnovski/mini.surround'
 
 "Plug 'bkad/CamelCaseMotion'
 Plug 'chrisgrieser/nvim-spider'

@@ -1,7 +1,33 @@
 
+local lead = ";"
+
 vim.keymap.set('n', '<m-r>', "<c-r>")
 vim.keymap.set('n', '<m-i>', "<c-i>")
 vim.keymap.set('n', '<m-o>', "<c-o>")
+vim.keymap.set('n', lead .. 'bd', "<cmd>bd<cr>")
+
+
+vim.keymap.set('i', '<m-bs>', function()
+   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+   if col == 0 then return '' end
+
+   local line = vim.api.nvim_get_current_line()
+   local char_before = line:sub(col, col)
+
+   local before = line:sub(1, col)
+   local lastchar = vim.fn.matchstr(before, [[\k\+$]])
+   if #lastchar > 0 then
+      return "<C-w>"
+   else
+      return "<BS>"
+   end
+   -- if char_before:match("[%w_]") then
+   --    return "<C-w>"     -- delete word if alphanumeric/underscore
+   -- else
+   --    return "<BS>"      -- otherwise delete one character
+   -- end
+end, { expr = true, desc = "Smart Meta-Backspace (word or char)" })
+
 
 local function bind(func, ...)
    local args = { ... }
@@ -435,29 +461,19 @@ local function comma_list_action(open_char, close_char, mode)
 
 end
 
-_G.comma_list_action = comma_list_action
-
 local function setup_comma_list_actions(key, open, close)
 
    local actions = { c = "change", d = "delete", h = "left", l = "right" }
 
    for act_key, action in pairs(actions) do
 
-      local plug = '<Plug>CommaListAction' .. act_key .. key
+      local keymap = lead .. key .. "c" .. act_key
 
-      vim.keymap.set('n', plug, function()
+      vim.keymap.set('n', keymap, function()
          comma_list_action(open, close, action)
-         vim.fn['repeat#set'](vim.api.nvim_replace_termcodes(plug, true, false, true), vim.v.count)
-      end)
-
-      if act_key == "d" or act_key == "c" then
-         vim.keymap.set('n', act_key .. "," .. key, plug)
-      else
-         vim.keymap.set('n', "," .. key .. act_key, plug)
-      end
-
+         vim.fn['repeat#set'](keymap)
+      end, { desc = action .. " item in comma list in " .. open .. close })
    end
-
 end
 
 -- d,b c,b ,bh ,bl for b, p, a
@@ -469,15 +485,12 @@ setup_comma_list_actions("b", "{", "}")
 
 vim.keymap.set({ "n", "i" }, '<m-q>', '<cmd>wqall<cr>', { desc = "write quit all with <m-q>" })
 
--- one less key for command mode
-vim.keymap.set({ "n", "v" }, ":", ";")
-vim.keymap.set({ "n", "v" }, ";", ":")
+-- one less key for command mode, removed after lead change
+-- vim.keymap.set({ "n", "v" }, ":", ";")
+-- vim.keymap.set({ "n", "v" }, ";", ":")
 
--- vim.keymap.set("n", "<leader>cf", function() vim.api.nvim_feedkeys("ysiw)i", "n", false) end)
--- vim.keymap.set("v", "<leader>cf", function() vim.api.nvim_feedkeys("S)i", "x", false) end)
-
-vim.keymap.set("n", "ycf", "<Plug>Ysurroundiw)i")
--- vim.keymap.set("v", "cf", "<Plug>VSurround)i")
+-- vim.keymap.set("n", lead .. "cf", function() vim.api.nvim_feedkeys("ysiw)i", "n", false) end)
+-- vim.keymap.set("v", lead .. "cf", function() vim.api.nvim_feedkeys("S)i", "x", false) end)
 
 vim.keymap.set("n", "H", "^")
 
@@ -486,9 +499,10 @@ vim.keymap.set({ "n", "i" }, '<down>', '<nop>', { desc = "prevent bad habits, di
 vim.keymap.set({ "n", "i" }, '<left>', '<nop>', { desc = "prevent bad habits, disable left arrow" })
 vim.keymap.set({ "n", "i" }, '<right>', '<nop>', { desc = "prevent bad habits, disable right arrow" })
 
-vim.keymap.set("n", "<m-s>", "<Cmd>update<CR>")
-vim.keymap.set("i", "<m-s>", "<C-o><Cmd>update<CR>")
-
+vim.keymap.set({ "n", "i" }, "<m-s>", function()
+   vim.fn["FixTrailingWhitespace"]()
+   vim.cmd("update")
+end, { desc = "clean trailing whitespace & save" })
 
 -- Resize windows with arrow keys
 vim.keymap.set('n', '<down>', ':vertical resize -3<CR>', { silent = true, desc = "move split left" })
@@ -506,18 +520,14 @@ vim.keymap.set('n', 'g#', "<Plug>(asterisk-gz#)<Plug>(is-nohl-1)", { desc = "fan
 
 vim.keymap.set('n', 'dib', "di{", { desc = "delete inside braces {}" })
 vim.keymap.set('n', 'dip', "di(", { desc = "delete inside parens ()" })
-vim.keymap.set('n', 'dik', "di[", { desc = "delete inside brakets []" })
+vim.keymap.set('n', 'dix', "di[", { desc = "delete inside brakets []" })
 vim.keymap.set('n', 'diq', with_nearest_quote_f("di"), { desc = "delete inside quotes" })
 
 vim.keymap.set('n', 'dab', "da{", { desc = "delete a braces {}" })
 vim.keymap.set('n', 'dap', "da(", { desc = "delete a parens ()" })
-vim.keymap.set('n', 'dak', "da[", { desc = "delete a brakets []" })
+vim.keymap.set('n', 'dax', "da[", { desc = "delete a brakets []" })
 vim.keymap.set('n', 'daq', with_nearest_quote_f("da"), { desc = "delete a quote" })
 
-vim.keymap.set('n', 'dsb', "<Plug>Dsurround{", { desc = "delete surrounding braces {}", remap = true })
-vim.keymap.set('n', 'dsp', "<Plug>Dsurround(", { desc = "delete surrounding parens ()", remap = true })
-vim.keymap.set('n', 'dsk', "<Plug>Dsurround[", { desc = "delete surrounding brakets []", remap = true })
-vim.keymap.set('n', 'ds<space>', "F<space>xf<space>x", { desc = "delete surrounding spaces" })
 
 -- vim.keymap.set('n', 'yib', "yi{", { desc = "yank inside braces {}" })
 -- vim.keymap.set('n', 'yip', "yi(", { desc = "yank inside parens ()" })
@@ -539,53 +549,23 @@ vim.keymap.set('n', 'cap', "ca(", { desc = "change a parens" })
 vim.keymap.set('n', 'cak', "ca[", { desc = "change a brakets []" })
 vim.keymap.set('n', 'caq', with_nearest_quote_f("ca"), { desc = "change a quotes" })
 
--- vim.keymap.set('n', ',cab', "ca{", { desc = "change a braces {}" })
--- vim.keymap.set('n', ',cap', "ca(", { desc = "change a parens ()" })
--- vim.keymap.set('n', ',cak', "ca[", { desc = "change a brackets []" })
--- vim.keymap.set('n', ',caq', with_nearest_quote_f("ca"), { desc = "change a quotes" })
-
-vim.keymap.set('n', ',cb', "cs{", { desc = "change surrounding braces", remap = true })
-vim.keymap.set('n', ',cbk', ",cb]", { desc = "change surrounding braces to brakets", remap = true })
-vim.keymap.set('n', ',cbp', ",cb)", { desc = "change surrounding braces to parens", remap = true })
-vim.keymap.set('n', ',cp', "cs(", { desc = "change surrounding parens", remap = true })
-vim.keymap.set('n', ',cpk', ",cp]", { desc = "change surrounding parens to brakets", remap = true })
-vim.keymap.set('n', ',cpb', ",cp}", { desc = "change surrounding parens to braces", remap = true })
-vim.keymap.set('n', ',ca', "cs[", { desc = "change surrounding brakets", remap = true })
-vim.keymap.set('n', ',ckp', ",ca)", { desc = "change surrounding brakets to parens", remap = true })
-vim.keymap.set('n', ',ckb', ",ca}", { desc = "change surrounding brakets to braces", remap = true })
-vim.keymap.set('n', ',cq', with_nearest_quote_f("cs", "m"), { desc = "change surrounding quotes", remap = true })
--- vim.keymap.set('n', ',cqk', with_nearest_quote_f(",cq["), { desc = "change surrounding quotes to brakets", remap = true })
--- vim.keymap.set('n', ',cqb', with_nearest_quote_f(",cq{"), { desc = "change surrounding quotes to braces", remap = true })
--- vim.keymap.set('n', ',cqp', with_nearest_quote_f(",cq("), { desc = "change surrounding quotes to parens", remap = true })
-
--- vim.keymap.set({ 'n' }, ',sb', "<Plug>Ysurroundiw}", { desc = "surround with braces {}", remap = true })
--- vim.keymap.set({ 'n' }, ',sk', "<Plug>Ysurroundiw]", { desc = "surround with brakets []", remap = true })
--- vim.keymap.set({ 'n' }, ',sp', "<Plug>Ysurroundiw)", { desc = "surround with parens ()", remap = true })
--- vim.keymap.set({ 'v' }, ',sb', "<Plug>Ysurround}", { desc = "surround with braces {}", remap = true })
--- vim.keymap.set({ 'v' }, ',sk', "<Plug>Ysurround]", { desc = "surround with brakets []", remap = true })
--- vim.keymap.set({ 'v' }, ',sp', "<Plug>Ysurround)", { desc = "surround with parens ()", remap = true })
--- vim.keymap.set({ 'v' }, ',s`', "<Plug>Ysurround`", { desc = "surround with braces {}", remap = true })
--- vim.keymap.set({ 'v' }, ',s"', "<Plug>Ysurround\"", { desc = "surround with brakets []", remap = true })
--- vim.keymap.set({ 'v' }, ',s\'', "<Plug>Ysurround'", { desc = "surround with parens ()", remap = true })
+vim.keymap.set("n", lead .. "ss", lead .. "s_", { desc = "surround line", remap = true })
 
 vim.keymap.set("n", "<space>l", "a <esc>")
 vim.keymap.set("n", "<space>h", "i <esc>")
-vim.keymap.set("n", "<leader>u", ":MundoToggle<cr>")
 
-vim.keymap.set("n", ",lo", "V,lo", { desc = "turn a long line into a bunch of sentences on new lines.", remap = true })
-vim.keymap.set("x", ",lo", [[:s/\([.!?]\)\s\+/\1\r/g | s/(/\\r(/g<CR>]], { desc = "turn a long line into a bunch of sentences on new lines." })
 vim.keymap.set("x", ".", ":'<,'>normal .<CR>", { desc = "run . on all lines in a selection" })
 
-vim.keymap.set("n", ",wc", function()
+vim.keymap.set("n", lead .. "fwc", function()
    local line = vim.api.nvim_get_current_line()
    local indent = line:match("^%s*") or ""
    local content = line:match("^%s*(.-)%s*$") or ""
    content = content:gsub("`", "\\`")
    vim.api.nvim_set_current_line(indent .. 'code.push(`' .. content .. '`);')
-   vim.fn["repeat#set"](",wc")
+   vim.fn["repeat#set"](lead .. "fwc")
 end, { desc = "wrap current line with code.push(`...`)" })
 
-vim.keymap.set("n", ",fa", function()
+vim.keymap.set("n", lead .. "ffa", function()
    local line = vim.api.nvim_get_current_line()
 
    -- Match: function name(args)
@@ -604,14 +584,14 @@ vim.keymap.set("n", ",fa", function()
       print("no matching function pattern found.")
    end
 
-   vim.fn["repeat#set"](",fa")
+   vim.fn["repeat#set"](lead .. "ffa")
 
 end, { desc = "reformat function declaration to assigned form" })
 
-vim.keymap.set('n', ', b', "cs}{", { desc = "add space inside braces", remap = true })
-vim.keymap.set('n', ', p', "cs)(", { desc = "add space inside parens" , remap = true })
-vim.keymap.set('n', ', x', "cs][", { desc = "add space inside brakets []" , remap = true })
-vim.keymap.set('n', ', q', with_nearest_quote_f(function(quote) return("cs" .. quote .. " " .. quote) end, "m"), { desc = "add space inside quotes" , remap = true })
+vim.keymap.set('n', lead .. ' b', "cs}{", { desc = "add space inside braces", remap = true })
+vim.keymap.set('n', lead .. ' p', "cs)(", { desc = "add space inside parens" , remap = true })
+vim.keymap.set('n', lead .. ' x', "cs][", { desc = "add space inside brakets []" , remap = true })
+vim.keymap.set('n', lead .. ' q', with_nearest_quote_f(function(quote) return("cs" .. quote .. " " .. quote) end, "m"), { desc = "add space inside quotes" , remap = true })
 
 vim.keymap.set('n', 'deb', "ct} <esc>", { desc = "delete till }" })
 vim.keymap.set('n', 'dep', "ci) <esc>", { desc = "delete till )" })
@@ -620,7 +600,7 @@ vim.keymap.set('n', 'ceb', "ct} <left>", { desc = "delete inside braces {}" })
 vim.keymap.set('n', 'cep', "ci) <left>", { desc = "delete inside parens ()" })
 vim.keymap.set('n', 'cek', "ci] <left>", { desc = "delete inside brakets []" })
 
-vim.keymap.set("n", ",fb", "vi{=", { desc = "indent block" })
+vim.keymap.set("n", lead .. "fb", "vi{=", { desc = "indent block" })
 
 local function make_slash_textobj(include_start_delim, include_trail_delim)
    return function()
@@ -677,7 +657,7 @@ vim.keymap.set({ "o", "x" }, "a/", make_slash_textobj(false, true), { desc = "a 
 -- vim.keymap.set('n', ',,', "<plug>(Mac_Play)")
 -- vim.keymap.set('n', 'qq', "<plug>(Mac_RecordNew)")
 
-vim.keymap.set('n', ',,', "@q")
+-- vim.keymap.set('n', ',,', "@q")
 -- vim.keymap.set('n', 'qq', "<plug>(Mac_RecordNew)")
 
 
@@ -772,12 +752,12 @@ vim.keymap.set('n', 'eeee', "e", { desc = "move e to eeee" })
 -- end, { noremap = true, silent = true, desc = "insert at first non-leading space" })
 
 
-vim.keymap.set('n', '<leader>id', function()
+vim.keymap.set('n', lead .. 'id', function()
   local ts = os.date("%Y-%m-%d %H:%M")
   vim.api.nvim_put({ ts }, "c", true, true)
 end, { desc = "insert date" })
 
-vim.keymap.set('n', '<leader>im', function()
+vim.keymap.set('n', lead .. 'im', function()
   local ts = '= ' .. os.date("%Y-%m-%d %H:%M") .. ''
   vim.api.nvim_put({ ts }, "c", true, true)
 end, { desc = "insert date marker with =" })
@@ -809,56 +789,61 @@ local function commandt_f(cmd)
 end
 
 -- CommandT excludes no files, CommandTFind excludes some files. see the code in command-t.lua
-vim.keymap.set('n', '<leader>o', commandt_f('CommandTFind'))
--- vim.keymap.set('n', '<leader>o', ':CommandTFind<cr>')
--- vim.keymap.set('n', '<leader>ll', ':CommandT<cr>')
--- vim.keymap.set('n', '<leader>lb', ':CommandTBuffer<cr>')
--- vim.keymap.set('n', '<leader>a', toggle_autocomplete)
+-- vim.keymap.set('n', lead .. "l", commandt_f('CommandTFind'))
+vim.keymap.set('n', "so", commandt_f('CommandTFind'))
+-- vim.keymap.set('n', lead .. 'o', ':CommandTFind<cr>')
+-- vim.keymap.set('n', lead .. 'll', ':CommandT<cr>')
+-- vim.keymap.set('n', lead .. 'lb', ':CommandTBuffer<cr>')
+-- vim.keymap.set('n', lead .. 'a', toggle_autocomplete)
 
-vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "open buffer directory using oil" })
+vim.keymap.set("n", "<space>f", "<CMD>Oil --float<CR>", { desc = "open buffer directory using oil" })
 
 -- google shit. open links
 
-vim.keymap.set('n', '<Leader>gl', function()
+vim.keymap.set('n', lead .. 'gl', function()
   vim.cmd('call OpenURI()')
 end, { silent = true, desc = "open link in browser" })
 
-vim.keymap.set('n', '<leader>gg', function()
+vim.keymap.set('n', lead .. 'gg', function()
    vim.cmd('normal! "gyiw')
    vim.cmd('call GoogleSearch()')
 end, { silent = true, desc = "google word under cursor" })
 
-vim.keymap.set('n', '<leader>gi\'', function()
+vim.keymap.set('n', lead .. 'gi\'', function()
    vim.cmd('normal! "gyi\'')
    vim.cmd('call GoogleSearch()')
 end, { silent = true, desc = "google word inside '" })
 
-vim.keymap.set('n', '<leader>gi"', function()
+vim.keymap.set('n', lead .. 'gi"', function()
    vim.cmd('normal! "gyi"')
    vim.cmd('call GoogleSearch()')
 end, { silent = true, desc = "google words inside \"" })
 
-vim.keymap.set('v', '<leader>gg', function()
+vim.keymap.set('v', lead .. 'gg', function()
    vim.cmd('normal! "gy')
    vim.cmd('call GoogleSearch()')
 end, { silent = true, desc = "google visual selection" })
 
-vim.keymap.set('n', '<leader>/', ":noh<cr>", { desc = "turn off search highlighting" })
+vim.keymap.set('n', '<esc>', ":noh<cr>", { desc = "turn off search highlighting", silent = true })
 
-vim.keymap.set("n", "<leader>ft", function()
+vim.keymap.set("n", lead .. "ft", function()
    local from = vim.fn.input("from: ")
    local to = vim.fn.input("to: ")
    vim.fn["ChangeSoftTabs"](from, to)
 end, { desc = "fix tabs from one width to another" })
 
-vim.keymap.set("n", "<leader>fq", function() vim.fn["FixQuotes"]() end, { desc = "turn unicode quotes into ansi quotes" })
-vim.keymap.set("n", "<leader>fc", function() vim.fn["FixChars"]() end, { desc = "turn fancy unicode chars like quotes and dashes into ansi chars" })
-vim.keymap.set("n", "<leader>fw", function() vim.fn["FixTrailingWhitespace"]() end, { desc = "fix trailing whitespace" })
+vim.keymap.set("n", lead .. "fiq", function() vim.fn["FixQuotes"]() end, { desc = "turn unicode quotes into ansi quotes" })
+vim.keymap.set("n", lead .. "fic", function() vim.fn["FixChars"]() end, { desc = "turn fancy unicode chars like quotes and dashes into ansi chars" })
+vim.keymap.set("n", lead .. "fiw", function() vim.fn["FixTrailingWhitespace"]() end, { desc = "fix trailing whitespace" })
 
-vim.keymap.set("n", "<leader>z", function()
+vim.keymap.set("n", ";z", function()
    vim.fn["ToggleWrap"]()
 end, { desc = "toggle text wrap and fix how motions work" })
 
+
+vim.keymap.set('n', 'o', "<nop>", { desc = "recoup o" })
+vim.keymap.set('n', 'oo', "o", { desc = "enable o at oo" })
+vim.keymap.set('n', 'oh', "o", { desc = "enable o at oh" })
 
 -- s key -- think "search" and "show" and "surround"
 
@@ -866,7 +851,7 @@ vim.keymap.set('n', 's', "<nop>", { desc = "recoup s" })
 vim.keymap.set('n', 'ss', "s", { desc = "enable s as ss" })
 
 
--- vim.keymap.set('n', 's;', ":w<CR>", { desc = "save with s;" })
+vim.keymap.set("n", "su", ":MundoToggle<cr>")
 
 -- vim.keymap.set('n', '[f', cprev_rollover)
 -- vim.keymap.set('n', ']f', cnext_rollover)
@@ -877,8 +862,8 @@ vim.keymap.set('n', 'sj', cnext_rollover, { desc = "skip to next quickfix" })
 vim.keymap.set('n', 'sff', bind(rg_and_open_first, "rg"), { desc = "search files with pattern, rg, open in new tab, jump to first result" })
 vim.keymap.set('n', 'sfl', bind(rg_and_open_first, "rgl"), { desc = "search files with literal, rgl, open in new tab, jump to first result" })
 vim.keymap.set('n', 'sfw', bind(rg_and_open_first, "rgw"), { desc = "search files for word under cursor, rgl for word under cursor, open new tab, jump to first result" })
-vim.keymap.set('n', 'sr', ':%s///g<left><left>', { desc = "replace whatever you last searched for (buffer wide)" })
-vim.keymap.set('n', 'sd', ':/_\\.<cr>', { desc = "search for _." })
+vim.keymap.set('n', 's/r', ':%s///g<left><left>', { desc = "replace whatever you last searched for (buffer wide)" })
+vim.keymap.set('n', 's/d', ':/_\\.<cr>', { desc = "search for _." })
 
 -- Global mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
@@ -889,7 +874,7 @@ vim.keymap.set('n', 'sl', toggle_virtual_text)
 
 vim.keymap.set('n', 'sh', show_hover, { desc = "show hover window" })
 
-vim.keymap.set('n', ',so', ':w | source %<CR>', { desc = "save and source current file" })
+-- vim.keymap.set('n', ',so', ':w | source %<CR>', { desc = "save and source current file" })
 
 local function block_open_f(open_char, close_char, split_char)
    return function()
@@ -925,12 +910,14 @@ local function block_open_f(open_char, close_char, split_char)
    end
 end
 
-vim.keymap.set("n", ",oo", block_open_f("{", "}", ","), { desc = "open single-line { } object block into multi-line" })
-vim.keymap.set("n", ",ob", block_open_f("{", "}", ";"), { desc = "open single-line { } function block into multi-line" })
-vim.keymap.set("n", ",bb", "f}a<cr><esc>", { desc = "break a block, useful for puting else on a newline }else{" })
+vim.keymap.set("n", lead .. "foo", block_open_f("{", "}", ","), { desc = "open single-line { } object block into multi-line" })
+vim.keymap.set("n", lead .. "fob", block_open_f("{", "}", ";"), { desc = "open single-line { } function block into multi-line" })
+vim.keymap.set("n", lead .. "fol", "V;fol", { desc = "turn a long line into a bunch of sentences on new lines.", remap = true })
+vim.keymap.set("x", lead .. "fol", [[:s/\([.!?]\)\s\+/\1\r/g | s/(/\\r(/g<CR>]], { desc = "turn a long line into a bunch of sentences on new lines." })
+vim.keymap.set("n", lead .. "foe", "f}a<cr><esc>", { desc = "open else, useful for puting else on a newline }else{" })
 
-vim.keymap.set("n", ",co", "va{J", { desc = "close multi-line { } block to one line" })
-vim.keymap.set("n", ",cb", "va{J", { desc = "close multi-line { } function block to one line" })
+vim.keymap.set("n", lead .. "fco", "va{J", { desc = "close multi-line { } block to one line" })
+vim.keymap.set("n", lead .. "fcb", "va{J", { desc = "close multi-line { } function block to one line" })
 
 
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -955,15 +942,15 @@ vim.api.nvim_create_autocmd('LspAttach', {
       vim.keymap.set({ 'n' }, 'ea', vim.lsp.buf.code_action, opts, { desc = "do a code action" })
 
       -- can't use w slows down easymotions
-      -- vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
-      -- vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
-      -- vim.keymap.set('n', '<leader>wl', function()
+      -- vim.keymap.set('n', lead .. "wa', vim.lsp.buf.add_workspace_folder, opts)
+      -- vim.keymap.set('n', lead .. "wr', vim.lsp.buf.remove_workspace_folder, opts)
+      -- vim.keymap.set('n', lead .. "wl', function()
       -- print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
       -- end, opts)
       -- vim.keymap.set('n', 'gD', vim.lsp.buf.type_definition, opts)
       -- can't use "r" as first letter. slows swap
       -- can't use "c" as first letter. slows comment
-      -- vim.keymap.set('n', '<leader>f', function()
+      -- vim.keymap.set('n', lead .. "f', function()
       --   vim.lsp.buf.format { async = true }
       -- end, opts)
    end,
@@ -993,12 +980,12 @@ local function wrap_current_line_control_statement()
 
 end
 
-vim.keymap.set("n", ",wb", function ()
+vim.keymap.set("n", lead .. "fwb", function ()
    wrap_current_line_control_statement()
-   vim.fn["repeat#set"](",wb")
+   vim.fn["repeat#set"](lead .. "fwb")
 end, { desc = "wrap control blocks with {}" })
 
-vim.keymap.set("n", ",wd", function()
+vim.keymap.set("n", lead .. "fwd", function()
    local api = vim.api
    local fn = vim.fn
 
@@ -1054,11 +1041,11 @@ vim.keymap.set("n", ",wd", function()
    -- Restore original position
    api.nvim_win_set_cursor(0, mark)
 
-   vim.fn["repeat#set"](",wd")
+   vim.fn["repeat#set"](lead .. "fwd")
 
 end, { desc = "wrap function block with _(...)" })
 
-vim.keymap.set("x", ",fcol", function()
+vim.keymap.set("x", lead .. "fcol", function()
    -- Normalize selection range
    local start_row = math.min(vim.fn.line("v"), vim.fn.line("."))
    local end_row = math.max(vim.fn.line("v"), vim.fn.line("."))
@@ -1100,7 +1087,7 @@ vim.keymap.set("x", ",fcol", function()
    -- Write back to buffer
    vim.api.nvim_buf_set_lines(0, start_row, end_row, false, output)
 
-   vim.fn["repeat#set"](",fcol")
+   vim.fn["repeat#set"](lead .. "fcol")
 
 end, { desc = "Align comma-separated values visually with indentation" })
 

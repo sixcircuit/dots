@@ -41,4 +41,5 @@ vim.api.nvim_create_autocmd({ "InsertLeave" }, {
    end,
 })
 
-vim.keymap.set('n', 'sw', toggle_listchars, { desc = "toggle whitespace" })
+-- vim.keymap.set('n', 's ', toggle_listchars, { desc = "toggle whitespace" })
+

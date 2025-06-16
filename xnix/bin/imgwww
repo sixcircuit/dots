@@ -1,0 +1,131 @@
+#!/usr/bin/env node
+
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const url = require('url');
+const { exec } = require('child_process');
+
+const base_dir = process.cwd();
+
+function get_all_images(dir, file_list = [], root = base_dir) {
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+        const abs_path = path.join(dir, file);
+        const rel_path = path.relative(root, abs_path);
+        const stat = fs.statSync(abs_path);
+        if (stat.isDirectory()) {
+            get_all_images(abs_path, file_list, root);
+        } else {
+            const ext = path.extname(file).toLowerCase();
+            if (['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp', '.bmp'].includes(ext)) {
+                file_list.push({ rel: rel_path, abs: abs_path });
+            }
+        }
+    }
+    return file_list;
+}
+
+function serve_file(res, file_path) {
+    fs.readFile(file_path, (err, data) => {
+        if (err) {
+            res.writeHead(404);
+            res.end('Not found');
+            return;
+        }
+        const ext = path.extname(file_path).toLowerCase();
+        const contentType = {
+            '.html': 'text/html',
+            '.js': 'text/javascript',
+            '.css': 'text/css',
+            '.jpg': 'image/jpeg',
+            '.jpeg': 'image/jpeg',
+            '.png': 'image/png',
+            '.gif': 'image/gif',
+            '.svg': 'image/svg+xml',
+            '.webp': 'image/webp',
+            '.bmp': 'image/bmp'
+        }[ext] || 'application/octet-stream';
+        res.writeHead(200, { 'Content-Type': contentType });
+        res.end(data);
+    });
+}
+
+const server = http.createServer((req, res) => {
+    const parsedUrl = url.parse(req.url, true);
+    let pathname = decodeURIComponent(parsedUrl.pathname);
+
+    if (pathname === '/') {
+        const images = get_all_images(base_dir);
+        let head = `
+        <html>
+        <head>
+        <style>
+            body { background-color: gray; font-family: sans-serif; }
+            div.container { cursor: pointer; margin: 10px; margin-bottom: 25px; }
+            img { border: 1px solid #ce665f; margin-left: 10px;  }
+            .path { color: white; margin-top: 10px; font-size: 16px; font-weight: bold; }
+            .path_text { padding: 10px; }
+            .flash_copied { background-color: #ce665f; }
+            .flash_error { background-color: red; }
+        </style>
+        </head>
+        <body>
+        `;
+
+        let body = '';
+        for (const img_path of images) {
+            const copy_path = img_path.abs.replace(/\\/g, '\\\\');
+            body += `
+            <div class="container" onclick="copy_to_clipboard(this, '${copy_path}')">
+               <img src="${encodeURI(img_path.rel)}" width="100" />
+               <div class="path"><span class="path_text">${img_path.rel}<span></div>
+           </div>
+            `;
+        }
+
+       let script = `
+          <script>
+          function flash_change(elem, text, css_class){
+             const original_text = elem.textContent;
+             elem.textContent = text
+             elem.classList.add("flash_" + css_class);
+             setTimeout(() => {
+                elem.textContent = original_text;
+                elem.classList.remove("flash_" + css_class);
+             }, 350);
+          }dt
+          function copy_to_clipboard(div, path) {
+             const path_text = div.querySelector('.path_text')
+             navigator.clipboard.writeText(path).then(() => {
+                flash_change(path_text, 'copied to clipboard', "copied");
+             }).catch(err => {
+                flash_change(path_text, 'failed to copy. check console.', "error");
+                console.error('failed to copy: ', err);
+             });
+          }
+          </script>
+          </body></html>
+          `;
+
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(head + body + script);
+    } else {
+        const file_path = path.join(base_dir, pathname);
+        // don't allow access outside root dir
+        if (!file_path.startsWith(base_dir)) {
+            res.writeHead(403);
+            res.end('Forbidden');
+            return;
+        }
+        serve_file(res, file_path);
+    }
+});
+
+server.listen(0, () => {
+    const address = server.address();
+    const port = address.port;
+    const serverUrl = `http://localhost:${port}`;
+    console.log(`server running at ${serverUrl}`);
+    exec(`open ${serverUrl}`);
+});

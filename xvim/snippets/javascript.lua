@@ -5,6 +5,7 @@ local i = ls.insert_node
 local d = ls.dynamic_node
 local f = ls.function_node
 local t = ls.text_node
+local sn = ls.snippet_node
 local fmt = require("luasnip.extras.fmt").fmt
 
 local snipppets = {}
@@ -22,13 +23,22 @@ end
 
 -- Fix snippets. Setup "function" abbrev to WRONG, same with prototype. if( "else " and else{. ;f and ;af and ;if ;elif ;else use ; to tab into the pieces. Start with that. comment out all the others.
 
+local function has_text_after_cursor()
+   local col = vim.api.nvim_win_get_cursor(0)[2]
+   local line = vim.api.nvim_get_current_line()
+   return line:sub(col + 1):match("%S") ~= nil
+end
 
 local function create_function_mappings(snips, is_async)
    local fsnips = {
       { trigger = ";<base_trigger>",
         description = "<type>",
         fmt = "<async>function({}){{{}}}{}",
-        args = { i(1), i(2), i(0) }
+        args = { i(1), i(2), i(0) },
+        literal = {
+           fmt = "<async>function{}",
+           args = { i(0) }
+        },
       },
 
       { trigger = ";<trigger>n",
@@ -36,13 +46,6 @@ local function create_function_mappings(snips, is_async)
         fmt = "<async>function {}({}){{{}}}{}",
         args = { i(1, "name"), i(2), i(3), i(0) }
       },
-
-      { trigger = ";<trigger>l",
-        description = "literal <type>",
-        fmt = "<async>function{}",
-        args = { i(0) }
-      },
-
    }
 
    local values;
@@ -54,12 +57,21 @@ local function create_function_mappings(snips, is_async)
    end
 
    for _, snip in ipairs(fsnips) do
-      local sn = s(
-         render(snip.trigger, values),
-         fmt(render(snip.fmt, values), snip.args),
-         { description = render(snip.description, values) }
+
+      local ns = s(
+         render(snip.trigger, values), {
+            d(1, function(args, snp)
+
+              if snip.literal and has_text_after_cursor() then
+                return sn(nil, fmt(render(snip.literal.fmt, values), snip.literal.args))
+              else
+                return sn(nil, fmt(render(snip.fmt, values), snip.args))
+              end
+
+            end, { description = render(snip.description, values) })
+         }
       )
-      table.insert(snips, sn)
+      table.insert(snips, ns)
    end
 end
 
@@ -154,11 +166,11 @@ local function create_declaration_mappings(snips, is_let)
    end
 
    for _, snip in ipairs(dsnips) do
-      local sn = s(
+      local ns = s(
          render(snip.trigger, values),
          fmt(render(snip.fmt, values), snip.args)
       )
-      table.insert(snips, sn)
+      table.insert(snips, ns)
    end
 end
 
@@ -171,11 +183,11 @@ local function create_random(snips, prefix)
    local values = { prefix = prefix }
 
    for _, snip in ipairs(defsnips) do
-      local sn = s(
+      local ns = s(
          render(snip.trigger, values),
          fmt(render(snip.fmt, values), snip.args)
       )
-      table.insert(snips, sn)
+      table.insert(snips, ns)
    end
 end
 
@@ -200,11 +212,11 @@ local function create_type_checks(snips, test)
    local values = { test = test }
 
    for _, snip in ipairs(defsnips) do
-      local sn = s(
+      local ns = s(
          render(snip.trigger, values),
          fmt(render(snip.fmt, values), snip.args)
       )
-      table.insert(snips, sn)
+      table.insert(snips, ns)
    end
 end
 
@@ -227,11 +239,11 @@ local function create_type_check_ifs(snips, test)
    local values = { trigger = "i", test = "is" }
 
    for _, snip in ipairs(defsnips) do
-      local sn = s(
+      local ns = s(
          render(snip.trigger, values),
          fmt(render(snip.fmt, values), snip.args)
       )
-      table.insert(snips, sn)
+      table.insert(snips, ns)
    end
 end
 

@@ -144,7 +144,5 @@ vim.api.nvim_create_user_command("W", function()
 
 end, {})
 
-vim.cmd([[
-  cmap w W
-]])
+-- vim.cmd([[ cmap w W ]])
 

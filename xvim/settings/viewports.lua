@@ -132,9 +132,8 @@ _G.layout_windows = layout_windows
 _G.rotate_windows_keep_cursor = rotate_windows_keep_cursor
 
 -- Rotate Windows and Keep Cursor
-vim.keymap.set('n', '<leader>r', rotate_windows_keep_cursor, { silent = true })
-
-vim.keymap.set('n', '\\', layout_windows, { silent = true })
+vim.keymap.set('n', '<space>r', rotate_windows_keep_cursor, { silent = true })
+vim.keymap.set('n', '<space>e', layout_windows, { silent = true })
 
 -- Tab navigation
 vim.keymap.set('n', '<m-h>', ':tabp<CR>')
@@ -147,11 +146,48 @@ vim.keymap.set('n', '<m-n>', '<C-w>w')
 
 -- scroll setup
 
+
 -- scroll the viewport faster with ctrl-j and ctrl-k
-vim.keymap.set('n', '<m-k>', '5<C-y>')
-vim.keymap.set('n', '<m-j>', '5<C-e>')
-vim.keymap.set('n', '<m-u>', "5<c-u>")
-vim.keymap.set('n', '<m-d>', "5<c-d>")
+vim.keymap.set('', '<m-k>', '5<c-y>')
+vim.keymap.set('', '<m-j>', '5<c-e>')
+vim.keymap.set('', '<m-u>', "18<c-u>")
+vim.keymap.set('', '<m-d>', "18<c-d>")
+
+local function feedkeys(keys)
+   keys = vim.api.nvim_replace_termcodes(keys, true, false, true)
+   vim.api.nvim_feedkeys(keys, "n", false)
+end
+
+local function big_scroll(dir, factor)
+   if factor == nil then factor = 0.4 end
+
+   return function()
+      local win_height = vim.api.nvim_win_get_height(0)
+      local buf_line_count = vim.api.nvim_buf_line_count(0)
+      local cursor_line = vim.fn.line(".")
+      local scrolloff = vim.o.scrolloff
+      local scroll_lines = math.floor(win_height * factor)
+
+      if dir == "d" then
+         if cursor_line < scrolloff then
+            feedkeys(scrolloff .. "G")
+            return
+         end
+      else -- dir == "u"
+         local threshold = buf_line_count - scrolloff
+         if cursor_line > threshold then
+            feedkeys(threshold .. "G")
+            return
+         end
+      end
+
+      feedkeys(scroll_lines .. "<c-" .. dir .. ">")
+   end
+end
+
+vim.keymap.set('n', '<M-u>', big_scroll("u"))
+vim.keymap.set('n', '<M-d>', big_scroll("d"))
+-- vim.keymap.set('n', '<M-space>', big_scroll("d", 0.7))
 
 local function comfy_cursor()
    local n_rows = vim.api.nvim_win_get_height(0)

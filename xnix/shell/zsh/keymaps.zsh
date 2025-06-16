@@ -1,6 +1,8 @@
 
 # key bindings
 
+export KEYTIMEOUT=5 # this is in 10ths of secs, so this is 50ms
+
 # vim mode
 
 bindkey -v
@@ -71,22 +73,25 @@ ctrl-d() { return 1 }
 zle -N ctrl-d
 bindkey '^D' ctrl-d
 
-zle     -N            fzf-history-widget
+
+bindkey '\e\x7f' backward-kill-word # Option+Backspace
+
+zle     -N             fzf-history-widget
 bindkey -M emacs '^[h' fzf-history-widget
 bindkey -M vicmd '^[h' fzf-history-widget
 bindkey -M viins '^[h' fzf-history-widget
 
-zle     -N            fzf-history-widget
+zle     -N             fzf-history-widget
 bindkey -M emacs '^[r' fzf-history-widget
 bindkey -M vicmd '^[r' fzf-history-widget
 bindkey -M viins '^[r' fzf-history-widget
 
-zle     -N            fzf-file-widget
+zle     -N             fzf-file-widget
 bindkey -M emacs '^[j' fzf-file-widget
 bindkey -M vicmd '^[j' fzf-file-widget
 bindkey -M viins '^[j' fzf-file-widget
 
-zle     -N            fzf-cd-widget
+zle     -N             fzf-cd-widget
 bindkey -M emacs '^[k' fzf-cd-widget
 bindkey -M vicmd '^[K' fzf-cd-widget
 bindkey -M viins '^[k' fzf-cd-widget
