@@ -193,6 +193,17 @@ local function comfy_cursor()
    local n_rows = vim.api.nvim_win_get_height(0)
    -- the weird execute normal thing does it all before a draw (which feedkeys doesn't)
    -- so we don't get a flicker if we just hammer on zz like we would with feedkeys
+
+   local current_line = vim.fn.line(".")
+   local max_scroll = 10  -- how far down we’d normally scroll
+   local min_required = 5 -- how many lines from the top we tolerate before scrolling
+
+   if current_line <= min_required then
+      -- We're too close to the top — just regular centering
+      vim.cmd('normal! zz')
+      return
+   end
+
    if n_rows < 20 then
       vim.cmd('execute "normal! zz"')
    elseif n_rows <= 50 then
@@ -203,7 +214,7 @@ local function comfy_cursor()
 end
 
 
-vim.keymap.set('n', 'zz', comfy_cursor)
+vim.keymap.set('n', 'zz', comfy_cursor, { desc = "smart zz" })
 
 
 

@@ -798,6 +798,51 @@ vim.keymap.set('n', "so", commandt_f('CommandTFind'))
 
 vim.keymap.set("n", "<space>f", "<CMD>Oil --float<CR>", { desc = "open buffer directory using oil" })
 
+-- In your keymaps.lua or init.lua
+
+local function jump_to_line_incrementally()
+   local input = ""
+   local max = vim.api.nvim_buf_line_count(0)
+
+   local function redraw_prompt()
+      vim.cmd("redraw")
+      vim.cmd(('echo "jump to line: %s"'):format(input))
+   end
+
+   local function exit()
+      vim.cmd('echo ""')
+   end
+
+   redraw_prompt()
+
+   while true do
+      local c = vim.fn.getchar()
+      local key = type(c) == "number" and vim.fn.nr2char(c) or c
+
+      if c == 8 or c == 127 or key == "\b" or key == "\127" or key == "\x80kb" then
+         input = input:sub(1, -2)
+      elseif key:match("^%d$") then
+         input = input .. key
+      else
+         vim.api.nvim_feedkeys(key, "n", true)
+         return exit()
+      end
+
+      local line = tonumber(input)
+      if line and line > 0 then
+         if line > max then line = max end
+         -- vim.api.nvim_win_set_cursor(0, { line, 0 })
+         vim.cmd(("normal %dGzz"):format(line))
+         -- if line * 10 is greater than max then we can't accept another digit, so we exit
+         if line == max or line * 10 > max then return exit()  end
+      end
+
+      redraw_prompt()
+   end
+end
+
+vim.keymap.set("n", "_", jump_to_line_incrementally, { desc = "incremental line jump, confirm with ;" })
+
 -- google shit. open links
 
 vim.keymap.set('n', lead .. 'gl', function()
@@ -862,8 +907,8 @@ vim.keymap.set('n', 'sj', cnext_rollover, { desc = "skip to next quickfix" })
 vim.keymap.set('n', 'sff', bind(rg_and_open_first, "rg"), { desc = "search files with pattern, rg, open in new tab, jump to first result" })
 vim.keymap.set('n', 'sfl', bind(rg_and_open_first, "rgl"), { desc = "search files with literal, rgl, open in new tab, jump to first result" })
 vim.keymap.set('n', 'sfw', bind(rg_and_open_first, "rgw"), { desc = "search files for word under cursor, rgl for word under cursor, open new tab, jump to first result" })
-vim.keymap.set('n', 's/r', ':%s///g<left><left>', { desc = "replace whatever you last searched for (buffer wide)" })
-vim.keymap.set('n', 's/d', ':/_\\.<cr>', { desc = "search for _." })
+vim.keymap.set('n', 'spr', ':%s///g<left><left>', { desc = "replace whatever you last searched for (buffer wide)" })
+vim.keymap.set('n', 'spd', ':/_\\.<cr>', { desc = "search for _." })
 
 -- Global mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions

@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+
+const { spawn } = require("child_process");
+
+const args = process.argv.slice(2);
+
+if(args.length === 0){
+   console.error(`usage: ${process.argv[1]} <commands>`);
+   process.exit(1);
+}
+
+const cmd_string = args.join(" ");
+const DOT = "\x1b[38;5;33m∙\x1b[0m";
+
+const getch = function(){
+
+   return(new Promise(function(resolve){
+      const stdin = process.stdin;
+      const was_raw = stdin.isRaw;
+
+      stdin.setEncoding('utf8');
+      stdin.setRawMode(true);
+
+      stdin.once('data', async function(key){
+         stdin.setRawMode(was_raw);
+         // if key is multiple characters its that they got buffered during the long running process.
+         if(key.length > 1){ key = key[key.length-1]; }
+         resolve(key);
+      });
+
+      stdin.resume();
+
+   }));
+};
+
+function run_command(){
+   process.stdout.write("\n");
+
+   const child = spawn(cmd_string, { shell: true, stdio: "inherit" });
+
+   child.on("exit", async function(){
+      process.stdout.write("\n");
+      process.stdout.write(`${DOT} ${cmd_string}\n`);
+      process.stdout.write(`${DOT} [press any key to rerun, <q> or <ctrl-c> to quit]`);
+      await wait_for_key();
+   });
+}
+
+async function wait_for_key(){
+   const ctrl_c = '\u0003';
+   while(true){
+      const key = await getch();
+      //console.log("key:'" + key + "'");
+      if(key === "q" || key === ctrl_c){ process.exit(0); }
+      return run_command();
+   }
+}
+
+run_command();
+

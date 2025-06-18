@@ -102,3 +102,8 @@ lib.setup({
    -- idle time if user input is required.
    silent = true,
 })
+
+vim.keymap.set('n', lead .. 'dsb', ";ds{", { remap = true })
+vim.keymap.set('n', lead .. 'dsp', ";ds(", { remap = true })
+vim.keymap.set('n', lead .. 'dsx', ";ds[", { remap = true })
+

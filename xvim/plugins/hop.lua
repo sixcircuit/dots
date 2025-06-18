@@ -613,6 +613,12 @@ local cmds = {
    end,
 }
 
+cmds.p_linewise = function ()
+   local text = vim.fn.getreg("", 1, true)
+   vim.api.nvim_put(text, "l", true, true)
+   return("`[")
+end
+
 cmds.pp = function(str, loc)
    local result = open_or_close(str, loc)
    if result == "open" then return("p")
@@ -826,6 +832,19 @@ add(pastes, doubles, "pi", "paste inside",  { cmd = cmds.pi })
 add(pastes, singles, "p", "paste at",  { cmd = cmds.p })
 add(pastes, { [" "] = "spaces" }, "p", "paste at",  { cmd = cmds.p })
 
+add(pastes, { k = "line up" }, "p", "hop to", { cmd = cmds.p_linewise }, {
+   -- current = true, -- this doesn't really make sense moving up
+   -- vertical = "column",
+   direction = hint_dirs.BEFORE_CURSOR,
+   -- keys = "kabcdefghijlmnopqrstuvwxyz",
+})
+
+add(pastes, { j = "line down" }, "p", "hop to", { cmd = cmds.p_linewise }, {
+   current = true,
+   -- vertical = "column",
+   direction = hint_dirs.AFTER_CURSOR,
+   -- keys = "jabcdefghiklmnopqrstuvwxyz",
+})
 -- add(pastes, singles, "ps", "paste space at",  { cmd = cmds.ps })
 -- add(pastes, { [" "] = "spaces" }, "ps", "paste space at",  { cmd = cmds.ps })
 
