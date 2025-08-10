@@ -5,9 +5,10 @@ const _path = require('path');
 const crypto = require('crypto');
 const os = require('os');
 
-const output_dir = process.cwd();
+const start_cwd = process.cwd();
 
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
+const { V4MAPPED } = require('dns');
 
 const $def = function(a, b, c){
    if(a !== undefined){ return(a); }
@@ -114,37 +115,128 @@ async function worker_main(){
    }
 }
 
-async function main(){
-   const args = process.argv.slice(2);
-   let cmd = args[0];
+const cmds = {};
 
-   if(cmd === "-l"){ args.shift(); }
+cmds.ls = async function(args){
+   return console.log(JSON.stringify(await files_on_disk("."), null, 2));
+};
 
-   const root = (args.shift() || ".");
+cmds.hash = async function(args){
 
-   let hash_file_path = args.shift();
-
-   if(hash_file_path){ hash_file_path = _path.resolve(hash_file_path); }
-
-   process.chdir(root);
-
-   if(cmd === "-l"){ return console.log(JSON.stringify(await files_on_disk("."), null, 2)); }
+   const root = args.shift();
 
    if(!root){
-      console.error(`usage: dhash [directory] [hashes.json]`);
+      console.log("  dhash hash  <tree/to/hash> [path/to/output.json]");
       process.exit(1);
    }
 
-   if(hash_file_path){
-      await verify_file_system(".", hash_file_path);
-   }else{
-      await hash_file_system(".");
-   }
-}
+   let output_path = args.shift();
 
-async function hash_file_system(root){
-   const files = await files_on_disk(root);
-   return await hash_files(files, { root, write: true });
+   if(!output_path){
+      const output_file = `hashes.${ iso_start_date }.json`;
+      output_path = _path.join(process.cwd(), output_file);
+   }else{
+      output_path = _path.resolve(output_path);
+   }
+
+   process.chdir(root);
+
+   const files = await files_on_disk(".");
+
+   return await hash_files(files, { root, write: true, output_path });
+};
+
+cmds.check = async function(args){
+
+   const root = args.shift();
+   let hashes_path = args.shift();
+   let output_path = args.shift();
+
+   if(!root || !hashes_path){
+      console.log("  dhash check <tree/to/check> <path/to/hashes.json> [path/to/output.json] ");
+      process.exit(1);
+   }
+
+   hashes_path = _path.resolve(hashes_path);
+
+   if(!output_path){
+      const output_file = `verify.${ iso_start_date }.json`;
+      output_path = _path.join(process.cwd(), output_file);
+   }else{
+      output_path = _path.resolve(output_path);
+   }
+
+   process.chdir(root);
+
+   await verify_file_system(".", { hashes_path, output_path });
+};
+
+cmds.diff = async function(args){
+
+   let hashes_path_a = args.shift();
+   let hashes_path_b = args.shift();
+   let output_path = args.shift();
+
+   if(!hashes_path_a || !hashes_path_b){
+      console.log("  dhash diff  <path/to/hashes.json> <path/to/hashes.json> [path/to/output.json]");
+      process.exit(1);
+   }
+
+   if(!output_path){
+      const output_file = `diff.${ iso_start_date }.json`;
+      output_path = _path.join(process.cwd(), output_file);
+   }else{
+      output_path = _path.resolve(output_path);
+   }
+
+   const map_a = (JSON.parse(fs.readFileSync(hashes_path_a, "utf8"))).hashes;
+   const map_b = (JSON.parse(fs.readFileSync(hashes_path_b, "utf8"))).hashes;
+
+   const added = {};
+   const removed = {};
+   const changed = {};
+   const unchanged = {};
+
+   for(const [path, a] of Object.entries(map_a)){
+      const b = map_b[path];
+      if(!b){ removed[path] = a; }
+      else if(b.size !== a.size || b.hash !== a.hash){
+         changed[path] = { old: a, new: b };
+      }else{
+         unchanged[path] = { old: a, new: b };
+      }
+   }
+
+   for(const [path, b] of Object.entries(map_b)){
+      const a = map_a[path];
+      if(!a){ added[path] = b; }
+   }
+
+   console.log('diff results:');
+   console.log('added:', added);
+   console.log('removed:', removed);
+   console.log('changed:', changed);
+   console.log('unchanged:', Object.keys(unchanged).length);
+
+   fs.writeFileSync(output_path, JSON.stringify({ added, removed, changed, unchanged }, null, 3));
+   process.stdout.write(`\ndiff written to: ${ _path.relative(start_cwd, output_path) }.\n`);
+};
+
+async function main(){
+   const args = process.argv.slice(2);
+
+   const cmd = args.shift();
+
+   if(!cmds[cmd]){
+      console.log("usage:");
+      console.log("  dhash hash  <tree/to/hash> [path/to/output.json]");
+      console.log("  dhash check <tree/to/check> <path/to/hashes.json> [path/to/output.json] ");
+      console.log("  dhash diff  <path/to/hashes.json> <path/to/hashes.json> [path/to/output.json]");
+      process.exit(1);
+      return;
+   }
+
+   await cmds[cmd](args);
 }
 
 const ms_to_time = function(ms){
@@ -199,12 +291,11 @@ async function hash_files(files, opts){
 
       const save_results = function(){
          if(!opts.write){ return; }
-         const output_file = `hashes.${ iso_start_date }.json`;
-         fs.writeFileSync(_path.join(output_dir, output_file), JSON.stringify({
+         fs.writeFileSync(opts.output_path, JSON.stringify({
             path: process.cwd(),
             hashes: results_map
          }, null, 3));
-         process.stdout.write(`\nhashes written to ${output_file}\n`);
+         process.stdout.write(`\nhashes written to: ${ _path.relative(start_cwd, opts.output_path) }.\n`);
          last_save = Date.now();
       };
 
@@ -217,9 +308,9 @@ async function hash_files(files, opts){
          worker.on("message", async function({ error, path, size, hash }){
             if(error){ console.error("\nworker error: " + error + "\n"); }
             bytes_processed += size;
-            results_map[path] = hash;
-            results_ary.push({ path, hash });
-            if(opts.on_hash){ opts.on_hash({ path, hash }); }
+            results_map[path] = { hash, size };
+            results_ary.push({ path, hash, size });
+            if(opts.on_hash){ opts.on_hash({ path, hash, size }); }
             if(Date.now() - last_save > 10_000){ await save_results(); }
             //const progress = (results_ary.length / n_files);
             const progress = (bytes_processed / total_bytes);
@@ -250,10 +341,10 @@ async function hash_files(files, opts){
    });
 };
 
-async function verify_file_system(root, hash_file_path){
-   const hash_map = (JSON.parse(fs.readFileSync(hash_file_path, "utf8"))).hashes;
-   const added = [];
-   const removed = [];
+async function verify_file_system(root, opts){
+   const hash_map = (JSON.parse(fs.readFileSync(opts.hashes_path, "utf8"))).hashes;
+   const added = {};
+   const removed = {};
    const changed = {};
    const unchanged = {};
 
@@ -261,19 +352,23 @@ async function verify_file_system(root, hash_file_path){
 
    const files = await files_on_disk(root);
 
-   for(const { path } of files){
-      if(!hash_map[path]){ added.push(path); }
+   for(const { path, size } of files){
+      if(!hash_map[path]){ added[path] = { size }; }
+      else if(hash_map[path].size !== size){
+         changed[path] = { old: hash_map[path], new: { size } };
+      }
    }
 
-   for(const [path, hash] of Object.entries(hash_map)){
-      if(!fs.existsSync(path)){ removed.push(path); }
-      else{ to_hash.push(path); }
+   for(const [path, { hash, size }] of Object.entries(hash_map)){
+      if(changed[path]){ continue; }
+      if(!fs.existsSync(path)){ removed[path] = { hash, size }; }
+      else{ to_hash.push({ path, hash, size }); }
    }
 
-   await hash_files(to_hash, { root, write: false, on_hash: function({ path, hash }){
-      const old_hash = hash_map[path];
-      if(old_hash !== hash){ changed[path] = { old: old_hash, new: hash }; }
-      else{ unchanged[path] = { old: old_hash, new: hash }; }
+   await hash_files(to_hash, { root, write: false, on_hash: function({ path, hash, size }){
+      const old_file = hash_map[path];
+      if(old_file.hash !== hash){ changed[path] = { old: old_file, new: { hash, size } }; }
+      else{ unchanged[path] = { old: old_file, new: { hash, size } }; }
    } });
 
    console.log('verification results:');
@@ -282,9 +377,8 @@ async function verify_file_system(root, hash_file_path){
    console.log('changed:', changed);
    console.log('unchanged:', Object.keys(unchanged).length);
 
-   const output_file = `verify.${ iso_start_date }.json`;
-   fs.writeFileSync(_path.join(output_dir, output_file), JSON.stringify({ added, removed, changed, unchanged }, null, 3));
-   process.stdout.write(`\nverification written to ${output_file}\n`);
+   fs.writeFileSync(opts.output_path, JSON.stringify({ added, removed, changed, unchanged }, null, 3));
+   process.stdout.write(`\nverification written to: ${ _path.relative(start_cwd, opts.output_path) }.\n`);
 }
 
 (async function(){
