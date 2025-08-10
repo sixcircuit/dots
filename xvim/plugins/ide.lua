@@ -55,10 +55,12 @@ local cmp = require("cmp")
 
 local luasnip = require("luasnip")
 
-luasnip.setup({ enable_autosnippets = true })
+luasnip.setup({
+   enable_autosnippets = true,
+   exit_roots = true
+})
 
 require("luasnip.loaders.from_lua").load({ paths = "~/term/xvim/snippets" })
-
 
 local function try_jump_many()
    local rights = vim.fn['delimitMate#JumpMany']()
@@ -71,27 +73,59 @@ local function try_jump_many()
    end
 end
 
-local function jump_back()
-   if luasnip.jumpable(-1) then
-      luasnip.jump(-1)
-   else
-      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<left>", true, false, true), "n", false)
+local function jump_to_nearest_pair(mode)
+   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+   local line = vim.api.nvim_get_current_line()
+
+   local cursor_index = col + 1
+
+   local chars = {
+      ['"'] = true, ["'"] = true, ["`"] = true,
+      ['('] = true, [')'] = true,
+      ['['] = true, [']'] = true,
+      ['{'] = true, ['}'] = true,
+   }
+
+   if mode == 'prev' then
+      for i = cursor_index - 1, 1, -1 do
+         if chars[line:sub(i, i)] then
+            vim.api.nvim_win_set_cursor(0, { row, i - 1 })
+            return(true)
+         end
+      end
+   elseif mode == 'next' then
+      for i = cursor_index + 1, #line do
+         if chars[line:sub(i, i)] then
+            vim.api.nvim_win_set_cursor(0, { row, i })
+            return(true)
+         end
+      end
    end
+   return(false)
+end
+
+local function jump_back()
+   -- if jump_to_nearest_pair("prev") then return end
+   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<left>", true, false, true), "n", false)
 end
 
 local function jump_forward()
-   if luasnip.jumpable(1) then
-      luasnip.jump(1)
-   else
-      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<right>", true, false, true), "n", false)
-   end
+   -- if jump_to_nearest_pair("next") then return end
+   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<right>", true, false, true), "n", false)
 end
 
-vim.keymap.set('i', '<m-l>', jump_forward)
-vim.keymap.set('i', '<m-h>', jump_back)
-vim.keymap.set('i', '<m-k>', "<up>")
-vim.keymap.set('i', '<m-j>', "<down>")
-vim.keymap.set('i', '<m-space>', try_jump_many)
+local function snip_jump_forward()
+  if luasnip.locally_jumpable(1) then
+      luasnip.jump(1)
+  end
+end
+
+vim.keymap.set({ 'i', 's' }, '<m-i>', snip_jump_forward)
+vim.keymap.set({ 'i', 's' }, '<m-l>', jump_forward)
+vim.keymap.set({ 'i', 's' }, '<m-h>', jump_back)
+vim.keymap.set({ 'i', 's' }, '<m-k>', "<up>")
+vim.keymap.set({ 'i', 's' }, '<m-j>', "<down>")
+vim.keymap.set({ 'i', 's' }, '<m-o>', try_jump_many)
 
 -- i have <s-space> mapped to page up in my terminal, <s-space> may work in some guis
 -- i don't have it mapped that way anymore. it was super annoying.

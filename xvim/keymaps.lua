@@ -5,6 +5,7 @@ vim.keymap.set('n', '<m-r>', "<c-r>")
 vim.keymap.set('n', '<m-i>', "<c-i>")
 vim.keymap.set('n', '<m-o>', "<c-o>")
 vim.keymap.set('n', lead .. 'bd', "<cmd>bd<cr>")
+vim.keymap.set('n', lead .. 'q', "<cmd>q<cr>")
 
 
 vim.keymap.set('i', '<m-bs>', function()
@@ -476,7 +477,7 @@ local function setup_comma_list_actions(key, open, close)
    end
 end
 
--- d,b c,b ,bh ,bl for b, p, a
+-- dcb c,b ,bh ,bl for b, p, a
 setup_comma_list_actions("p", "(", ")")
 setup_comma_list_actions("x", "[", "]")
 setup_comma_list_actions("b", "{", "}")
@@ -528,25 +529,29 @@ vim.keymap.set('n', 'dap', "da(", { desc = "delete a parens ()" })
 vim.keymap.set('n', 'dax', "da[", { desc = "delete a brakets []" })
 vim.keymap.set('n', 'daq', with_nearest_quote_f("da"), { desc = "delete a quote" })
 
+vim.keymap.set('n', 'vib', "vi{", { desc = "visual inside braces {}" })
+vim.keymap.set('n', 'vip', "vi(", { desc = "visual inside parens ()" })
+vim.keymap.set('n', 'vix', "vi[", { desc = "visual inside brakets []" })
+vim.keymap.set('n', 'viq', with_nearest_quote_f("vi"), { desc = "visual inside quotes" })
 
--- vim.keymap.set('n', 'yib', "yi{", { desc = "yank inside braces {}" })
--- vim.keymap.set('n', 'yip', "yi(", { desc = "yank inside parens ()" })
--- vim.keymap.set('n', 'yik', "yi[", { desc = "yank inside brakets []" })
--- vim.keymap.set('n', 'yiq', with_nearest_quote_f("yi"), { desc = "yank inside nearest matching quote [\"'`]" })
+vim.keymap.set('n', 'yib', "yi{", { desc = "yank inside braces {}" })
+vim.keymap.set('n', 'yip', "yi(", { desc = "yank inside parens ()" })
+vim.keymap.set('n', 'yik', "yi[", { desc = "yank inside brakets []" })
+vim.keymap.set('n', 'yiq', with_nearest_quote_f("yi"), { desc = "yank inside nearest matching quote [\"'`]" })
 
--- vim.keymap.set('n', 'yab', "ya{", { desc = "yank a braces {}" })
--- vim.keymap.set('n', 'yap', "ya(", { desc = "yank a parens ()" })
--- vim.keymap.set('n', 'yak', "ya[", { desc = "yank a brakets []" })
--- vim.keymap.set('n', 'yaq', with_nearest_quote_f("ya"), { desc = "yank a nearest matching quote [\"'`]" })
+vim.keymap.set('n', 'yab', "ya{", { desc = "yank a braces {}" })
+vim.keymap.set('n', 'yap', "ya(", { desc = "yank a parens ()" })
+vim.keymap.set('n', 'yak', "ya[", { desc = "yank a brakets []" })
+vim.keymap.set('n', 'yaq', with_nearest_quote_f("ya"), { desc = "yank a nearest matching quote [\"'`]" })
 
 vim.keymap.set('n', 'cib', "ci{", { desc = "change inside braces" })
 vim.keymap.set('n', 'cip', "ci(", { desc = "change inside parens" })
-vim.keymap.set('n', 'cik', "ci[", { desc = "change inside brakets" })
+vim.keymap.set('n', 'cix', "ci[", { desc = "change inside brakets" })
 vim.keymap.set('n', 'ciq', with_nearest_quote_f("ci"), { desc = "change inside quotes" })
 
 vim.keymap.set('n', 'cab', "ca{", { desc = "change a braces" })
 vim.keymap.set('n', 'cap', "ca(", { desc = "change a parens" })
-vim.keymap.set('n', 'cak', "ca[", { desc = "change a brakets []" })
+vim.keymap.set('n', 'cax', "ca[", { desc = "change a brakets []" })
 vim.keymap.set('n', 'caq', with_nearest_quote_f("ca"), { desc = "change a quotes" })
 
 vim.keymap.set("n", lead .. "ss", lead .. "s_", { desc = "surround line", remap = true })
@@ -697,11 +702,24 @@ vim.keymap.set("x", "ph", "p", { desc = "paste" })
 
 -- this is me trying to break a bad habit.
 -- i should be moving and inserting at the same time
-vim.keymap.set('n', 'ah', "a", { desc = "move a to aaaa" })
-vim.keymap.set('n', 'ih', "i", { desc = "move i to iiii" })
+vim.keymap.set('n', 'ah', "a", { desc = "move a to ah" })
+vim.keymap.set('n', 'ih', "i", { desc = "move i to ih" })
 
 --- e -- thing execute
-vim.keymap.set('n', 'eeee', "e", { desc = "move e to eeee" })
+vim.keymap.set('n', 'ee', "e", { desc = "move e to ee" })
+
+vim.keymap.set("n", lead .. "cp", function()
+  local path = vim.fn.expand("%:p")
+  vim.fn.setreg("+", path)
+
+  -- Show message
+  vim.api.nvim_echo({{ "copied: " .. path, "Normal" }}, false, {})
+
+  -- Start timer to clear it after 1 second
+  vim.defer_fn(function()
+    vim.api.nvim_echo({{ "", "Normal" }}, false, {})
+  end, 1000)
+end, { desc = "copy full path to clipboard" })
 
 -- -- vim.keymap.set('n', 'i ', "f i", { desc = "insert at first space" })
 -- vim.keymap.set('n', 'ia', "f[a", { desc = "insert at first [" })
@@ -794,6 +812,7 @@ vim.keymap.set('n', "so", commandt_f('CommandTFind'))
 -- vim.keymap.set('n', lead .. 'o', ':CommandTFind<cr>')
 -- vim.keymap.set('n', lead .. 'll', ':CommandT<cr>')
 -- vim.keymap.set('n', lead .. 'lb', ':CommandTBuffer<cr>')
+vim.keymap.set('n', 'sb', ':CommandTBuffer<cr>')
 -- vim.keymap.set('n', lead .. 'a', toggle_autocomplete)
 
 vim.keymap.set("n", "<space>f", "<CMD>Oil --float<CR>", { desc = "open buffer directory using oil" })
@@ -806,7 +825,7 @@ local function jump_to_line_incrementally()
 
    local function redraw_prompt()
       vim.cmd("redraw")
-      vim.cmd(('echo "jump to line: %s"'):format(input))
+      vim.cmd(('echo "goto to line: %s"'):format(input))
    end
 
    local function exit()
@@ -841,7 +860,8 @@ local function jump_to_line_incrementally()
    end
 end
 
-vim.keymap.set("n", "_", jump_to_line_incrementally, { desc = "incremental line jump, confirm with ;" })
+vim.keymap.set("n", lead .. "l", jump_to_line_incrementally, { desc = "incremental line jump, confirm with ;" })
+vim.keymap.set("n", "_", "i_<esc>", { desc = "insert _ under the cursor" })
 
 -- google shit. open links
 
@@ -881,19 +901,17 @@ vim.keymap.set("n", lead .. "fiq", function() vim.fn["FixQuotes"]() end, { desc 
 vim.keymap.set("n", lead .. "fic", function() vim.fn["FixChars"]() end, { desc = "turn fancy unicode chars like quotes and dashes into ansi chars" })
 vim.keymap.set("n", lead .. "fiw", function() vim.fn["FixTrailingWhitespace"]() end, { desc = "fix trailing whitespace" })
 
-vim.keymap.set("n", ";z", function()
-   vim.fn["ToggleWrap"]()
-end, { desc = "toggle text wrap and fix how motions work" })
+vim.keymap.set("n", ";z", toggle_wrap, { desc = "toggle text wrap and fix how motions work" })
 
 
-vim.keymap.set('n', 'o', "<nop>", { desc = "recoup o" })
-vim.keymap.set('n', 'oo', "o", { desc = "enable o at oo" })
-vim.keymap.set('n', 'oh', "o", { desc = "enable o at oh" })
+-- vim.keymap.set('n', 'o', "<nop>", { desc = "recoup o" })
+-- vim.keymap.set('n', 'oo', "o", { desc = "enable o at oo" })
+-- vim.keymap.set('n', 'oh', "o", { desc = "enable o at oh" })
 
 -- s key -- think "search" and "show" and "surround"
 
 vim.keymap.set('n', 's', "<nop>", { desc = "recoup s" })
-vim.keymap.set('n', 'ss', "s", { desc = "enable s as ss" })
+vim.keymap.set('n', 'sh', "s", { desc = "enable s as sh" })
 
 
 vim.keymap.set("n", "su", ":MundoToggle<cr>")
@@ -904,20 +922,24 @@ vim.keymap.set('n', 'sq', toggle_quickfix, { desc = "toggle quickfix" })
 vim.keymap.set('n', 'sk', cprev_rollover, { desc = "skip to previous quickfix" })
 vim.keymap.set('n', 'sj', cnext_rollover, { desc = "skip to next quickfix" })
 
-vim.keymap.set('n', 'sff', bind(rg_and_open_first, "rg"), { desc = "search files with pattern, rg, open in new tab, jump to first result" })
-vim.keymap.set('n', 'sfl', bind(rg_and_open_first, "rgl"), { desc = "search files with literal, rgl, open in new tab, jump to first result" })
-vim.keymap.set('n', 'sfw', bind(rg_and_open_first, "rgw"), { desc = "search files for word under cursor, rgl for word under cursor, open new tab, jump to first result" })
-vim.keymap.set('n', 'spr', ':%s///g<left><left>', { desc = "replace whatever you last searched for (buffer wide)" })
-vim.keymap.set('n', 'spd', ':/_\\.<cr>', { desc = "search for _." })
+vim.keymap.set('n', 'sifp', bind(rg_and_open_first, "rg"), { desc = "search files with pattern, rg, open in new tab, jump to first result" })
+vim.keymap.set('n', 'sifl', bind(rg_and_open_first, "rgl"), { desc = "search files with literal, rgl, open in new tab, jump to first result" })
+vim.keymap.set('n', 'sifw', bind(rg_and_open_first, "rgw"), { desc = "search files for word under cursor, rgl for word under cursor, open new tab, jump to first result" })
+vim.keymap.set('n', 'sr', ':%s///g<left><left>', { desc = "replace whatever you last searched for (buffer wide)" })
+-- vim.keymap.set('n', 'sy', '/_\\.<cr>', { desc = "search for _." })
+vim.keymap.set('n', 'sy', '/_\\.', { desc = "search for _.<something>" })
+vim.keymap.set('n', 'sd', '/\\V$', { desc = "search for litteral $" })
+vim.keymap.set('n', 'sl', '/\\V', { desc = "search for litteral" })
+vim.keymap.set('n', 'sf', '/', { desc = "search for pattern" })
 
 -- Global mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-vim.keymap.set('n', 'sl', toggle_virtual_text)
+vim.keymap.set('n', 'scl', toggle_virtual_text)
 -- vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 -- vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
 -- vim.keymap.set('n', 'sdd', vim.diagnostic.setloclist)
 
-vim.keymap.set('n', 'sh', show_hover, { desc = "show hover window" })
+vim.keymap.set('n', 'sch', show_hover, { desc = "show hover window" })
 
 -- vim.keymap.set('n', ',so', ':w | source %<CR>', { desc = "save and source current file" })
 

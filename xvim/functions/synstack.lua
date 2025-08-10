@@ -83,7 +83,7 @@ local function syn_stack()
    -- echo_colored('This is a red message', 'MyHighlight')
 end
 
-vim.keymap.set("n", "<leader>s", syn_stack, { desc = "print the highlight stack of thing under the cursor" })
+vim.keymap.set("n", ";h", syn_stack, { desc = "print the highlight stack of thing under the cursor" })
 -- vim.keymap.set("n", "<m-i>", syn_stack)
 
 -- local function syn_stack()

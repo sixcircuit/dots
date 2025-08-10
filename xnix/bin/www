@@ -1,55 +1,138 @@
-#!/usr/bin/env python3
+#!/usr/bin/env node
 
-# no-cache http server
-# Inspired by  https://stackoverflow.com/a/25708957/51280
-from http.server import SimpleHTTPRequestHandler
-import socketserver
-import sys
-import os
+const http = require('http');
+const fs = require('fs');
+const zlib = require('zlib');
+const path = require('path');
+const url = require('url');
 
-class NoCacheRequestHandler(SimpleHTTPRequestHandler):
-   def end_headers(self):
-      self.send_my_headers()
-      SimpleHTTPRequestHandler.end_headers(self)
+const _port = process.argv[2] || 0;
+const _root = process.cwd();
 
-   def send_my_headers(self):
-      self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
-      self.send_header("Pragma", "no-cache")
-      self.send_header("Expires", "0")
+function send_headers(res, content_type, content_length, encoding) {
+   res.setHeader('Content-Type', content_type);
+   res.setHeader('Content-Length', content_length);
+   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+   res.setHeader('Pragma', 'no-cache');
+   res.setHeader('Expires', '0');
+   if(encoding){ res.setHeader('Content-Encoding', encoding); }
+}
 
-# import http.server, ssl
-#
-# # all in one flie
-# openssl req -new -x509 -keyout localhost.pem -out localhost.pem -days 365 -nodes
-#
-# # no questions
-# openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
-#     -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" \
-#     -keyout www.example.com.key  -out www.example.com.cert
-#
-# # combine all this
-#
-# server_address = ('0.0.0.0', 4443)
-# # httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
-# httpd = http.server.HTTPServer(server_address, NoCacheRequestHandler)
-# httpd.socket = ssl.wrap_socket(httpd.socket,
-#                                server_side=True,
-#                                certfile='localhost.pem',
-#                                ssl_version=ssl.PROTOCOL_TLS)
-# httpd.serve_forever()
+function escape_html(text){
+   const lookup = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+   return text.replace(/[&<>"']/g, function(ch){ return(lookup[ch]); });
+}
 
-if __name__ == '__main__':
-   port = 8080
-   if len(sys.argv) >= 2:
-      port = int(sys.argv[1])
-   print("serving at port", port)
-   with socketserver.TCPServer(("", port), NoCacheRequestHandler) as httpd:
-      os.system("open http://localhost:" + str(port))
-      httpd.serve_forever()
+function format_date(d = new Date()){
+   const pad2 = function(n){ return String(n).padStart(2, '0'); };
+   return(
+      `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())} ` +
+      `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`
+   );
+}
 
-#!/bin/bash
-# if [[ -z "$1" ]]; then
-#    open "http://localhost:8080" && python3 -m http.server 8080 --bind 0.0.0.0
-# else
-#    open "http://localhost:${1}" && python3 -m http.server $1 --bind 0.0.0.0
-# fi
+function log_request(req, res, status_code) {
+   let ip = req.socket.remoteAddress;
+   if(ip === "::1"){ ip = "localhost"; }
+   else{ ip = ip.replace(/^::ffff:/, ""); }
+   const time = format_date();
+   const line = `[${time}] - ${status_code} - ${ip} - ${req.method} "${req.url}"`;
+   console.log(line);
+}
+
+function serve_directory(req_path, fs_path, req, res){
+   fs.readdir(fs_path, { withFileTypes: true }, function(err, items){
+      if(err){
+         log_request(req, res, 500);
+         res.writeHead(500);
+         res.end('error reading directory.');
+         return;
+      }
+
+      log_request(req, res, 200);
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=UTF-8' });
+      res.write(`<h1>index of: ${escape_html(req_path)}</h1><ul>`);
+      if(req_path !== '/'){
+         res.write(`<li><a href="${path.posix.join(req_path, '..')}">..</a></li>`);
+      }
+
+      items.forEach(function(item){
+         const name = item.name + (item.isDirectory() ? '/' : '');
+         const link = path.posix.join(req_path, name);
+         res.write(`<li><a href="${escape_html(link)}">${escape_html(name)}</a></li>`);
+      });
+
+      res.end('</ul>');
+   });
+}
+
+function serve_file(fs_path, req, res) {
+
+   fs.readFile(fs_path, function(err, data){
+      if(err){
+         log_request(req, res, 404);
+         res.writeHead(404);
+         res.end('not found.');
+         return;
+      }
+
+      const mime = {
+         '.html': 'text/html',
+         '.js': 'application/javascript',
+         '.mjs': 'application/javascript',
+         '.css': 'text/css',
+         '.json': 'application/json',
+         '.wasm': 'application/wasm',
+         '.txt': 'text/plain',
+      };
+
+      const ext = path.extname(fs_path).toLowerCase();
+      const content_type = mime[ext] || 'application/octet-stream';
+
+      const accept_encoding = req.headers['accept-encoding'] || '';
+      if (/\bgzip\b/.test(accept_encoding)) {
+         zlib.gzip(data, function(err, compressed){
+            if(err){
+               res.writeHead(500);
+               log_request(req, res, 500);
+               res.end('compression error.');
+               return;
+            }
+            log_request(req, res, 200);
+            send_headers(res, content_type, compressed.length, 'gzip');
+            res.end(compressed);
+         });
+      }else{
+         log_request(req, res, 200);
+         send_headers(res, content_type, data.length);
+         res.end(data);
+      }
+   });
+}
+
+const server = http.createServer(function(req, res){
+   const parsed = url.parse(req.url);
+   const req_path = decodeURIComponent(parsed.pathname);
+   const fs_path = path.join(_root, req_path);
+
+   fs.stat(fs_path, function(err, stat){
+      if(err){
+         res.writeHead(404);
+         log_request(req, res, 200);
+         res.end('not found.');
+      }else if(stat.isDirectory()){
+         serve_directory(req_path, fs_path, req, res);
+      }else{
+         serve_file(fs_path, req, res);
+      }
+   });
+});
+
+server.listen(_port, function(){
+   const actual_port = server.address().port;
+   const url = `http://localhost:${actual_port}/`;
+   console.log(`serving ${_root} at ${url}`);
+   if(process.platform === 'darwin'){
+      require('child_process').exec(`open "${url}"`);
+   }
+});

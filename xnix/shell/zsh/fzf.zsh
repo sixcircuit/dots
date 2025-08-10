@@ -4,7 +4,7 @@ export PATH="$PATH:$HOME/.fzf/bin"
 # export FZF_TMUX=1
 # export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 # export FZF_DEFAULT_OPTS='--layout=reverse --border'
-export FZF_DEFAULT_OPTS='--layout=reverse --cycle'
+export FZF_DEFAULT_OPTS='--layout=reverse --cycle --bind=alt-j:down,alt-k:up'
 export FZF_TMUX_HEIGHT='80%'
 
 # export FZF_DEFAULT_COMMAND="rg --files --hidden "

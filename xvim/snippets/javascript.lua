@@ -26,7 +26,14 @@ end
 local function has_text_after_cursor()
    local col = vim.api.nvim_win_get_cursor(0)[2]
    local line = vim.api.nvim_get_current_line()
-   return line:sub(col + 1):match("%S") ~= nil
+
+   -- get everything after the cursor
+   local after = line:sub(col + 1)
+
+   -- remove spaces semicolons and closing parens
+   local stripped = after:gsub("[ ;%)]+", "")
+
+   return #stripped > 0
 end
 
 local function create_function_mappings(snips, is_async)
@@ -45,6 +52,12 @@ local function create_function_mappings(snips, is_async)
         description = "named <type>",
         fmt = "<async>function {}({}){{{}}}{}",
         args = { i(1, "name"), i(2), i(3), i(0) }
+      },
+
+      { trigger = ";<trigger>w",
+        description = "arrow <type>",
+        fmt = "<async>({})=>{{{}}}{}",
+        args = { i(1), i(2), i(0) }
       },
    }
 

@@ -73,6 +73,17 @@ ctrl-d() { return 1 }
 zle -N ctrl-d
 bindkey '^D' ctrl-d
 
+recall-last-on-empty() {
+  if [[ -z $BUFFER ]]; then
+    BUFFER=$(fc -ln -1)    # load last command into input
+    CURSOR=${#BUFFER}     # move cursor to end
+  else
+    zle accept-line        # run as normal
+  fi
+}
+
+zle -N recall-last-on-empty
+bindkey '^M' recall-last-on-empty  # ^M is Enter
 
 bindkey '\e\x7f' backward-kill-word # Option+Backspace
 

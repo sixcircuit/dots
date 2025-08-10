@@ -2,7 +2,7 @@
     "profiles": [
         {
             "complex_modifications": {
-                "parameters": { "basic.to_if_held_down_threshold_milliseconds": 250 },
+                "parameters": { "basic.to_if_held_down_threshold_milliseconds": 125 },
                 "rules": [
                     {
                         "description": "Change caps_lock to meta (option / alt) if pressed with other keys, to escape if pressed alone.",
@@ -95,7 +95,6 @@
                     },
                     {
                         "description": "Hold E to activate arrow layer, tap for E",
-                        "enabled": false,
                         "manipulators": [
                             {
                                 "from": {

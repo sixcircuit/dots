@@ -4,6 +4,7 @@ plat=$2
 # alias s='source $HOME/.zshrc'
 alias x='exit'
 alias v='vim'
+alias vn='nvim -i NONE -u NONE'
 alias vd='vimdiff'
 alias rt='retry'
 alias t='\tux'

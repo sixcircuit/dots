@@ -95,7 +95,6 @@
                     },
                     {
                         "description": "Hold E to activate arrow layer, tap for E",
-                        "enabled": false,
                         "manipulators": [
                             {
                                 "from": {

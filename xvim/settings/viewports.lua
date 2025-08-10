@@ -132,26 +132,48 @@ _G.layout_windows = layout_windows
 _G.rotate_windows_keep_cursor = rotate_windows_keep_cursor
 
 -- Rotate Windows and Keep Cursor
-vim.keymap.set('n', '<space>r', rotate_windows_keep_cursor, { silent = true })
-vim.keymap.set('n', '<space>e', layout_windows, { silent = true })
+vim.keymap.set('n', ';r', rotate_windows_keep_cursor, { silent = true })
+vim.keymap.set('n', ';e', layout_windows, { silent = true })
+
+-- navigate windows easily
+vim.keymap.set('n', '<space>n', '<C-w>w')
+vim.keymap.set('n', '<m-n>', '<C-w>w')
 
 -- Tab navigation
 vim.keymap.set('n', '<m-h>', ':tabp<CR>')
 vim.keymap.set('n', '<m-l>', ':tabn<CR>')
-vim.keymap.set('n', '<m-p>', ':tabm -1<CR>')
-vim.keymap.set('n', '<m-t>', ':tabm +1<CR>')
+-- vim.keymap.set('n', '<m-p>', ':tabm -1<CR>')
+-- vim.keymap.set('n', '<m-t>', ':tabm +1<CR>')
 
--- navigate windows easily
-vim.keymap.set('n', '<m-n>', '<C-w>w')
+-- move tab left with wrap
+vim.keymap.set('n', '<m-p>', function()
+   local current = vim.fn.tabpagenr()
+   if current == 1 then
+      vim.cmd('tabm $') -- Move to the last tab
+   else
+      vim.cmd('tabm -1') -- Move one tab left
+   end
+end)
+
+-- move tab right with wrap
+vim.keymap.set('n', '<m-t>', function()
+   local current = vim.fn.tabpagenr()
+   local total = vim.fn.tabpagenr('$')
+   if current == total then
+      vim.cmd('tabm 0') -- Move to the first tab
+   else
+      vim.cmd('tabm +1') -- Move one tab right
+   end
+end)
 
 -- scroll setup
 
 
 -- scroll the viewport faster with ctrl-j and ctrl-k
-vim.keymap.set('', '<m-k>', '5<c-y>')
-vim.keymap.set('', '<m-j>', '5<c-e>')
-vim.keymap.set('', '<m-u>', "18<c-u>")
-vim.keymap.set('', '<m-d>', "18<c-d>")
+vim.keymap.set('n', '<m-k>', '5<c-y>')
+vim.keymap.set('n', '<m-j>', '5<c-e>')
+vim.keymap.set({ 'n', 'v' }, '<m-u>', "18<c-u>")
+vim.keymap.set({ 'n', 'v' }, '<m-d>', "18<c-d>")
 
 local function feedkeys(keys)
    keys = vim.api.nvim_replace_termcodes(keys, true, false, true)
@@ -195,22 +217,31 @@ local function comfy_cursor()
    -- so we don't get a flicker if we just hammer on zz like we would with feedkeys
 
    local current_line = vim.fn.line(".")
-   local max_scroll = 10  -- how far down we’d normally scroll
-   local min_required = 5 -- how many lines from the top we tolerate before scrolling
+   local motion = 0
 
-   if current_line <= min_required then
-      -- We're too close to the top — just regular centering
-      vim.cmd('normal! zz')
+   if n_rows < 20 then
+      motion = 0
+   elseif n_rows <= 50 then
+      motion = 8 -- move line to top middle. (on a laptop screen)
+   else
+      motion = 10 -- move line to top middle. (on a big screen)
+   end
+
+   local center_line = math.ceil(n_rows / 2)
+   print(n_rows)
+   print(center_line)
+
+   if (current_line + motion) <= center_line then
+      vim.cmd('execute "normal! zz"')
       return
    end
 
-   if n_rows < 20 then
-      vim.cmd('execute "normal! zz"')
-   elseif n_rows <= 50 then
-      vim.cmd('execute "normal! zz8\\<c-e>"') -- move line to top middle. (on a laptop screen)
-   else
-      vim.cmd('execute "normal! zz10\\<c-e>"') -- move line to top middle. (on a big screen)
+   if current_line <= center_line then
+      motion = motion - (center_line - current_line)
    end
+
+   vim.cmd('execute "normal! zz' .. motion .. '\\<c-e>"')
+
 end
 
 

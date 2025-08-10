@@ -577,6 +577,9 @@ end
 
 local cmds = {
    i = function(str) return "i" end,
+   newline = function(str) return "i<cr><esc>" end,
+   dd = function(str) return "dd" end,
+   newline_o = function(str) return "o<esc>" end,
    a = function(str) return "a" end,
    o = function(str) return "o" end,
    v = function(str)
@@ -599,9 +602,11 @@ local cmds = {
    cw = function(str) return "cw" end,
    dw = function(str) return "dw" end,
    ciw = function(str) return "ciw" end,
-   diw = function(str) return "diwx<left>" end,
+   diw = function(str) return "diw" end,
+   daw = function(str) return "daw" end,
    ciW = function(str) return "ciW" end,
-   diW = function(str) return "diWx" end,
+   daW = function(str) return "daW" end,
+   diW = function(str) return "diW" end,
    P = function(str, loc) return "P`[" end,
    p = function(str, loc) return "p`[" end,
    ps = function(str, loc) return "a <esc>p`[" end,
@@ -819,11 +824,11 @@ local changes = {}
 
 add(changes, doubles, "c", "change inside", { cmd = cmds.ci })
 add(changes, { w = "word" }, "c", "change a", { cmd = cmds.ciw })
-add(changes, { w = "word" }, "d", "delete a", { cmd = cmds.diw })
+add(changes, { w = "word" }, "d", "delete a", { cmd = cmds.daw })
 add(changes, { s = "symbol" }, "c", "change a", { cmd = cmds.ciw })
 add(changes, { s = "symbol" }, "d", "delete a", { cmd = cmds.diw })
 add(changes, { W = "Word" }, "c", "change a", { cmd = cmds.ciW })
-add(changes, { W = "Word" }, "d", "delete a", { cmd = cmds.diW })
+add(changes, { W = "Word" }, "d", "delete a", { cmd = cmds.daW })
 add(changes, { l = "" }, "d", "delete magic on this line", { cmd = cmds.diW })
 
 local pastes = {}
@@ -857,6 +862,7 @@ local inserts = {}
 
 add(inserts, singles, "i", "insert at", { cmd = cmds.i })
 add(inserts, doubles, "i", "insert at", { cmd = cmds.ii })
+add(inserts, singles, "in", "insert newline at", { cmd = cmds.newline })
 
 add(inserts, singles, "a", "append at", { cmd = cmds.a })
 -- add(inserts, doubles, "a", "append at", { cmd = cmds.a })
@@ -875,12 +881,12 @@ add(inserts, doubles, "io", "insert outside", { cmd = cmds.io })
 -- and this is the same thing as i<x,b,p,q>
 -- add(inserts, doubles, "ii", "insert inside", { cmd = cmds.ii })
 
-setup_hops({ "n", "v" }, "m", moves)
-setup_hops({ "n", "v" }, "", {
+setup_hops({ "n", "x" }, "m", moves)
+setup_hops({ "n", "x" }, "", {
    h("m", "move to char", _setup("chars", nil, {})),
    h("m ", "move to space", _setup("regex", spaces_regex, {})),
    h("mc", "move to char", _setup("chars", nil, {})),
-   h("mv", "move to variable", _setup("regex", variable_regex, {})),
+   -- h("mv", "move to variable", _setup("regex", variable_regex, {})),
 })
 
 setup_hops({ "n" }, "m", dots)
@@ -927,14 +933,17 @@ setup_hops({ "n" }, "", {
    h("ac", "append at char", _setup("chars", nil, { cmd = cmds.a })),
    h("iv", "insert at variable", _setup("regex", variable_regex, { cmd = cmds.i })),
    h("av", "append at variable", _setup("regex", variable_regex, { cmd = cmds.a })),
+   h("il", "insert newline at line", _setup("regex", vertical_matcher, { cmd = cmds.newline_o }, { current = true }))
 })
 
 _setups.k = _setup_f("regex", vertical_matcher, {}, { direction = hint_dirs.BEFORE_CURSOR })
 _setups.j = _setup_f("regex", vertical_matcher, {}, { direction = hint_dirs.AFTER_CURSOR })
 
 setup_hops({ "n" }, "", {
-   h("ok", "o at line", _setup("regex", vertical_matcher, { cmd = cmds.o }, { direction = hint_dirs.BEFORE_CURSOR })),
-   h("oj", "o at line", _setup("regex", vertical_matcher, { cmd = cmds.o }, { direction = hint_dirs.AFTER_CURSOR }))
+   h("mo", "o at line", _setup("regex", vertical_matcher, { cmd = cmds.o }, { })),
+   h("dl", "dd at line", _setup("regex", vertical_matcher, { cmd = cmds.dd }, { })),
+   -- h(";k", "o at line", _setup("regex", vertical_matcher, { cmd = cmds.o }, { direction = hint_dirs.BEFORE_CURSOR })),
+   -- h(";j", "o at line", _setup("regex", vertical_matcher, { cmd = cmds.o }, { direction = hint_dirs.AFTER_CURSOR }))
 })
 
 -- vim.keymap.set('n', 'mp', "<cmd>HopPasteChar1<cr>")
@@ -949,7 +958,7 @@ local magic_regex = "[\\[\\]{}()<>\"'` ]"
 vim.keymap.set('n', 'ii', bind(hop_ft, "f", "i", magic_regex), { desc = "insert magic" })
 vim.keymap.set('n', 'aa', bind(hop_ft, "f", "a", magic_regex), { desc = "append magic" })
 vim.keymap.set('n', 'cc', bind(hop_ft, "f", "c", magic_regex), { desc = "change magic" })
-vim.keymap.set('n', 'dl', bind(hop_ft, "f", "d", magic_regex), { desc = "delete magic" })
+-- vim.keymap.set('n', 'dl', bind(hop_ft, "f", "d", magic_regex), { desc = "delete magic" })
 
 vim.keymap.set('n', 'cfx', bind(hop_ft, "f", "c", "[\\[\\]]"))
 vim.keymap.set('n', 'ctx', bind(hop_ft, "t", "c", "[\\[\\]]"))
@@ -1010,8 +1019,14 @@ local function visual_move()
    end)
 end
 
+local function visual_move_from_here()
+   local hops = { current = false }
+   hop_to.regex(vertical_matcher, { precmd = cmds.V }, hops)
+end
+
 vim.keymap.set('n', "mv", visual_move)
-vim.keymap.set('n', "vm", visual_move)
+-- vim.keymap.set('n', "vm", visual_move)
+vim.keymap.set('n', "mf", visual_move_from_here)
 vim.keymap.set('n', "sw", "m*", { remap = true, desc = "hop * a word" })
 
 

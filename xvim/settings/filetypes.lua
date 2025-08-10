@@ -35,6 +35,14 @@ vim.api.nvim_create_autocmd('FileType', {
    callback = set_js_abbreviations,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "text",
+  callback = function()
+    vim.opt_local.breakindent = true
+    vim.opt_local.breakindentopt = "shift:3"
+  end
+})
+
 local delimitmate_disabled = false
 
 vim.api.nvim_create_autocmd("InsertEnter", {

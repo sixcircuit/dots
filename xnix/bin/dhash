@@ -1,0 +1,299 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const _path = require('path');
+const crypto = require('crypto');
+const os = require('os');
+
+const output_dir = process.cwd();
+
+const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
+
+const $def = function(a, b, c){
+   if(a !== undefined){ return(a); }
+   if(b !== undefined){ return(b); }
+   if(c !== undefined){ return(c); }
+};
+
+const pad_2 = function(num) { return (num < 10 ? '0' : '') + num; };
+
+function _iso_local_string(d, opts){
+   d = d || (new Date());
+   let { date, time, seconds, ms, offset } = (opts || {});
+
+   date = $def(date, true);
+   time = $def(time, "T");
+   seconds = $def(seconds, true);
+   ms = $def(ms, true);
+   offset = $def(offset, true);
+
+   let out = "";
+
+   if(date){
+      out += (
+         d.getFullYear() +
+         '-' + pad_2(d.getMonth() + 1) +
+         '-' + pad_2(d.getDate())
+      );
+   }
+
+   if(date && time){
+      if(typeof time === "string"){ out += time; }
+      else{ out += "T"; }
+   }
+
+   if(time){
+      out += (
+        pad_2(d.getHours()) +
+         ':' + pad_2(d.getMinutes())
+      );
+      if(seconds){
+         out += ':' + pad_2(d.getSeconds())
+         if(ms){
+            out += "." + String(d.getMilliseconds()).padStart(3, "0");
+         }
+      }
+   }
+
+
+   if(offset){
+      const tz_offset = -d.getTimezoneOffset();
+      const sign = (tz_offset >= 0 ? '+' : '-');
+      out += (
+         sign + pad_2(Math.floor(Math.abs(tz_offset) / 60)) +
+         ':' + pad_2(Math.abs(tz_offset) % 60)
+      );
+   }
+
+   return(out);
+}
+
+const iso_start_date = _iso_local_string();
+
+function hash_file(path){
+   const hash = crypto.createHash("sha512");
+   const stream = fs.createReadStream(path);
+
+   return new Promise(function(resolve, reject){
+      stream.on("data", function(data){ hash.update(data) });
+      stream.on("end", function(){ resolve(hash.digest('hex')); });
+      stream.on("error", reject);
+   });
+}
+
+async function files_on_disk(root){
+   let results = [];
+   const list = await fs.promises.readdir(root, { withFileTypes: true });
+
+   for(const file of list){
+      const full_path = _path.join(root, file.name);
+      if(file.isDirectory()){
+         results = results.concat(await files_on_disk(full_path));
+      }else{
+         const stats = await fs.promises.stat(full_path);
+         results.push({ path: full_path, size: stats.size });
+      }
+   }
+
+   return(results);
+}
+
+// Worker function to hash files in parallel and send progress updates
+async function worker_main(){
+   try{
+
+      parentPort.on("message", async function(message){
+         //console.log("worker message: " + JSON.stringify(message, null, 3));
+         const { path, size } = message;
+         const hash = await hash_file(path);
+         parentPort.postMessage({ path, size, hash });
+      });
+
+   }catch(e){
+      parentPort.postMessage({ error: err.message });
+   }
+}
+
+async function main(){
+   const args = process.argv.slice(2);
+   let cmd = args[0];
+
+   if(cmd === "-l"){ args.shift(); }
+
+   const root = (args.shift() || ".");
+
+   let hash_file_path = args.shift();
+
+   if(hash_file_path){ hash_file_path = _path.resolve(hash_file_path); }
+
+   process.chdir(root);
+
+   if(cmd === "-l"){ return console.log(JSON.stringify(await files_on_disk("."), null, 2)); }
+
+   if(!root){
+      console.error(`usage: dhash [directory] [hashes.json]`);
+      process.exit(1);
+   }
+
+   if(hash_file_path){
+      await verify_file_system(".", hash_file_path);
+   }else{
+      await hash_file_system(".");
+   }
+}
+
+async function hash_file_system(root){
+   const files = await files_on_disk(root);
+   return await hash_files(files, { root, write: true });
+}
+
+const ms_to_time = function(ms){
+   let sec = Math.round(ms / 1000);
+   let min = Math.floor(sec / 60);
+   sec = (sec % 60);
+   return(pad_2(min) + ":" + pad_2(sec));
+}
+
+const to_num = function(num, fixed){
+   const options = {
+     style: 'decimal',
+     minimumFractionDigits: fixed,
+     maximumFractionDigits: fixed,
+   };
+
+   const formatter = new Intl.NumberFormat('en-US', options);
+
+   return(formatter.format(num));
+}
+
+const to_gb = function(bytes){
+   const gb = (bytes / 1024 / 1024 / 1024).toFixed(2);
+   return to_num(gb, 2);
+};
+
+async function hash_files(files, opts){
+   opts = opts || {};
+
+   return new Promise(async function(resolve, reject){
+
+      const n_files = files.length;
+
+      const num_workers = Math.min(os.cpus().length, n_files);
+
+      let processed_files = 0;
+
+      const workers = [];
+
+      const results_map = {};
+      const results_ary = [];
+
+      let current_file_i = 0;
+      let total_bytes = 0;
+      let bytes_processed = 0;
+      let last_message = "";
+
+      files.forEach(function(file){ total_bytes += file.size; });
+
+      let last_save = Date.now();
+      const start = Date.now();
+
+      const save_results = function(){
+         if(!opts.write){ return; }
+         const output_file = `hashes.${ iso_start_date }.json`;
+         fs.writeFileSync(_path.join(output_dir, output_file), JSON.stringify({
+            path: process.cwd(),
+            hashes: results_map
+         }, null, 3));
+         process.stdout.write(`\nhashes written to ${output_file}\n`);
+         last_save = Date.now();
+      };
+
+      for(let i = 0; i < num_workers; i++){
+         const worker = new Worker(__filename);
+         workers.push(worker);
+
+         //console.log("starting worker: ", i);
+
+         worker.on("message", async function({ error, path, size, hash }){
+            if(error){ console.error("\nworker error: " + error + "\n"); }
+            bytes_processed += size;
+            results_map[path] = hash;
+            results_ary.push({ path, hash });
+            if(opts.on_hash){ opts.on_hash({ path, hash }); }
+            if(Date.now() - last_save > 10_000){ await save_results(); }
+            //const progress = (results_ary.length / n_files);
+            const progress = (bytes_processed / total_bytes);
+            const elapsed_ms = (Date.now() - start)
+            const time_estimate_ms = ((elapsed_ms) / progress) - elapsed_ms;
+            const time_estimate = ms_to_time(time_estimate_ms);
+            const total_bytes_gb = to_gb(total_bytes);
+            const message = (
+               `hashing: ${(progress * 100).toFixed(2).padStart(6) }% - ` +
+               `files: (${to_num(results_ary.length, 0).padStart(to_num(n_files, 0).length)}/${to_num(n_files, 0)}) - ` +
+               `data: (${ to_gb(bytes_processed).padStart(total_bytes_gb.length) }/${ total_bytes_gb }) GB - ` +
+               `remaining (est): ${ time_estimate }`
+            ).padEnd(last_message.length);
+            last_message = message;
+            process.stdout.write(`\r` + message);
+            if(current_file_i < n_files){
+               worker.postMessage(files[current_file_i++]);
+            }else{
+               worker.terminate();
+            }
+            if(results_ary.length === n_files){ await save_results(); resolve({ ary: results_ary, map: results_map }); }
+         });
+
+         worker.postMessage(files[current_file_i++]);
+
+         //worker.on("exit", function(){ console.error(`worker ${ i } exit!`); });
+      }
+   });
+};
+
+async function verify_file_system(root, hash_file_path){
+   const hash_map = (JSON.parse(fs.readFileSync(hash_file_path, "utf8"))).hashes;
+   const added = [];
+   const removed = [];
+   const changed = {};
+   const unchanged = {};
+
+   const to_hash = [];
+
+   const files = await files_on_disk(root);
+
+   for(const { path } of files){
+      if(!hash_map[path]){ added.push(path); }
+   }
+
+   for(const [path, hash] of Object.entries(hash_map)){
+      if(!fs.existsSync(path)){ removed.push(path); }
+      else{ to_hash.push(path); }
+   }
+
+   await hash_files(to_hash, { root, write: false, on_hash: function({ path, hash }){
+      const old_hash = hash_map[path];
+      if(old_hash !== hash){ changed[path] = { old: old_hash, new: hash }; }
+      else{ unchanged[path] = { old: old_hash, new: hash }; }
+   } });
+
+   console.log('verification results:');
+   console.log('added:', added);
+   console.log('removed:', removed);
+   console.log('changed:', changed);
+   console.log('unchanged:', Object.keys(unchanged).length);
+
+   const output_file = `verify.${ iso_start_date }.json`;
+   fs.writeFileSync(_path.join(output_dir, output_file), JSON.stringify({ added, removed, changed, unchanged }, null, 3));
+   process.stdout.write(`\nverification written to ${output_file}\n`);
+}
+
+(async function(){
+
+   if(isMainThread){
+      try{ await main() }
+      catch(err){ console.error(err); }
+   }else{
+      await worker_main();
+   }
+
+})();

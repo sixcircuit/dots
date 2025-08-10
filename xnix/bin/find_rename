@@ -1,5 +1,7 @@
 #!/bin/bash
+
+THIS_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATTERN="$1"
 shift
-find . -name "$PATTERN" | ./rename "$@"
+find . -name "$PATTERN" | $THIS_DIR/rename "$@"
 
