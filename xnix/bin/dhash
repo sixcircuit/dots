@@ -195,16 +195,19 @@ cmds.diff = async function(args){
       output_path = _path.resolve(output_path);
    }
 
-   const map_a = (JSON.parse(fs.readFileSync(hashes_path_a, "utf8"))).hashes;
-   const map_b = (JSON.parse(fs.readFileSync(hashes_path_b, "utf8"))).hashes;
+   const map_a = (JSON.parse(fs.readFileSync(hashes_path_a, "utf8")));
+   const map_b = (JSON.parse(fs.readFileSync(hashes_path_b, "utf8")));
+
+   const a_hashes = map_a.hashes;
+   const b_hashes = map_b.hashes;
 
    const added = {};
    const removed = {};
    const changed = {};
    const unchanged = {};
 
-   for(const [path, a] of Object.entries(map_a)){
-      const b = map_b[path];
+   for(const [path, a] of Object.entries(a_hashes)){
+      const b = b_hashes[path];
       if(!b){ removed[path] = a; }
       else if(b.size !== a.size || b.hash !== a.hash){
          changed[path] = { old: a, new: b };
@@ -213,8 +216,8 @@ cmds.diff = async function(args){
       }
    }
 
-   for(const [path, b] of Object.entries(map_b)){
-      const a = map_a[path];
+   for(const [path, b] of Object.entries(b_hashes)){
+      const a = a_hashes[path];
       if(!a){ added[path] = b; }
    }
 
@@ -224,7 +227,10 @@ cmds.diff = async function(args){
    console.log('changed:', Object.keys(changed).length);
    console.log('unchanged:', Object.keys(unchanged).length);
 
-   fs.writeFileSync(output_path, JSON.stringify({ added, removed, changed, unchanged }, null, 3));
+   fs.writeFileSync(output_path, JSON.stringify({
+      from: map_a.path, to: map_b.path,
+      added, removed, changed, unchanged
+   }, null, 3));
    process.stdout.write(`\ndiff written to: ${ _path.relative(start_cwd, output_path) }.\n`);
 };
 
