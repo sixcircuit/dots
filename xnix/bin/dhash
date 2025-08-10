@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+
+
+// TODO: NORMALIZE UNICODE: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize
+// TODO: normalize it when reading from disk. also write a quick script to normalize your hash files, but once the normalization is baked in, you don't need that 
+
 const fs = require('fs');
 const _path = require('path');
 const crypto = require('crypto');
@@ -8,7 +13,8 @@ const os = require('os');
 const start_cwd = process.cwd();
 
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
-const { V4MAPPED } = require('dns');
+
+const $norm = function(str){ return str.normalize("NFC"); };
 
 const $def = function(a, b, c){
    if(a !== undefined){ return(a); }
@@ -87,7 +93,7 @@ async function files_on_disk(root){
    const list = await fs.promises.readdir(root, { withFileTypes: true });
 
    for(const file of list){
-      const full_path = _path.join(root, file.name);
+      const full_path = $norm(_path.join(root, file.name));
       if(file.isDirectory()){
          results = results.concat(await files_on_disk(full_path));
       }else{
@@ -213,13 +219,55 @@ cmds.diff = async function(args){
    }
 
    console.log('diff results:');
-   console.log('added:', added);
-   console.log('removed:', removed);
-   console.log('changed:', changed);
+   console.log('added:', Object.keys(added).length);
+   console.log('removed:', Object.keys(removed).length);
+   console.log('changed:', Object.keys(changed).length);
    console.log('unchanged:', Object.keys(unchanged).length);
 
    fs.writeFileSync(output_path, JSON.stringify({ added, removed, changed, unchanged }, null, 3));
    process.stdout.write(`\ndiff written to: ${ _path.relative(start_cwd, output_path) }.\n`);
+};
+
+cmds.norm = async function(args){
+
+   let hashes_path = args.shift();
+   let output_path = args.shift();
+
+   if(!hashes_path){
+      console.log("  dhash norm  <path/to/hashes.json> [path/to/output.json]");
+      process.exit(1);
+   }
+
+   if(!output_path){
+      const output_file = `normalized.hashes.${ iso_start_date }.json`;
+      output_path = _path.join(process.cwd(), output_file);
+   }else{
+      output_path = _path.resolve(output_path);
+   }
+
+   const map_a = (JSON.parse(fs.readFileSync(hashes_path, "utf8")));
+
+   const norm_map = {
+      path: $norm(map_a.path),
+      hashes: {}
+   };
+
+   let total = 0;
+   let updated = 0;
+
+   for(const [path, info] of Object.entries(map_a.hashes)){
+      total++;
+      const n_path = $norm(path);
+      if(path !== n_path){ updated++ }
+      norm_map.hashes[n_path] = info;
+   }
+
+   console.log('norm results:');
+   console.log('updated:', updated);
+   console.log('total:', total);
+
+   fs.writeFileSync(output_path, JSON.stringify(norm_map, null, 3));
+   process.stdout.write(`\nnorm written to: ${ _path.relative(start_cwd, output_path) }.\n`);
 };
 
 async function main(){
@@ -292,7 +340,7 @@ async function hash_files(files, opts){
       const save_results = function(){
          if(!opts.write){ return; }
          fs.writeFileSync(opts.output_path, JSON.stringify({
-            path: process.cwd(),
+            path: $norm(process.cwd()),
             hashes: results_map
          }, null, 3));
          process.stdout.write(`\nhashes written to: ${ _path.relative(start_cwd, opts.output_path) }.\n`);
